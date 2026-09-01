@@ -579,7 +579,9 @@
           '<div class="habit-name">' + escapeHtml(h.name) + '</div></div>';
       }).join("");
       list.querySelectorAll(".habit-item").forEach(function(el){
-        el.addEventListener("click", function(){ toggleHabit(today, el.getAttribute("data-habit")); });
+        el.addEventListener("click", function(){
+          if (navigator.vibrate) navigator.vibrate(50);
+          toggleHabit(today, el.getAttribute("data-habit")); });
       });
     }
 
@@ -828,6 +830,7 @@
           saveState();
           el.classList.toggle("done");
           el.querySelector(".habit-check").textContent = l.done[hid] ? "✓" : "";
+          if (navigator.vibrate) navigator.vibrate(50);
           renderCalendar(); renderStats(); renderToday();
         });
       });
