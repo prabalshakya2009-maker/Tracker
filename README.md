@@ -19,16 +19,16 @@ Built so you can host it once on GitHub Pages and hand the link to anyone — th
 ## Hosting it on GitHub Pages
 
 1. Create a new **public** GitHub repository (e.g. `winter-arc`).
-2. Upload all the files in this folder to the repo root, keeping the folder structure:
+2. Upload all the files in this folder to the repo root:
    ```
    index.html
    manifest.json
    sw.js
-   icons/
-     icon-192.png
-     icon-512.png
-     icon-maskable-512.png
-     apple-touch-icon.png
+   icon-192.png
+   icon-512.png
+   icon-maskable-512.png
+   apple-touch-icon.png
+   README.md
    ```
 3. Go to the repo's **Settings → Pages**.
 4. Under "Build and deployment", set **Source** to "Deploy from a branch", branch `main`, folder `/ (root)`. Save.

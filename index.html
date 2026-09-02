@@ -15,8 +15,8 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -386,11 +386,11 @@
 
   </main>
 
-  <nav class="bottomnav" aria-label="Sections">
-    <button data-view="today" class="active" aria-current="page"><span class="icon" aria-hidden="true">🔥</span><span>Today</span></button>
-    <button data-view="calendar"><span class="icon" aria-hidden="true">📅</span><span>Calendar</span></button>
-    <button data-view="stats"><span class="icon" aria-hidden="true">📊</span><span>Stats</span></button>
-    <button data-view="manage"><span class="icon" aria-hidden="true">⚙️</span><span>Manage</span></button>
+  <nav class="bottomnav" aria-label="Main navigation">
+    <button data-view="today" class="active" aria-current="page" aria-label="Go to Today view"><span class="icon" aria-hidden="true">🔥</span><span>Today</span></button>
+    <button data-view="calendar" aria-label="Go to Calendar view"><span class="icon" aria-hidden="true">📅</span><span>Calendar</span></button>
+    <button data-view="stats" aria-label="Go to Stats view"><span class="icon" aria-hidden="true">📊</span><span>Stats</span></button>
+    <button data-view="manage" aria-label="Go to Manage view"><span class="icon" aria-hidden="true">⚙️</span><span>Manage</span></button>
   </nav>
 </div>
 
@@ -434,6 +434,8 @@
   function uid(){ return "h" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
   function escapeHtml(str){ var d=document.createElement("div"); d.textContent=str; return d.innerHTML; }
   function escapeAttr(str){ return String(str).replace(/"/g,"&quot;"); }
+  function safeGet(obj, path, def){ return path.split(".").reduce(function(o,p){ return o?.[p]; }, obj) ?? def; }
+  function debounce(fn, ms){ var t; return function(){ var a=arguments; clearTimeout(t); t=setTimeout(function(){ fn.apply(this,a); }, ms); }; }
 
   /* ---------------- state ---------------- */
 
@@ -480,8 +482,18 @@
     }
   }
   function saveState(){
-    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-    catch(e){ showToast("Couldn't save — storage may be full or blocked"); }
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }catch(e){
+      console.error("Failed to save state:", e);
+      if(e.name === "QuotaExceededError"){
+        showToast("Storage full — export backup to free space");
+      } else if(e.name === "SecurityError"){
+        showToast("Storage access blocked — check browser settings");
+      } else {
+        showToast("Couldn't save — " + e.message);
+      }
+    }
   }
 
   function getLog(dateStr, create){
@@ -666,15 +678,18 @@
     if(today < s.startDate){
       badge.textContent = "Not started";
       sub.textContent = rangeText;
+      badge.setAttribute("aria-label", "Winter Arc starts on " + fmtShort(s.startDate));
     } else if(today > s.endDate){
       badge.textContent = "Complete";
       sub.textContent = rangeText;
+      badge.setAttribute("aria-label", "Winter Arc complete");
     } else {
       var dayNum = daysBetween(s.startDate, today) + 1;
       var total = daysBetween(s.startDate, s.endDate) + 1;
       var left = daysBetween(today, s.endDate);
       badge.textContent = "Day " + dayNum + " / " + total;
       sub.textContent = rangeText + " · " + left + (left===1?" day left":" days left");
+      badge.setAttribute("aria-label", "Day " + dayNum + " of " + total + ", " + left + " days remaining");
     }
   }
 
@@ -756,6 +771,8 @@
     document.getElementById("ringOuter").style.setProperty("--pct", comp.pct);
     document.getElementById("ringPct").textContent = comp.pct + "%";
     document.getElementById("ringLabel").textContent = comp.done + " / " + comp.total + " today";
+    document.getElementById("ringOuter").setAttribute("aria-label", comp.pct + "% complete, " + comp.done + " of " + comp.total + " habits completed today");
+    document.getElementById("ringPct").setAttribute("aria-label", comp.pct + "%");
 
     var habits = activeHabitsFor(today);
     var log = getLog(today, false);
@@ -1229,7 +1246,49 @@
   document.getElementById("saveDatesBtn").addEventListener("click", function(){
     var start = document.getElementById("startDateInput").value;
     var end = document.getElementById("endDateInput").value;
-    if(!start || !end || start >= end){ showToast("Pick a start date before the end date"); return; }
+    
+    // Date validation
+    if(!start || !end){
+      showToast("Please select both start and end dates");
+      return;
+    }
+    
+    var startDate = parseDateStr(start);
+    var endDate = parseDateStr(end);
+    var today = new Date();
+    today.setHours(0,0,0,0);
+    
+    if(isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
+      showToast("Invalid date format");
+      return;
+    }
+    
+    if(start >= end){
+      showToast("Start date must be before end date");
+      return;
+    }
+    
+    if(startDate < new Date(2000, 0, 1) || startDate > new Date(2100, 0, 1)){
+      showToast("Start date must be between 2000 and 2100");
+      return;
+    }
+    
+    if(endDate < new Date(2000, 0, 1) || endDate > new Date(2100, 0, 1)){
+      showToast("End date must be between 2000 and 2100");
+      return;
+    }
+    
+    if(endDate <= startDate){
+      showToast("End date must be after start date");
+      return;
+    }
+    
+    var totalDays = daysBetween(start, end) + 1;
+    if(totalDays < 7){
+      showToast("The arc must be at least 7 days long");
+      return;
+    }
+    
     state.settings.startDate = start;
     state.settings.endDate = end;
     saveState();

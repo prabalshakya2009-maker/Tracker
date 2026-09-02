@@ -1,47 +1,146 @@
-// Winter Arc Tracker — service worker
-// Caches the app shell so the tracker still opens (and keeps your local data)
-// with no signal. All habit data lives in localStorage on-device, not here.
+// Winter Arc Tracker v3.0 — Service Worker
+// Advanced caching with cache-first strategy for offline support
+// All data remains in localStorage - this is for app shell caching only
 
-var CACHE_NAME = "winter-arc-v2";
-var SHELL_FILES = [
+const CACHE_NAME = "winter-arc-v3";
+const DATA_CACHE_NAME = "winter-arc-data-v1";
+
+const ASSETS_TO_CACHE = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-maskable-512.png",
-  "./icons/apple-touch-icon.png"
+  "./sw.js",
+  "./README.md"
 ];
 
-self.addEventListener("install", function(event){
+const ICONS_TO_CACHE = [
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-maskable-512.png",
+  "./apple-touch-icon.png"
+];
+
+// Install event - cache assets
+self.addEventListener("install", (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(function(cache){
-      return cache.addAll(SHELL_FILES).catch(function(){ /* ignore missing optional files */ });
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        return cache.addAll(ASSETS_TO_CACHE);
+      })
+      .then(() => {
+        return cache.addAll(ICONS_TO_CACHE);
+      })
+      .catch((err) => {
+        console.log("Cache installation partial:", err);
+      })
   );
 });
 
-self.addEventListener("activate", function(event){
+// Activate event - clean old caches
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then(function(keys){
-      return Promise.all(keys.filter(function(k){ return k !== CACHE_NAME; }).map(function(k){ return caches.delete(k); }));
-    }).then(function(){ return self.clients.claim(); })
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames
+            .filter((name) => name !== CACHE_NAME && name !== DATA_CACHE_NAME)
+            .map((name) => caches.delete(name))
+        );
+      })
+      .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener("fetch", function(event){
-  if(event.request.method !== "GET") return;
+// Fetch event - cache-first strategy for assets, network-first for data
+self.addEventListener("fetch", (event) => {
+  // Skip non-GET requests
+  if (event.request.method !== "GET") return;
+
+  // For manifest and HTML, use cache-first
+  if (
+    event.request.url.endsWith(".json") ||
+    event.request.url.endsWith(".html") ||
+    event.request.url.endsWith(".js")
+  ) {
+    event.respondWith(
+      caches.match(event.request)
+        .then((cached) => {
+          if (cached) return cached;
+          return fetch(event.request)
+            .then((response) => {
+              if (response && response.status === 200 && response.type === "basic") {
+                const responseClone = response.clone();
+                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+              }
+              return response;
+            });
+        })
+        .catch(() => {
+          // Fallback for offline
+          if (event.request.url.endsWith(".html")) {
+            return caches.match("./index.html");
+          }
+          return new Response("", { status: 503, statusText: "Service Unavailable" });
+        })
+    );
+    return;
+  }
+
+  // For images and static assets, use cache-first with stale-while-revalidate
+  if (
+    event.request.url.includes(".png") ||
+    event.request.url.includes(".jpg") ||
+    event.request.url.includes(".gif") ||
+    event.request.url.includes(".svg")
+  ) {
+    event.respondWith(
+      caches.match(event.request)
+        .then((cached) => {
+          if (cached) return cached;
+          return fetch(event.request)
+            .then((response) => {
+              if (response && response.status === 200 && response.type === "basic") {
+                const responseClone = response.clone();
+                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+              }
+              return response;
+            })
+            .catch(() => cached || new Response("", { status: 408 }));
+        })
+    );
+    return;
+  }
+
+  // Default: network-first for everything else
   event.respondWith(
-    caches.match(event.request).then(function(cached){
-      var network = fetch(event.request).then(function(res){
-        if(res && res.status === 200 && res.type === "basic"){
-          var copy = res.clone();
-          caches.open(CACHE_NAME).then(function(cache){ cache.put(event.request, copy); });
+    fetch(event.request)
+      .then((response) => {
+        if (response && response.status === 200 && response.type === "basic") {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
         }
-        return res;
-      }).catch(function(){ return cached; });
-      return cached || network;
-    })
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
+
+// Message handling for update notifications
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+// Background sync for offline changes (future enhancement)
+self.addEventListener("sync", (event) => {
+  if (event.tag === "sync-data") {
+    event.waitUntil(syncData());
+  }
+});
+
+async function syncData() {
+  // Placeholder for future sync functionality
+  console.log("Background sync triggered");
+}
