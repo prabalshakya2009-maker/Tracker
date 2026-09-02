@@ -1329,11 +1329,14 @@ function exportPDF() {
 
   const win = window.open('', '_blank');
   if (!win) { showToast('⚠️ Allow pop-ups to export PDF'); return; }
-  win.document.open();
+  win.document.open('text/html', 'replace');
   win.document.write(html);
   win.document.close();
   // Wait for layout then print — do NOT auto-close
-  win.addEventListener('load', function() { win.focus(); win.print(); });
+  setTimeout(function() { 
+    win.focus(); 
+    win.print(); 
+  }, 250);
   showToast('📄 PDF report opened — use Print to save');
 }
 
