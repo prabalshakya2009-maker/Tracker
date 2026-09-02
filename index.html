@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
@@ -21,7 +21,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
+  /* ========== THEME VARIABLES ========== */
+  :root[data-theme="dark"]{
     --bg:#060a14;
     --bg-elevated:#0c1526;
     --bg-card:#101b30;
@@ -38,7 +39,51 @@
     --radius-lg:18px;
     --radius-md:14px;
     --radius-sm:9px;
+    --mode-toggle:#4d5c7a;
   }
+  
+  :root[data-theme="light"]{
+    --bg:#f0f4f9;
+    --bg-elevated:#ffffff;
+    --bg-card:#ffffff;
+    --border:#d1d9e6;
+    --border-soft:#e8ecf1;
+    --frost:#0f172a;
+    --ice:#3b82f6;
+    --ice-soft:rgba(59,130,246,.16);
+    --ember:#f97316;
+    --text:#0f172a;
+    --text-dim:#64748b;
+    --text-faint:#94a3b8;
+    --danger:#ef4444;
+    --radius-lg:18px;
+    --radius-md:14px;
+    --radius-sm:9px;
+    --mode-toggle:#94a3b8;
+  }
+
+  /* ========== THEME SELECTOR ========== */
+  .theme-selector{
+    position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));right:18px;z-index:15;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .theme-btn{
+    width:40px;height:40px;border-radius:50%;border:none;background:var(--bg-card);
+    box-shadow:0 4px 12px rgba(0,0,0,.15);cursor:pointer;display:flex;
+    align-items:center;justify-content:center;font-size:20px;transition:transform .2s, box-shadow .2s;
+  }
+  .theme-btn:hover{transform:scale(1.1);box-shadow:0 6px 16px rgba(0,0,0,.2);}
+  .theme-btn:active{transform:scale(0.95);}
+  .theme-btn.dark::before{content:"🌙"}
+  .theme-btn.light::before{content:"☀️"}
+  .theme-btn.auto::before{content:"💻"}
+  .theme-label{
+    position:absolute;bottom:calc(85px + env(safe-area-inset-bottom));right:calc(18px + 48px + 8px);
+    background:var(--bg-card);padding:6px 10px;border-radius:20px;font-size:11px;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);white-space:nowrap;
+  }
+
+  /* ========== GLOBAL STYLES ========== */
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
@@ -47,25 +92,28 @@
     font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     -webkit-font-smoothing:antialiased;
     overscroll-behavior-y:none;
+    transition:background .3s, color .3s;
   }
   .disp{font-family:'Space Grotesk','Inter',sans-serif;}
   button, input, textarea{font-family:inherit;}
-  button{touch-action:manipulation;}
+  button{touch-action:manipulation;cursor:pointer;}
   .app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;}
 
+  /* ========== FOCUS STYLES ========== */
   button:focus-visible, .habit-item:focus-visible, .day-cell:focus-visible,
   .emoji-opt:focus-visible, .week-dot:focus-visible, input:focus-visible, textarea:focus-visible{
     outline:2px solid var(--ice); outline-offset:2px;
   }
   textarea:focus, input:focus{ outline:2px solid var(--ice); outline-offset:1px; }
 
-  /* ---------- topbar ---------- */
+  /* ========== TOPBAR ========== */
   .topbar{
     position:sticky;top:0;z-index:5;
     background:rgba(6,10,20,.86);
     backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     border-bottom:1px solid var(--border-soft);
     padding:calc(14px + env(safe-area-inset-top)) 18px 12px;
+    transition:background .3s;
   }
   .brand-row{display:flex;align-items:center;justify-content:space-between;}
   .brand{font-weight:700;font-size:15px;letter-spacing:.01em;display:flex;align-items:center;gap:7px;}
@@ -73,7 +121,7 @@
   .day-badge{font-weight:700;font-size:12.5px;color:var(--ice);background:var(--ice-soft);padding:4px 10px;border-radius:20px;white-space:nowrap;}
   .range-sub{font-size:11.5px;color:var(--text-faint);margin-top:5px;}
 
-  /* ---------- layout ---------- */
+  /* ========== LAYOUT ========== */
   main#views{flex:1;padding:18px 18px calc(96px + env(safe-area-inset-bottom));}
   .view{display:none;}
   .view.active{display:block;animation:riseIn .28s ease;}
@@ -82,39 +130,45 @@
   h2.view-title{font-size:19px;font-weight:700;margin:0 0 4px;}
   p.view-sub{font-size:12.5px;color:var(--text-dim);margin:0 0 18px;line-height:1.5;}
 
-  /* ---------- this-week strip ---------- */
+  /* ========== WEEK STRIP ========== */
   .week-strip{display:flex;justify-content:space-between;gap:4px;margin-bottom:22px;}
   .week-dot-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
   .week-dot{
     width:32px;height:32px;border-radius:50%;border:1px solid var(--border-soft);
     display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-dim);
-    background:var(--bg-card);
+    background:var(--bg-card);transition:all .2s;
   }
   .week-dot.today{box-shadow:0 0 0 2px var(--ember);}
   .week-dot-label{font-size:9.5px;color:var(--text-faint);}
+  .week-dot:hover{transform:scale(1.1);border-color:var(--ice);}
+  .week-dot[aria-disabled="true"]{opacity:.5;cursor:not-allowed;}
 
-  /* ---------- ring ---------- */
+  /* ========== RING ========== */
   .ring-wrap{display:flex;justify-content:center;margin:6px 0 22px;}
   .ring-outer{
     width:158px;height:158px;border-radius:50%;
     background:conic-gradient(var(--ice) calc(var(--pct,0)*3.6deg), var(--bg-card) 0deg);
     display:flex;align-items:center;justify-content:center;
     box-shadow:0 0 0 1px var(--border-soft);
+    transition:box-shadow .3s;
   }
+  .ring-outer:focus-visible{box-shadow:0 0 0 2px var(--ice),0 0 0 4px var(--border);}
   .ring-inner{
     width:126px;height:126px;border-radius:50%;background:var(--bg-elevated);
     display:flex;flex-direction:column;align-items:center;justify-content:center;
+    transition:background .3s;
   }
   .ring-pct{font-size:26px;font-weight:700;}
   .ring-label{font-size:11px;color:var(--text-dim);margin-top:2px;}
 
-  /* ---------- habit rows ---------- */
+  /* ========== HABIT ROWS ========== */
   .habit-item{
     display:flex;align-items:center;gap:12px;
     background:var(--bg-card);border:1px solid var(--border-soft);
     border-radius:var(--radius-md);padding:13px 14px;margin-bottom:9px;
-    cursor:pointer;user-select:none;transition:border-color .15s, background .15s;
+    cursor:pointer;user-select:none;transition:border-color .15s, background .15s, transform .1s;
   }
+  .habit-item:hover{transform:translateX(4px);}
   .habit-item.done{border-color:rgba(111,184,232,.45);background:linear-gradient(180deg, rgba(111,184,232,.08), var(--bg-card));}
   .habit-check{
     width:26px;height:26px;border-radius:50%;flex-shrink:0;
@@ -125,22 +179,26 @@
   .habit-icon{font-size:19px;width:24px;text-align:center;flex-shrink:0;}
   .habit-name{flex:1;font-size:14.5px;font-weight:500;}
   .habit-item.done .habit-name{color:var(--frost);}
+  .habit-category{
+    font-size:9px;background:var(--bg-elevated);color:var(--text-faint);
+    padding:2px 6px;border-radius:10px;margin-left:8px;white-space:nowrap;
+  }
 
   .empty-state{
     text-align:center;padding:38px 18px;color:var(--text-dim);
     border:1px dashed var(--border);border-radius:var(--radius-md);font-size:13px;line-height:1.6;
   }
 
-  /* ---------- note box ---------- */
+  /* ========== NOTE BOX ========== */
   .note-box{margin-top:18px;}
   .note-box label{font-size:12px;color:var(--text-dim);display:block;margin-bottom:7px;}
   textarea{
     width:100%;background:var(--bg-card);border:1px solid var(--border-soft);
     border-radius:var(--radius-md);color:var(--text);padding:12px 13px;font-size:13.5px;
-    resize:vertical;min-height:64px;line-height:1.5;
+    resize:vertical;min-height:64px;line-height:1.5;transition:border-color .2s;
   }
 
-  /* ---------- gated states (before start / after end) ---------- */
+  /* ========== GATED STATES ========== */
   .gate-card{
     text-align:center;background:var(--bg-card);border:1px solid var(--border-soft);
     border-radius:var(--radius-lg);padding:34px 22px;margin-top:10px;
@@ -150,7 +208,7 @@
   .gate-sub{font-size:13px;color:var(--text-dim);line-height:1.6;}
   .gate-count{font-family:'Space Grotesk';font-size:38px;font-weight:700;color:var(--ember);margin:14px 0 4px;}
 
-  /* ---------- calendar ---------- */
+  /* ========== CALENDAR ========== */
   .month-block{margin-bottom:24px;}
   .month-title{font-size:13.5px;font-weight:700;color:var(--frost);margin-bottom:9px;}
   .weekday-row{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:5px;}
@@ -159,16 +217,27 @@
   .day-cell{
     aspect-ratio:1;border-radius:7px;display:flex;align-items:center;justify-content:center;
     font-size:10.5px;color:var(--text-dim);border:1px solid var(--border-soft);cursor:pointer;
+    transition:all .2s;
   }
   .day-cell.empty{visibility:hidden;cursor:default;}
   .day-cell.future{opacity:.32;border-style:dashed;cursor:default;}
   .day-cell.today{box-shadow:0 0 0 2px var(--ember);}
+  .day-cell:hover:not(.empty):not(.future){transform:scale(1.15);}
   .legend{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:10.5px;color:var(--text-faint);}
   .legend-swatch{width:10px;height:10px;border-radius:3px;background:var(--ice);}
+  .month-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .month-nav{display:flex;gap:8px;}
+  .month-nav button{
+    background:none;border:none;color:var(--text-dim);width:30px;height:30px;
+    border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  }
+  .month-nav button:hover{background:var(--border-soft);}
+  .month-nav button:disabled{opacity:.3;cursor:not-allowed;}
 
-  /* ---------- stats ---------- */
+  /* ========== STATS ========== */
   .stat-hero{display:flex;gap:10px;margin-bottom:18px;}
-  .stat-box{flex:1;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:16px 8px;text-align:center;}
+  .stat-box{flex:1;background:var(--bg-card);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:16px 8px;text-align:center;transition:transform .2s;}
+  .stat-box:hover{transform:translateY(-2px);}
   .stat-num{font-size:26px;font-weight:700;color:var(--ember);}
   .stat-num.ice{color:var(--ice);}
   .stat-label{font-size:10.5px;color:var(--text-dim);margin-top:3px;}
@@ -177,13 +246,30 @@
   .habit-stat-top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;}
   .habit-stat-top span:last-child{color:var(--text-dim);}
   .bar-track{height:7px;background:var(--bg-card);border-radius:5px;overflow:hidden;border:1px solid var(--border-soft);}
-  .bar-fill{height:100%;background:var(--ice);border-radius:5px;}
+  .bar-fill{height:100%;background:var(--ice);border-radius:5px;transition:width .5s ease;}
+  
+  .category-stat-row{margin-bottom:16px;}
+  .category-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .category-name{font-weight:600;color:var(--text);}
+  .category-count{font-size:13px;color:var(--text-dim);}
+  .category-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:8px;}
+  .category-item{
+    background:var(--bg-card);border:1px solid var(--border-soft);
+    border-radius:10px;padding:8px;text-align:center;
+  }
+  .category-item .icon{font-size:20px;display:block;margin-bottom:4px;}
+  .category-item .label{font-size:9px;color:var(--text-faint);}
+  .category-item .count{font-size:11px;font-weight:700;color:var(--text);}
+  .category-item .bar{height:4px;background:var(--bg-elevated);border-radius:2px;margin-top:4px;overflow:hidden;}
+  .category-item .bar-fill{height:100%;background:var(--ice);border-radius:2px;}
 
-  /* ---------- manage ---------- */
+  /* ========== MANAGE ========== */
   .manage-habit{
     display:flex;align-items:center;gap:9px;background:var(--bg-card);
     border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:10px 10px;margin-bottom:8px;
+    transition:transform .2s;
   }
+  .manage-habit:hover{transform:translateX(4px);}
   .manage-habit.archived{opacity:.65;}
   .reorder-btns{display:flex;flex-direction:column;}
   .reorder-btns button{background:none;border:none;color:var(--text-faint);font-size:11px;padding:2px 5px;cursor:pointer;line-height:1;}
@@ -191,12 +277,15 @@
   .manage-habit .habit-icon{font-size:18px;}
   .manage-habit .habit-name{flex:1;font-size:13.5px;}
   .manage-habit .habit-sub{font-size:10.5px;color:var(--text-faint);}
+  .manage-habit .habit-category{margin-left:auto;}
   .icon-btn{background:none;border:none;color:var(--text-dim);font-size:16px;padding:6px;cursor:pointer;border-radius:8px;}
   .icon-btn:active{background:var(--border-soft);}
   .add-habit-btn{
     width:100%;padding:13px;border-radius:var(--radius-md);border:1px dashed var(--text-faint);
     background:none;color:var(--text-dim);font-size:13.5px;font-weight:600;cursor:pointer;margin-top:6px;
+    transition:all .2s;
   }
+  .add-habit-btn:hover{border-color:var(--ice);color:var(--ice);}
   .archive-toggle{
     background:none;border:none;color:var(--text-dim);font-size:12.5px;font-weight:700;
     padding:10px 0 4px;cursor:pointer;display:flex;align-items:center;gap:5px;width:100%;
@@ -205,50 +294,74 @@
   .archived-list.open{display:block;}
   .field{margin-bottom:16px;}
   .field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:7px;}
-  .field input[type=text], .field input[type=date]{
+  .field input[type=text], .field input[type=date], .field select{
     width:100%;background:var(--bg-card);border:1px solid var(--border-soft);
     border-radius:var(--radius-sm);color:var(--text);padding:11px 12px;font-size:14px;
-    color-scheme:dark;
+    color-scheme:dark;transition:border-color .2s;
   }
+  .field input:hover, .field select:hover{border-color:var(--ice);}
   .date-row{display:flex;gap:10px;}
   .date-row .field{flex:1;}
   .btn{
     display:block;width:100%;text-align:center;padding:13px;border-radius:var(--radius-md);
     font-size:14px;font-weight:700;border:1px solid transparent;cursor:pointer;margin-bottom:10px;
+    transition:all .2s;
   }
   .btn-primary{background:var(--ice);color:#06121f;}
+  .btn-primary:hover{background:var(--ice-soft);}
   .btn-ghost{background:none;border-color:var(--border);color:var(--text);}
+  .btn-ghost:hover{background:var(--border-soft);}
   .btn-danger{background:none;border-color:rgba(240,104,95,.4);color:var(--danger);}
+  .btn-danger:hover{background:rgba(240,104,95,.1);}
   .emoji-pick{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:16px;}
   .emoji-opt{
     aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:18px;
     background:var(--bg-card);border:1px solid var(--border-soft);border-radius:10px;cursor:pointer;
+    transition:all .2s;
   }
+  .emoji-opt:hover{transform:scale(1.1);}
   .emoji-opt.picked{border-color:var(--ice);background:var(--ice-soft);}
+  
+  /* ========== CATEGORY PICKER ========== */
+  .category-pick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+  .category-opt{
+    aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:22px;background:var(--bg-card);border:1px solid var(--border-soft);
+    border-radius:10px;cursor:pointer;transition:all .2s;
+  }
+  .category-opt .cat-label{font-size:8px;margin-top:4px;color:var(--text-faint);}
+  .category-opt:hover{transform:scale(1.1);border-color:var(--ice);}
+  .category-opt.picked{border-color:var(--ice);background:var(--ice-soft);box-shadow:0 0 0 1px var(--ice);}
+  .category-opt.picked .cat-label{color:var(--text);}
+  
   .about-card{
     background:var(--bg-card);border:1px solid var(--border-soft);border-radius:var(--radius-md);
     padding:14px;font-size:12px;color:var(--text-dim);line-height:1.65;margin:8px 0 4px;
   }
   .about-card b{color:var(--text);}
   .footer-note{text-align:center;font-size:11px;color:var(--text-faint);margin-top:26px;line-height:1.6;}
-
-  /* ---------- bottom nav ---------- */
+  
+  /* ========== BOTTOM NAV ========== */
   .bottomnav{
     position:fixed;bottom:0;left:0;right:0;z-index:10;
     max-width:480px;margin:0 auto;display:flex;
     background:rgba(9,14,26,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
     border-top:1px solid var(--border-soft);
     padding:9px 6px calc(9px + env(safe-area-inset-bottom));
+    transition:background .3s;
   }
   .bottomnav button{
     flex:1;background:none;border:none;color:var(--text-faint);
     display:flex;flex-direction:column;align-items:center;gap:3px;
     font-size:10px;padding:5px 0;border-radius:12px;cursor:pointer;font-weight:600;
+    transition:all .2s;
   }
   .bottomnav button .icon{font-size:19px;}
   .bottomnav button.active{color:var(--ice);}
-
-  /* ---------- modal ---------- */
+  .bottomnav button:hover:not(.active){color:var(--text-dim);}
+  .bottomnav button:hover:not(.active) .icon{transform:scale(1.1);}
+  
+  /* ========== MODAL ========== */
   .overlay{
     position:fixed;inset:0;background:rgba(3,6,12,.66);backdrop-filter:blur(4px);
     display:flex;align-items:flex-end;justify-content:center;z-index:20;
@@ -259,14 +372,16 @@
     border-radius:22px 22px 0 0;padding:22px 20px calc(24px + env(safe-area-inset-bottom));
     max-height:86vh;overflow-y:auto;border-top:1px solid var(--border);
     animation:slideUp .22s ease;
+    transition:background .3s;
   }
   @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
   .modal-title{font-size:16.5px;font-weight:700;margin:0 0 4px;}
   .modal-sub{font-size:12px;color:var(--text-dim);margin:0 0 18px;}
   .modal-close-row{display:flex;justify-content:flex-end;margin-bottom:-6px;}
   .modal-close-row button{background:none;border:none;color:var(--text-faint);font-size:20px;cursor:pointer;padding:4px 8px;}
-
-  /* ---------- toasts & confetti ---------- */
+  .modal-close-row button:hover{background:var(--border-soft);}
+  
+  /* ========== TOASTS & CONFETTI ========== */
   .toast-host{
     position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);
     z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;
@@ -276,6 +391,7 @@
     font-size:13px;font-weight:600;padding:10px 18px;border-radius:30px;
     box-shadow:0 10px 30px rgba(0,0,0,.45);opacity:0;transform:translateY(-10px);
     animation:toastIn .25s ease forwards;max-width:80%;text-align:center;
+    transition:background .3s, color .3s;
   }
   @keyframes toastIn{to{opacity:1;transform:none;}}
   .toast.leaving{animation:toastOut .25s ease forwards;}
@@ -286,9 +402,30 @@
     0%{transform:translate(0,0) rotate(0deg);opacity:1;}
     100%{transform:translate(var(--dx),100vh) rotate(var(--rot));opacity:0;}
   }
-
+  
   ::-webkit-scrollbar{width:0;height:0;}
-
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border-soft);border-radius:8px;}
+  
+  /* ========== HABIT CATEGORY COLORS ========== */
+  :root[data-theme="dark"] .habit-category.health{background:rgba(16,27,48,.6);color:#6fb8e8}
+  :root[data-theme="light"] .habit-category.health{background:rgba(255,255,255,.8);color:#3b82f6}
+  :root[data-theme="dark"] .habit-category.work{background:rgba(16,27,48,.6);color:#f97316}
+  :root[data-theme="light"] .habit-category.work{background:rgba(255,255,255,.8);color:#f97316}
+  :root[data-theme="dark"] .habit-category.mindfulness{background:rgba(16,27,48,.6);color:#a78bfa}
+  :root[data-theme="light"] .habit-category.mindfulness{background:rgba(255,255,255,.8);color:#a78bfa}
+  :root[data-theme="dark"] .habit-category.fitness{background:rgba(16,27,48,.6);color:#22c55e}
+  :root[data-theme="light"] .habit-category.fitness{background:rgba(255,255,255,.8);color:#22c55e}
+  :root[data-theme="dark"] .habit-category.creative{background:rgba(16,27,48,.6);color:#ec4899}
+  :root[data-theme="light"] .habit-category.creative{background:rgba(255,255,255,.8);color:#ec4899}
+  
+  /* ========== RESPONSIVE ========== */
+  @media (max-width:400px){
+    .stat-hero{flex-direction:column;}
+    .stat-box{width:100%;}
+  }
+  
+  /* ========== REDUCED MOTION ========== */
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
   }
@@ -296,24 +433,30 @@
 </head>
 <body>
 <div class="app">
+  <!-- Theme Toggle Buttons -->
+  <div class="theme-selector" role="group" aria-label="Theme selection">
+    <button class="theme-btn dark" onclick="setTheme('dark')" aria-label="Dark theme"></button>
+    <button class="theme-btn auto" onclick="setTheme('auto')" aria-label="Auto theme"></button>
+    <button class="theme-btn light" onclick="setTheme('light')" aria-label="Light theme"></button>
+  </div>
+  <div class="theme-label" id="themeLabel">Dark</div>
 
   <header class="topbar">
     <div class="brand-row">
       <div class="brand"><span class="flake">❄️</span><span class="disp">WINTER ARC</span></div>
-      <div class="day-badge disp" id="dayBadge">Day –</div>
+      <div class="day-badge disp" id="dayBadge" role="status" aria-live="polite">Day –</div>
     </div>
     <div class="range-sub" id="rangeSub"></div>
   </header>
 
   <main id="views">
-
     <!-- TODAY -->
     <section class="view active" id="view-today" aria-label="Today">
       <div id="todayGated"></div>
       <div id="todayNormal" style="display:none;">
         <div class="week-strip" id="weekStrip" aria-label="Last 7 days"></div>
         <div class="ring-wrap">
-          <div class="ring-outer" id="ringOuter" style="--pct:0;" role="img" aria-label="Today's completion">
+          <div class="ring-outer" id="ringOuter" style="--pct:0;" role="img" aria-label="Today's completion" tabindex="0">
             <div class="ring-inner">
               <div class="ring-pct disp" id="ringPct">0%</div>
               <div class="ring-label" id="ringLabel">Today</div>
@@ -330,9 +473,13 @@
 
     <!-- CALENDAR -->
     <section class="view" id="view-calendar" aria-label="Calendar">
-      <h2 class="view-title">Calendar</h2>
-      <p class="view-sub">Tap any day to view or edit it.</p>
-      <div class="legend"><span class="legend-swatch"></span> darker = more habits completed that day</div>
+      <div class="month-header">
+        <button class="month-nav" id="prevMonthBtn" aria-label="Previous month">❮</button>
+        <span class="month-title disp" id="currentMonth"></span>
+        <button class="month-nav" id="nextMonthBtn" aria-label="Next month">❯</button>
+      </div>
+      <p class="view-sub" style="margin-top:0;">Tap any day to view or edit it.</p>
+      <div class="legend"><span class="legend-swatch"></span> darker = more habits completed</div>
       <div id="calendarWrap" style="margin-top:16px;"></div>
     </section>
 
@@ -341,13 +488,20 @@
       <h2 class="view-title">Stats</h2>
       <p class="view-sub">Your progress across the whole arc.</p>
       <div class="stat-hero">
-        <div class="stat-box"><div class="stat-num disp" id="statStreak">0</div><div class="stat-label">current streak</div></div>
-        <div class="stat-box"><div class="stat-num disp ice" id="statBest">0</div><div class="stat-label">best streak</div></div>
-        <div class="stat-box"><div class="stat-num disp ice" id="statPct">0%</div><div class="stat-label">arc completion</div></div>
+        <div class="stat-box" role="img" aria-label="Current streak"><div class="stat-num disp" id="statStreak">0</div><div class="stat-label">current streak</div></div>
+        <div class="stat-box" role="img" aria-label="Best streak"><div class="stat-num disp ice" id="statBest">0</div><div class="stat-label">best streak</div></div>
+        <div class="stat-box" role="img" aria-label="Arc completion"><div class="stat-num disp ice" id="statPct">0%</div><div class="stat-label">arc completion</div></div>
+      </div>
+      <div class="stat-hero">
+        <div class="stat-box" role="img" aria-label="Total habits"><div class="stat-num disp" id="statHabits">0</div><div class="stat-label">habits tracked</div></div>
+        <div class="stat-box" role="img" aria-label="Total days"><div class="stat-num disp ice" id="statDays">0</div><div class="stat-label">days active</div></div>
       </div>
       <button class="btn btn-ghost" id="shareBtn">📤 Share progress</button>
+      <button class="btn btn-ghost" id="pdfBtn">📄 Export as PDF</button>
       <div class="section-label">By habit</div>
       <div id="habitStatsWrap"></div>
+      <div class="section-label" id="categoryStatsLabel">By category</div>
+      <div id="categoryStatsWrap" style="display:none;"></div>
     </section>
 
     <!-- MANAGE -->
@@ -379,7 +533,12 @@
       <div class="about-card">
         <b>iPhone:</b> tap Share in Safari → "Add to Home Screen".<br>
         <b>Android:</b> use Install above, or your browser menu → "Install app".<br><br>
-        Everything is stored only on this device — no account, no server. Use Export to back up your data or move it to a new phone.
+        Everything is stored only on this device — no account, no server. Use Export to back up your data.
+      </div>
+      <div class="about-card">
+        <b>Keyboard shortcuts:</b><br>
+        <kbd>1</kbd> Today | <kbd>2</kbd> Calendar | <kbd>3</kbd> Stats | <kbd>4</kbd> Manage<br>
+        <kbd>Space</kbd> Toggle current habit
       </div>
       <div class="footer-note">Winter Arc Tracker · your data never leaves this device</div>
     </section>
@@ -399,19 +558,31 @@
 </div>
 
 <div class="toast-host" id="toastHost" aria-live="polite"></div>
-
 <script>
 (function(){
   "use strict";
 
-  var STORAGE_KEY = "winterArcData_v1";
+  // ========== CONSTANTS ==========
+  var STORAGE_KEY = "winterArcData_v2";
+  var THEME_STORAGE_KEY = "winterArcTheme";
+  var THEME_OPTIONS = { dark: "Dark", light: "Light", auto: "Auto" };
   var EMOJI_PRESET = ["💪","🏃","📚","💧","🧘","😴","🥗","🚭","📵","🙏","✍️","❄️","🔥","⏰","🚿","🧠","💊","🎯","🎧","🚶"];
+  var CATEGORY_PRESET = [
+    {id:"health",icon:"💧",label:"Health"},
+    {id:"work",icon:"💼",label:"Work"},
+    {id:"mindfulness",icon:"🧘",label:"Mindfulness"},
+    {id:"fitness",icon:"🏃",label:"Fitness"},
+    {id:"creative",icon:"🎨",label:"Creative"},
+    {id:"learning",icon:"📚",label:"Learning"},
+    {id:"social",icon:"🤝",label:"Social"},
+    {id:"sleep",icon:"🛌",label:"Sleep"}
+  ];
   var WEEKDAYS = ["S","M","T","W","T","F","S"];
   var MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   var STREAK_MILESTONES = [3,7,14,21,30,45,60,90,120,150,180];
+  var CATEGORY_COLORS = { health: "#6fb8e8", work: "#f97316", mindfulness: "#a78bfa", fitness: "#22c55e", creative: "#ec4899", learning: "#3b82f6", social: "#06b6d4", sleep: "#6366f1" };
 
-  /* ---------------- date helpers ---------------- */
-
+  // ========== UTILITIES ==========
   function pad(n){ return n<10 ? "0"+n : ""+n; }
   function toDateStr(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
   function parseDateStr(s){
@@ -437,15 +608,55 @@
   function safeGet(obj, path, def){ return path.split(".").reduce(function(o,p){ return o?.[p]; }, obj) ?? def; }
   function debounce(fn, ms){ var t; return function(){ var a=arguments; clearTimeout(t); t=setTimeout(function(){ fn.apply(this,a); }, ms); }; }
 
-  /* ---------------- state ---------------- */
+  // ========== THEME MANAGEMENT ==========
+  function setTheme(theme){
+    var root = document.getElementById("htmlRoot");
+    var label = document.getElementById("themeLabel");
+    
+    if(theme === "auto"){
+      var isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.setAttribute("data-theme", isDark ? "dark" : "light");
+      localStorage.setItem(THEME_STORAGE_KEY, "auto");
+      label.textContent = "Auto";
+    } else {
+      root.setAttribute("data-theme", theme);
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+      label.textContent = THEME_OPTIONS[theme];
+    }
+  }
+  
+  function initTheme(){
+    var savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    if(savedTheme === "auto" || !savedTheme){
+      var isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.getElementById("htmlRoot").setAttribute("data-theme", isDark ? "dark" : "light");
+      document.getElementById("themeLabel").textContent = "Auto";
+    } else {
+      setTheme(savedTheme);
+    }
+    
+    // Listen for system theme changes
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(){
+      if(localStorage.getItem(THEME_STORAGE_KEY) === "auto"){
+        setTheme("auto");
+      }
+    });
+  }
 
+  // ========== STATE MANAGEMENT ==========
   function defaultHabits(startDate){
     var defs = [
-      ["🌅","Wake up early"],["💪","Workout"],["🚿","Cold shower"],["📚","Read / study"],
-      ["💧","Drink 3L water"],["🥗","No junk food"],["🧘","Meditate"],["😴","Sleep 7–8 hrs"]
+      {icon:"🌅",name:"Wake up early",category:"health"},
+      {icon:"💪",name:"Workout",category:"fitness"},
+      {icon:"🚿",name:"Cold shower",category:"health"},
+      {icon:"📚",name:"Read / study",category:"learning"},
+      {icon:"💧",name:"Drink 3L water",category:"health"},
+      {icon:"🥗",name:"No junk food",category:"health"},
+      {icon:"🧘",name:"Meditate",category:"mindfulness"},
+      {icon:"😴",name:"Sleep 7–8 hrs",category:"sleep"}
     ];
     return defs.map(function(d,i){
-      return { id: uid(), icon: d[0], name: d[1], createdAt: startDate, order: i, archived: false };
+      return { id: uid(), icon: d.icon, name: d.name, category: d.category, createdAt: startDate, order: i, archived: false };
     });
   }
 
@@ -454,7 +665,7 @@
     var end = "2027-02-28";
     return {
       schemaVersion: 2,
-      settings: { startDate: start, endDate: end },
+      settings: { startDate: start, endDate: end, theme: "dark" },
       habits: defaultHabits(start),
       logs: {},
       meta: { onboarded: false, celebratedStreaks: [] }
@@ -462,25 +673,27 @@
   }
 
   var state = loadState();
-
   function loadState(){
     try{
       var raw = localStorage.getItem(STORAGE_KEY);
       var parsed = raw ? JSON.parse(raw) : null;
       if(!parsed || !parsed.settings || !parsed.habits || !parsed.logs) return defaultState();
       parsed.meta = parsed.meta || {};
-      if(typeof parsed.meta.onboarded !== "boolean") parsed.meta.onboarded = true; // pre-existing user, don't show onboarding
+      if(typeof parsed.meta.onboarded !== "boolean") parsed.meta.onboarded = true;
       parsed.meta.celebratedStreaks = parsed.meta.celebratedStreaks || [];
       parsed.habits.forEach(function(h,i){
         if(typeof h.order !== "number") h.order = i;
         if(typeof h.archived !== "boolean") h.archived = false;
+        if(!h.category) h.category = "health";
       });
       parsed.schemaVersion = 2;
       return parsed;
     }catch(e){
+      console.error("Failed to load state:", e);
       return defaultState();
     }
   }
+  
   function saveState(){
     try{
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -523,6 +736,21 @@
     return { done: done, total: habits.length, pct: pct, all: done === habits.length };
   }
 
+  function habitCompletionPct(habitId){
+    var s = state.settings, today = todayStr();
+    var lastCountable = today < s.endDate ? today : s.endDate;
+    var habit = state.habits.filter(function(h){ return h.id===habitId; })[0];
+    if(!habit) return 0;
+    var from = habit.createdAt > s.startDate ? habit.createdAt : s.startDate;
+    if(lastCountable < from) return 0;
+    var total=0, done=0, d=from;
+    while(d <= lastCountable){
+      total++;
+      if(getLog(d,false).done[habitId]) done++;
+      d = addDays(d,1);
+    }
+    return total===0 ? 0 : Math.round((done/total)*100);
+  }
   /* ---------------- streaks & stats ---------------- */
 
   function computeStreaks(){
@@ -568,22 +796,39 @@
     return totalPossible === 0 ? 0 : Math.round((totalDone/totalPossible)*100);
   }
 
-  function habitCompletionPct(habitId){
+  function totalActiveDays(){
     var s = state.settings, today = todayStr();
     var lastCountable = today < s.endDate ? today : s.endDate;
-    var habit = state.habits.filter(function(h){ return h.id===habitId; })[0];
-    if(!habit) return 0;
-    var from = habit.createdAt > s.startDate ? habit.createdAt : s.startDate;
-    if(lastCountable < from) return 0;
-    var total=0, done=0, d=from;
+    if(lastCountable < s.startDate) return 0;
+    var count = 0, d = s.startDate;
     while(d <= lastCountable){
-      total++;
-      if(getLog(d,false).done[habitId]) done++;
-      d = addDays(d,1);
+      var habits = activeHabitsFor(d);
+      if(habits.length && dayCompletion(d).done > 0) count++;
+      d = addDays(d, 1);
     }
-    return total===0 ? 0 : Math.round((done/total)*100);
+    return count;
   }
 
+  function getCategoryStats(){
+    var stats = {};
+    CATEGORY_PRESET.forEach(function(c){ stats[c.id] = { icon: c.icon, name: c.label, total: 0, done: 0 }; });
+    
+    var s = state.settings, today = todayStr();
+    var lastCountable = today < s.endDate ? today : s.endDate;
+    var d = s.startDate;
+    while(d <= lastCountable){
+      var habits = activeHabitsFor(d);
+      var log = getLog(d, false);
+      habits.forEach(function(h){
+        var cat = h.category;
+        if(!stats[cat]) stats[cat] = { icon: "❓", name: "Other", total: 0, done: 0 };
+        stats[cat].total++;
+        if(log.done[h.id]) stats[cat].done++;
+      });
+      d = addDays(d, 1);
+    }
+    return stats;
+  }
   /* ---------------- toasts & celebration ---------------- */
 
   function showToast(msg){
@@ -604,7 +849,7 @@
 
   function burstConfetti(){
     if(reducedMotion()) return;
-    var colors = ["#6fb8e8","#cfe6ff","#ff8a4c","#ffffff"];
+    var colors = ["#6fb8e8","#cfe6ff","#ff8a4c","#ffffff","#22c55e"];
     var cx = window.innerWidth/2;
     for(var i=0;i<24;i++){
       var el = document.createElement("div");
@@ -653,7 +898,6 @@
     if(dateStr === todayStr()) checkStreakMilestones();
     renderAll();
   }
-
   /* ---------------- view switching ---------------- */
 
   function switchView(name){
@@ -711,6 +955,7 @@
       if(ds < s.startDate || ds > s.endDate){
         dot.style.opacity = ".3";
         dot.style.borderStyle = "dashed";
+        dot.setAttribute("aria-disabled", "true");
       } else {
         var comp = dayCompletion(ds);
         if(comp.total > 0){
@@ -730,12 +975,13 @@
       wrap.appendChild(col);
     }
   }
-
   function habitRowHtml(h, done){
+    var categoryHtml = h.category ? '<span class="habit-category habit-category-' + h.category + '">' + CATEGORY_PRESET.find(c=>c.id===h.category)?.label || h.category + '</span>' : '';
     return '<div class="habit-item ' + (done?'done':'') + '" data-habit="' + h.id + '" tabindex="0" role="checkbox" aria-checked="' + (done?'true':'false') + '" aria-label="' + escapeAttr(h.name) + '">' +
       '<div class="habit-check">' + (done?'✓':'') + '</div>' +
       '<div class="habit-icon" aria-hidden="true">' + h.icon + '</div>' +
-      '<div class="habit-name">' + escapeHtml(h.name) + '</div></div>';
+      '<div class="habit-name">' + escapeHtml(h.name) + '</div>' +
+      categoryHtml + '</div>';
   }
 
   function renderToday(){
@@ -796,7 +1042,6 @@
       saveState();
     };
   }
-
   function renderCalendar(){
     var s = state.settings, today = todayStr();
     var wrap = document.getElementById("calendarWrap");
@@ -804,9 +1049,10 @@
 
     var cursor = parseDateStr(s.startDate);
     var endD = parseDateStr(s.endDate);
+    var currentDisplay = new Date(cursor);
 
-    while(cursor <= endD){
-      var year = cursor.getFullYear(), month = cursor.getMonth();
+    function renderMonth(monthDate){
+      var year = monthDate.getFullYear(), month = monthDate.getMonth();
       var monthStart = new Date(year, month, 1);
       var monthEnd = new Date(year, month+1, 0);
 
@@ -855,35 +1101,149 @@
           cell.setAttribute("role","button");
           cell.setAttribute("aria-label", fmtLong(ds) + ", " + comp.done + " of " + comp.total + " done");
           cell.addEventListener("click", (function(dd){ return function(){ openDayModal(dd); }; })(ds));
-          cell.addEventListener("keydown", (function(dd){ return function(ev){ if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); openDayModal(dd); } }; })(ds));
+          cell.addEventListener("keydown", (function(dd){ return function(ev){ if(ev.key==="Enter"||e.key===" "){ ev.preventDefault(); openDayModal(dd); } }; })(ds));
         }
         grid.appendChild(cell);
         dcursor.setDate(dcursor.getDate()+1);
       }
       block.appendChild(grid);
       wrap.appendChild(block);
-      cursor = new Date(year, month+1, 1);
     }
+
+    // Render current and next month
+    renderMonth(currentDisplay);
+    currentDisplay.setMonth(currentDisplay.getMonth() + 1);
+    if(currentDisplay <= endD) renderMonth(currentDisplay);
   }
 
+  // Calendar navigation
+  var calendarMonthOffset = 0;
+  var calendarStartDate = null;
+  
+  function renderCalendarWithNav(){
+    var s = state.settings, today = todayStr();
+    calendarStartDate = parseDateStr(s.startDate);
+    var endD = parseDateStr(s.endDate);
+    var wrap = document.getElementById("calendarWrap");
+    wrap.innerHTML = "";
+
+    function renderMonthView(date){
+      var year = date.getFullYear(), month = date.getMonth();
+      var monthStart = new Date(year, month, 1);
+      var monthEnd = new Date(year, month+1, 0);
+
+      var block = document.createElement("div");
+      block.className = "month-block";
+
+      var title = document.createElement("div");
+      title.className = "month-title disp";
+      title.textContent = MONTH_NAMES[month] + " " + year;
+      block.appendChild(title);
+
+      var wkRow = document.createElement("div");
+      wkRow.className = "weekday-row";
+      WEEKDAYS.forEach(function(w){ var sp=document.createElement("span"); sp.textContent=w; wkRow.appendChild(sp); });
+      block.appendChild(wkRow);
+
+      var grid = document.createElement("div");
+      grid.className = "month-grid";
+
+      var leadEmpty = monthStart.getDay();
+      for(var i=0;i<leadEmpty;i++){
+        var e = document.createElement("div"); e.className="day-cell empty"; grid.appendChild(e);
+      }
+
+      var dcursor = new Date(monthStart);
+      while(dcursor <= monthEnd){
+        var ds = toDateStr(dcursor);
+        var cell = document.createElement("div");
+        cell.className = "day-cell";
+        cell.textContent = dcursor.getDate();
+
+        if(ds < s.startDate || ds > s.endDate){
+          cell.classList.add("empty");
+        } else if(ds > today){
+          cell.classList.add("future");
+        } else {
+          var comp = dayCompletion(ds);
+          if(comp.total > 0){
+            var alpha = 0.12 + (comp.pct/100)*0.72;
+            cell.style.background = "rgba(111,184,232," + alpha.toFixed(2) + ")";
+            cell.style.borderColor = "transparent";
+            cell.style.color = comp.pct > 55 ? "#06121f" : "var(--frost)";
+          }
+          if(ds === today) cell.classList.add("today");
+          cell.tabIndex = 0;
+          cell.setAttribute("role","button");
+          cell.setAttribute("aria-label", fmtLong(ds) + ", " + comp.done + " of " + comp.total + " done");
+          cell.addEventListener("click", (function(dd){ return function(){ openDayModal(dd); }; })(ds));
+        }
+        grid.appendChild(cell);
+        dcursor.setDate(dcursor.getDate()+1);
+      }
+      block.appendChild(grid);
+      wrap.appendChild(block);
+    }
+
+    renderMonthView(calendarStartDate);
+    var label = document.getElementById("currentMonth");
+    if(label) label.textContent = MONTH_NAMES[calendarStartDate.getMonth()] + " " + calendarStartDate.getFullYear();
+  }
+
+  document.getElementById("prevMonthBtn").addEventListener("click", function(){
+    calendarStartDate.setMonth(calendarStartDate.getMonth() - 1);
+    renderCalendarWithNav();
+  });
+
+  document.getElementById("nextMonthBtn").addEventListener("click", function(){
+    calendarStartDate.setMonth(calendarStartDate.getMonth() + 1);
+    renderCalendarWithNav();
+  });
   function renderStats(){
     var st = computeStreaks();
     document.getElementById("statStreak").textContent = st.current;
     document.getElementById("statBest").textContent = st.best;
     document.getElementById("statPct").textContent = overallArcPct() + "%";
+    document.getElementById("statHabits").textContent = state.habits.length;
+    document.getElementById("statDays").textContent = totalActiveDays();
 
+    // Render habit stats
     var wrap = document.getElementById("habitStatsWrap");
     var habits = sortedHabits(false);
     if(habits.length === 0){
       wrap.innerHTML = '<div class="empty-state">Add habits to see stats for each one.</div>';
+    } else {
+      wrap.innerHTML = habits.map(function(h){
+        var pct = habitCompletionPct(h.id);
+        return '<div class="habit-stat-row">' +
+          '<div class="habit-stat-top"><span>' + h.icon + ' ' + escapeHtml(h.name) + '</span><span>' + pct + '%</span></div>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;"></div></div></div>';
+      }).join("");
+    }
+
+    // Render category stats
+    var catWrap = document.getElementById("categoryStatsWrap");
+    var catStats = getCategoryStats();
+    var catCount = Object.keys(catStats).length;
+    
+    document.getElementById("categoryStatsLabel").style.display = catCount > 0 ? "block" : "none";
+    catWrap.style.display = catCount > 0 ? "block" : "none";
+    
+    if(catCount === 0){
+      catWrap.innerHTML = '<div class="empty-state">Add habits to see category breakdown.</div>';
       return;
     }
-    wrap.innerHTML = habits.map(function(h){
-      var pct = habitCompletionPct(h.id);
-      return '<div class="habit-stat-row">' +
-        '<div class="habit-stat-top"><span>' + h.icon + ' ' + escapeHtml(h.name) + '</span><span>' + pct + '%</span></div>' +
-        '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%;"></div></div></div>';
-    }).join("");
+    
+    catWrap.innerHTML = '<div class="category-grid">' + Object.entries(catStats).map(function([key, stat]){
+      var pct = stat.total === 0 ? 0 : Math.round((stat.done/stat.total)*100);
+      var barColor = CATEGORY_COLORS[key] || "#6fb8e8";
+      return '<div class="category-item">' +
+        '<span class="icon">' + stat.icon + '</span>' +
+        '<span class="label">' + escapeHtml(stat.name) + '</span>' +
+        '<span class="count">' + stat.done + '/' + stat.total + '</span>' +
+        '<div class="bar"><div class="bar-fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
+        '</div>';
+    }).join("") + '</div>';
   }
 
   function renderManage(){
@@ -893,6 +1253,7 @@
       list.innerHTML = '<div class="empty-state">No habits yet — add your first one below.</div>';
     } else {
       list.innerHTML = active.map(function(h,i){
+        var catLabel = CATEGORY_PRESET.find(c=>c.id===h.category)?.label || h.category;
         return '<div class="manage-habit" data-habit="' + h.id + '">' +
           '<div class="reorder-btns">' +
             '<button class="icon-btn move-up" data-habit="' + h.id + '" aria-label="Move ' + escapeAttr(h.name) + ' up" ' + (i===0?'disabled':'') + '>▲</button>' +
@@ -900,6 +1261,7 @@
           '</div>' +
           '<div class="habit-icon" aria-hidden="true">' + h.icon + '</div>' +
           '<div class="habit-name">' + escapeHtml(h.name) + '</div>' +
+          '<span class="habit-category habit-category-' + h.category + '">' + escapeHtml(catLabel) + '</span>' +
           '<button class="icon-btn edit-btn" data-habit="' + h.id + '" aria-label="Edit ' + escapeAttr(h.name) + '">✏️</button>' +
           '<button class="icon-btn archive-btn" data-habit="' + h.id + '" aria-label="Archive ' + escapeAttr(h.name) + '">📦</button>' +
         '</div>';
@@ -936,11 +1298,10 @@
     document.getElementById("startDateInput").value = state.settings.startDate;
     document.getElementById("endDateInput").value = state.settings.endDate;
   }
-
   function renderAll(){
     renderTopbar();
     renderToday();
-    renderCalendar();
+    renderCalendarWithNav();
     renderStats();
     renderManage();
   }
@@ -992,6 +1353,11 @@
   function openModal(html){
     modalContent.innerHTML = html;
     overlay.classList.remove("hidden");
+    // Focus first input for accessibility
+    setTimeout(function(){
+      var firstInput = modalContent.querySelector("input, textarea, button");
+      if(firstInput) firstInput.focus();
+    }, 100);
   }
   function closeModal(){
     overlay.classList.add("hidden");
@@ -1003,12 +1369,15 @@
   function openHabitModal(habitId){
     var habit = habitId ? state.habits.filter(function(h){ return h.id===habitId; })[0] : null;
     var pickedIcon = habit ? habit.icon : EMOJI_PRESET[Math.floor(Math.random()*EMOJI_PRESET.length)];
+    var pickedCategory = habit ? habit.category : "health";
 
     var html =
       '<div class="modal-close-row"><button id="mClose" aria-label="Close">✕</button></div>' +
       '<div class="modal-title">' + (habit ? "Edit habit" : "Add a habit") + '</div>' +
-      '<div class="modal-sub">' + (habit ? "Update the name or icon." : "Anything you want to track daily — big or small.") + '</div>' +
+      '<div class="modal-sub">' + (habit ? "Update the name, icon, or category." : "Anything you want to track daily — big or small.") + '</div>' +
       '<div class="field"><label for="mName">Name</label><input type="text" id="mName" maxlength="40" placeholder="e.g. Journal, No sugar, Stretch" value="' + (habit ? escapeAttr(habit.name) : "") + '"></div>' +
+      '<label style="display:block;font-size:12px;color:var(--text-dim);margin-bottom:8px;">Category</label>' +
+      '<div class="category-pick" id="mCategoryPick"></div>' +
       '<label style="display:block;font-size:12px;color:var(--text-dim);margin-bottom:8px;">Icon</label>' +
       '<div class="emoji-pick" id="mEmojiPick"></div>' +
       '<button class="btn btn-primary" id="mSave">' + (habit ? "Save changes" : "Add habit") + '</button>' +
@@ -1016,6 +1385,23 @@
 
     openModal(html);
 
+    // Category picker
+    var catWrap = document.getElementById("mCategoryPick");
+    CATEGORY_PRESET.forEach(function(cat){
+      var opt = document.createElement("div");
+      opt.className = "category-opt" + (cat.id===pickedCategory ? " picked" : "");
+      opt.innerHTML = '<div class="cat-icon">' + cat.icon + '</div><div class="cat-label">' + cat.label + '</div>';
+      opt.setAttribute("role","button");
+      opt.setAttribute("aria-label","Category " + cat.label);
+      opt.addEventListener("click", function(){
+        catWrap.querySelectorAll(".category-opt").forEach(function(o){ o.classList.remove("picked"); });
+        opt.classList.add("picked");
+        pickedCategory = cat.id;
+      });
+      catWrap.appendChild(opt);
+    });
+
+    // Emoji picker
     var pickWrap = document.getElementById("mEmojiPick");
     EMOJI_PRESET.forEach(function(em){
       var opt = document.createElement("div");
@@ -1039,10 +1425,11 @@
       if(habit){
         habit.name = name;
         habit.icon = pickedIcon;
+        habit.category = pickedCategory;
       } else {
         var maxOrder = state.habits.reduce(function(m,h){ return Math.max(m, h.order||0); }, -1);
         var createdFrom = todayStr() < state.settings.startDate ? state.settings.startDate : todayStr();
-        state.habits.push({ id: uid(), icon: pickedIcon, name: name, createdAt: createdFrom, order: maxOrder+1, archived:false });
+        state.habits.push({ id: uid(), icon: pickedIcon, name: name, category: pickedCategory, createdAt: createdFrom, order: maxOrder+1, archived:false });
       }
       saveState();
       renderAll();
@@ -1086,7 +1473,7 @@
           el.setAttribute("aria-checked", el.classList.contains("done") ? "true":"false");
           el.querySelector(".habit-check").textContent = l.done[hid] ? "✓" : "";
           if(dateStr === todayStr()) checkStreakMilestones();
-          renderCalendar(); renderStats(); renderToday();
+          renderCalendarWithNav(); renderStats(); renderToday();
         };
         el.addEventListener("click", handler);
         el.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); handler(); } });
@@ -1099,7 +1486,6 @@
       });
     }
   }
-
   function maybeShowOnboarding(){
     if(state.meta.onboarded) return;
     state.meta.onboarded = true;
@@ -1111,6 +1497,8 @@
       '📅 <b>Calendar</b> — see your whole arc at a glance.<br>' +
       '📊 <b>Stats</b> — streaks and progress.<br>' +
       '⚙️ <b>Manage</b> — add your own habits &amp; settings.</div>' +
+      '<div class="about-card">💡 <b>Theme toggle</b> — use the button below to switch themes.<br>' +
+      '⌨️ <b>Keyboard shortcuts</b> — 1-4 to switch views, Space to toggle habit.</div>' +
       '<button class="btn btn-primary" id="onboardStart" style="margin-top:16px;">Let\'s go</button>';
     openModal(html);
     document.getElementById("onboardStart").addEventListener("click", closeModal);
@@ -1184,6 +1572,44 @@
     }, "image/png");
   }
 
+  /* ---------------- export to PDF ---------------- */
+
+  function exportAsPDF(){
+    var s = state.settings, today = todayStr();
+    var st = computeStreaks(), pct = overallArcPct();
+    var totalDays = daysBetween(s.startDate, s.endDate) + 1;
+    var dayNum = today < s.startDate ? 0 : Math.min(daysBetween(s.startDate, today)+1, totalDays);
+    
+    var content = 
+      "<!DOCTYPE html><html><head>" +
+      "<style>body{font-family:sans-serif;padding:20px;max-width:800px;margin:0 auto;}.header{border-bottom:2px solid #6fb8e8;padding-bottom:20px;margin-bottom:20px;}.section{margin:20px 0;}.section h2{color:#6fb8e8;margin:0 0 10px;}.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}.stat{background:#101b30;padding:15px;border-radius:10px;text-align:center;}.stat .num{font-size:28px;font-weight:bold;color:#ff8a4c;}.stat .label{color:#8093b3;font-size:12px;}.habit-row{margin:5px 0;display:flex;justify-content:space-between;padding:8px;background:#101b30;border-radius:8px;}</style>" +
+      "</head><body>" +
+      "<div class='header'><h1>❄️ Winter Arc Report</h1><p>" + fmtShort(s.startDate) + " – " + fmtShort(s.endDate) + "</p></div>" +
+      "<div class='section'><h2>Overview</h2>" +
+      "<div class='stat-grid'>" +
+      "<div class='stat'><div class='num'>" + st.current + "</div><div class='label'>Current Streak</div></div>" +
+      "<div class='stat'><div class='num'>" + st.best + "</div><div class='label'>Best Streak</div></div>" +
+      "<div class='stat'><div class='num'>" + pct + "%</div><div class='label'>Completion</div></div>" +
+      "</div></div>" +
+      "<div class='section'><h2>Habits</h2>";
+    
+    var habits = sortedHabits(false);
+    habits.forEach(function(h){
+      var comp = habitCompletionPct(h.id);
+      content += "<div class='habit-row'><span>" + h.icon + " " + escapeHtml(h.name) + "</span><span>" + comp + "%</span></div>";
+    });
+    
+    content += "</div><div class='footer' style='margin-top:40px;text-align:center;color:#8093b3;font-size:12px;'>Generated on " + todayStr() + " | Winter Arc Tracker</div></body></html>";
+    
+    var win = window.open("", "_blank");
+    if(win){
+      win.document.write(content);
+      win.document.close();
+      win.print();
+    } else {
+      showToast("Please allow pop-ups to print");
+    }
+  }
   /* ---------------- data management ---------------- */
 
   function exportData(){
@@ -1207,6 +1633,7 @@
         parsed.habits.forEach(function(h,i){
           if(typeof h.order !== "number") h.order = i;
           if(typeof h.archived !== "boolean") h.archived = false;
+          if(!h.category) h.category = "health";
         });
         state = parsed;
         saveState();
@@ -1235,6 +1662,29 @@
     b.addEventListener("click", function(){ switchView(b.getAttribute("data-view")); });
   });
 
+  // Keyboard shortcuts
+  document.addEventListener("keydown", function(e){
+    if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+    
+    switch(e.key){
+      case "1": switchView("today"); break;
+      case "2": switchView("calendar"); break;
+      case "3": switchView("stats"); break;
+      case "4": switchView("manage"); break;
+      case " ":
+        if(document.getElementById("view-today").classList.contains("active")){
+          var today = todayStr();
+          var habits = activeHabitsFor(today);
+          if(habits.length > 0){
+            var log = getLog(today, false);
+            var firstIncomplete = habits.find(function(h){ return !log.done[h.id]; });
+            if(firstIncomplete) toggleHabit(today, firstIncomplete.id);
+          }
+        }
+        break;
+    }
+  });
+
   document.getElementById("addHabitBtn").addEventListener("click", function(){ openHabitModal(null); });
 
   document.getElementById("archiveToggle").addEventListener("click", function(){
@@ -1247,7 +1697,6 @@
     var start = document.getElementById("startDateInput").value;
     var end = document.getElementById("endDateInput").value;
     
-    // Date validation
     if(!start || !end){
       showToast("Please select both start and end dates");
       return;
@@ -1255,8 +1704,6 @@
     
     var startDate = parseDateStr(start);
     var endDate = parseDateStr(end);
-    var today = new Date();
-    today.setHours(0,0,0,0);
     
     if(isNaN(startDate.getTime()) || isNaN(endDate.getTime())){
       showToast("Invalid date format");
@@ -1265,21 +1712,6 @@
     
     if(start >= end){
       showToast("Start date must be before end date");
-      return;
-    }
-    
-    if(startDate < new Date(2000, 0, 1) || startDate > new Date(2100, 0, 1)){
-      showToast("Start date must be between 2000 and 2100");
-      return;
-    }
-    
-    if(endDate < new Date(2000, 0, 1) || endDate > new Date(2100, 0, 1)){
-      showToast("End date must be between 2000 and 2100");
-      return;
-    }
-    
-    if(endDate <= startDate){
-      showToast("End date must be after start date");
       return;
     }
     
@@ -1304,6 +1736,7 @@
   });
   document.getElementById("resetBtn").addEventListener("click", resetAll);
   document.getElementById("shareBtn").addEventListener("click", shareProgress);
+  document.getElementById("pdfBtn").addEventListener("click", exportAsPDF);
 
   /* ---------------- install prompt ---------------- */
 
@@ -1333,6 +1766,7 @@
 
   /* ---------------- init ---------------- */
 
+  initTheme();
   renderAll();
   maybeShowOnboarding();
 })();
