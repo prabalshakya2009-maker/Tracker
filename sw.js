@@ -1,9 +1,9 @@
-// Winter Arc Tracker v3.0 — Service Worker
+// HabitFlow v2.0 - Service Worker
 // Advanced caching with cache-first strategy for offline support
 // All data remains in localStorage - this is for app shell caching only
 
-const CACHE_NAME = "winter-arc-v3";
-const DATA_CACHE_NAME = "winter-arc-data-v1";
+const CACHE_NAME = "habitflow-v2";
+const DATA_CACHE_NAME = "habitflow-data-v1";
 
 const ASSETS_TO_CACHE = [
   "./",
@@ -133,7 +133,7 @@ self.addEventListener("message", (event) => {
   }
 });
 
-// Background sync for offline changes (future enhancement)
+// Background sync for offline changes
 self.addEventListener("sync", (event) => {
   if (event.tag === "sync-data") {
     event.waitUntil(syncData());
@@ -144,3 +144,29 @@ async function syncData() {
   // Placeholder for future sync functionality
   console.log("Background sync triggered");
 }
+
+// Push notifications support
+self.addEventListener("push", (event) => {
+  const options = {
+    body: event.data ? event.data.text() : "HabitFlow reminder",
+    icon: "./icon-192.png",
+    badge: "./icon-192.png",
+    vibrate: [100, 50, 100],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    }
+  };
+  
+  event.waitUntil(
+    self.registration.showNotification("HabitFlow", options)
+  );
+});
+
+// Notification click handler
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow("./index.html?view=today")
+  );
+});

@@ -1,19 +1,19 @@
 {
-  "name": "Winter Arc Tracker",
-  "short_name": "Winter Arc",
-  "description": "Track your habits and progress through your Winter Arc journey.",
+  "name": "HabitFlow - World-Class Habit Tracker",
+  "short_name": "HabitFlow",
+  "description": "Complete habit tracking PWA with 10 themes, analytics, calendar, streaks, reminders, and more",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "theme_color": "#3b82f6",
   "icons": [
     { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
     { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
-  "categories": ["health", "lifestyle", "productivity"],
+  "categories": ["health", "lifestyle", "productivity", "utilities"],
   "screenshots": [],
   "shortcuts": [
     {
@@ -37,5 +37,6 @@
       "url": "./index.html?view=stats",
       "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
