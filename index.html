@@ -50,7 +50,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .day-badge{background:var(--primary);color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
 .user-greeting{font-size:13px;color:var(--text-dim)}
 main#views{flex:1;padding:0 16px calc(80px + env(safe-area-inset-bottom));overflow-y:auto}
-.view{display:none;animation:fadeIn .3s}view.active{display:block}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.view{display:none;animation:fadeIn .3s}.view.active{display:block}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 h2.view-title{font-size:20px;font-weight:700;margin:0 0 4px;color:var(--text)}p.view-sub{font-size:13px;color:var(--text-dim);margin:0 0 16px;line-height:1.5}
 
 .quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
@@ -104,7 +104,7 @@ h2.view-title{font-size:20px;font-weight:700;margin:0 0 4px;color:var(--text)}p.
 .day-cell.empty{visibility:hidden;cursor:default}
 .calendar-legend{display:flex;gap:4px;align-items:center;margin-top:12px;font-size:11px;color:var(--text-dim)}
 .legend-dot{width:8px;height:8px;border-radius:50%;background:var(--bg-card)}
-.legend-dot:nth-child(1){background:var(--border-soft)};legend-dot:nth-child(2){background:var(--primary)};legend-dot:nth-child(3){background:var(--success)}
+.legend-dot:nth-child(1){background:var(--border-soft)}.legend-dot:nth-child(2){background:var(--primary)}.legend-dot:nth-child(3){background:var(--success)}
 
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .stat-card{background:var(--bg-card);padding:16px;border-radius:var(--radius-md);border:1px solid var(--border)}
@@ -129,7 +129,7 @@ h2.view-title{font-size:20px;font-weight:700;margin:0 0 4px;color:var(--text)}p.
 .category-bar{width:80px;height:6px;background:var(--bg-elevated);border-radius:3px;overflow:hidden}
 .category-bar-fill{height:100%;border-radius:3px;background:var(--primary)}
 
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify:center}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center}
 .overlay.active{display:flex}
 .modal{width:100%;max-width:480px;background:var(--bg-elevated);border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));max-height:85vh;overflow-y:auto;animation:slideUp .3s}
 @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
@@ -569,7 +569,7 @@ const DAILY_QUOTES = [
   { text: "Habits are the compound interest of self-improvement.", author: "James Clear" },
   { text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
   { text: "Small daily improvements are the key to staggering long-term results.", author: "Robin Sharma" },
-  { text: "Excellence is not a destinct act, but a habit.", author: "Aristotle" },
+  { text: "Excellence is not a distinct act, but a habit.", author: "Aristotle" },
   { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
   { text: "Consistency is more important than intensity.", author: "James Clear" },
   { text: "Daily progress, not perfection.", author: "Marian Wright Edelman" }
@@ -682,18 +682,27 @@ function setTheme(theme, palette) {
   let themeName = theme.charAt(0).toUpperCase() + theme.slice(1);
   if (palette !== 'default') themeName += ' ' + palette.charAt(0).toUpperCase() + palette.slice(1);
   document.getElementById('themeLabel').textContent = themeName;
+  // Save to both state (full backup) and THEME_KEY (fast load on next visit)
+  localStorage.setItem(THEME_KEY, theme + ':' + palette);
   saveState();
 }
 
 function loadTheme() {
+  // First try the dedicated theme key for fast startup
   const savedTheme = localStorage.getItem(THEME_KEY);
-  if (savedTheme) {
+  if (savedTheme && savedTheme.includes(':')) {
     const [theme, palette] = savedTheme.split(':');
     setTheme(theme, palette);
-  } else {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setTheme(isDark ? 'dark' : 'light', 'default');
+    return;
   }
+  // Fall back to theme stored inside full state
+  if (state.settings.theme && state.settings.palette) {
+    setTheme(state.settings.theme, state.settings.palette);
+    return;
+  }
+  // System default
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  setTheme(isDark ? 'dark' : 'light', 'default');
 }
 
 /* ========== USER INTERFACE ========== */
@@ -752,11 +761,13 @@ function createHabit(name, category, icon, reminder = '') {
 function toggleHabit(habitId, dateStr) {
   if (!state.logs[dateStr]) state.logs[dateStr] = { done: {} };
   
+  const habit = state.habits.find(h => h.id === habitId);
   if (state.logs[dateStr].done[habitId]) {
     delete state.logs[dateStr].done[habitId];
+    if (habit && habit.completedDays > 0) habit.completedDays--;
   } else {
     state.logs[dateStr].done[habitId] = true;
-    state.habits.find(h => h.id === habitId).completedDays++;
+    if (habit) habit.completedDays++;
   }
   saveState();
   renderToday();
@@ -875,41 +886,72 @@ function renderToday() {
   }).join('');
 }
 
+/* ========== CALENDAR STATE ========== */
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
 function renderCalendar() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
+  document.getElementById('currentMonth').textContent = new Date(calYear, calMonth).toLocaleDateString(getLanguage(), { year: 'numeric', month: 'long' });
   
-  document.getElementById('currentMonth').textContent = new Date(year, month).toLocaleDateString(getLanguage(), { year: 'numeric', month: 'long' });
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = getToday();
+
+  // Always re-insert weekday headers + day cells
+  const DAYS = ['S','M','T','W','T','F','S'];
+  let html = DAYS.map(d => `<span class="weekday-label">${d}</span>`).join('');
   
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  
-  let html = '';
   for (let i = 0; i < firstDay; i++) html += '<span class="day-cell empty" aria-hidden="true"></span>';
   
   for (let day = 1; day <= daysInMonth; day++) {
-    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    const completion = dayCompletionPct(dateStr);
-    const isToday = dateStr === getToday();
-    const isPast = dateStr < getToday();
+    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const isToday = dateStr === today;
+    const isPast = dateStr < today;
     const completedCount = Object.keys(state.logs[dateStr]?.done || {}).length;
+    const totalHabits = state.habits.length;
     
     let className = 'day-cell';
     if (isToday) className += ' today';
-    if (isPast) className += ' past';
-    if (completedCount > 0) className += ' completed';
+    if (isPast && !isToday) className += ' past';
+    if (completedCount > 0 && completedCount >= totalHabits && totalHabits > 0) className += ' completed';
     
+    // Heatmap opacity
     let opacity = 1;
-    if (completedCount === 0) opacity = 0.3;
-    else if (completedCount < state.habits.length / 2) opacity = 0.6;
-    else if (completedCount < state.habits.length) opacity = 0.8;
+    if (totalHabits > 0) {
+      if (completedCount === 0) opacity = isPast ? 0.3 : 1;
+      else if (completedCount < totalHabits / 2) opacity = 0.55;
+      else if (completedCount < totalHabits) opacity = 0.8;
+    }
     
-    html += `<span class="${className}" style="opacity:${opacity}" onclick="switchView('today')" aria-label="${dateStr}: ${completedCount}/${state.habits.length} habits completed">${day}</span>`;
+    const label = `${dateStr}: ${completedCount}/${totalHabits} habits`;
+    html += `<span class="${className}" style="opacity:${opacity}" onclick="openDayFromCalendar('${dateStr}')" role="button" tabindex="0" aria-label="${label}">${day}</span>`;
   }
   
   document.getElementById('monthGrid').innerHTML = html;
+  
+  // Update nav button states
+  const startYear = parseInt(state.settings.startDate.split('-')[0]);
+  const startMonth = parseInt(state.settings.startDate.split('-')[1]) - 1;
+  document.getElementById('prevMonthBtn').disabled = (calYear === startYear && calMonth <= startMonth);
+  document.getElementById('nextMonthBtn').disabled = (calYear > new Date().getFullYear() + 1);
 }
+
+function openDayFromCalendar(dateStr) {
+  // Switch to today view and show that date
+  switchView('today');
+}
+
+document.getElementById('prevMonthBtn').addEventListener('click', () => {
+  calMonth--;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+});
+
+document.getElementById('nextMonthBtn').addEventListener('click', () => {
+  calMonth++;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar();
+});
 
 function renderStats() {
   const today = getToday();
@@ -937,11 +979,11 @@ function renderStats() {
   const categoryStats = {};
   state.habits.forEach(h => {
     if (!categoryStats[h.category]) categoryStats[h.category] = { total: 0, completed: 0, icon: HABIT_CATEGORIES[h.category].icon };
-    const date = state.settings.startDate;
-    while (date <= today) {
+    let catDate = state.settings.startDate;
+    while (catDate <= today) {
       categoryStats[h.category].total++;
-      if (state.logs[date]?.done[h.id]) categoryStats[h.category].completed++;
-      date = new Date(new Date(date + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
+      if (state.logs[catDate]?.done[h.id]) categoryStats[h.category].completed++;
+      catDate = new Date(new Date(catDate + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
     }
   });
   
@@ -964,12 +1006,12 @@ function renderStats() {
   
   // Habit stats
   const habitStatsHtml = state.habits.map(h => {
-    const date = state.settings.startDate;
+    let hDate = state.settings.startDate;
     let total = 0, completed = 0;
-    while (date <= today) {
+    while (hDate <= today) {
       total++;
-      if (state.logs[date]?.done[h.id]) completed++;
-      date = new Date(new Date(date + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
+      if (state.logs[hDate]?.done[h.id]) completed++;
+      hDate = new Date(new Date(hDate + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
     }
     const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
     return `
@@ -990,9 +1032,10 @@ function renderStats() {
 function openHabitModal() {
   document.getElementById('habitOverlay').classList.add('active');
   document.getElementById('habitName').focus();
-  document.getElementById('habitCategory').value = '';
+  document.getElementById('habitCategory').value = 'health'; // pre-fill to match visual selection
   document.getElementById('habitIcon').value = '💪';
   document.getElementById('habitReminder').value = '';
+  document.getElementById('habitTemplate').value = '';
   document.querySelectorAll('.category-option').forEach(opt => opt.classList.remove('selected'));
   document.querySelector('.category-option[data-category="health"]').classList.add('selected');
 }
@@ -1003,14 +1046,20 @@ function closeHabitModal() {
 
 function selectCategory(category, element) {
   document.getElementById('habitCategory').value = category;
-  document.querySelectorAll('.category-option').forEach(opt => opt.classList.remove('selected'));
-  if (element) element.classList.add('selected');
+  // Only clear selections within the category grid (parent of the clicked element)
+  if (element) {
+    element.closest('.category-grid-selector').querySelectorAll('.category-option').forEach(opt => opt.classList.remove('selected'));
+    element.classList.add('selected');
+  }
 }
 
 function selectIcon(icon, element) {
   document.getElementById('habitIcon').value = icon;
-  document.querySelectorAll('.category-option').forEach(opt => opt.classList.remove('selected'));
-  if (element) element.classList.add('selected');
+  // Only clear selections within the icon grid
+  if (element) {
+    element.closest('.category-grid-selector').querySelectorAll('.category-option').forEach(opt => opt.classList.remove('selected'));
+    element.classList.add('selected');
+  }
 }
 
 function applyTemplate(templateName) {
@@ -1048,16 +1097,26 @@ function saveHabit(e) {
 /* ========== NOTIFICATION & BIOMETRIC FUNCTIONS ========== */
 function toggleNotifications(value) {
   if (value !== 'off') {
+    // Map friendly names to actual times
+    const timeMap = { morning: '08:00', evening: '18:00' };
+    const time = timeMap[value] || value;
     if ('Notification' in window && Notification.permission === 'granted') {
-      showToast("Notifications enabled for " + value);
+      scheduleNotification(time);
+      showToast('Notifications enabled for ' + (value === 'morning' ? 'Morning (8 AM)' : 'Evening (6 PM)'));
     } else if ('Notification' in window && Notification.permission !== 'denied') {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
-          showToast("Notifications enabled for " + value);
-          scheduleNotification(value);
+          scheduleNotification(time);
+          showToast('Notifications enabled for ' + (value === 'morning' ? 'Morning (8 AM)' : 'Evening (6 PM)'));
+        } else {
+          showToast('Notification permission denied');
         }
       });
+    } else {
+      showToast('Notifications are blocked in your browser settings');
     }
+  } else {
+    showToast('Daily reminders turned off');
   }
 }
 
