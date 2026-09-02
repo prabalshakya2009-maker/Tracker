@@ -1161,44 +1161,121 @@ function exportCSV() {
 }
 
 function exportPDF() {
-  const htmlContent = `
-    <html>
-    <head>
-      <title>HabitFlow Report</title>
-      <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h1 { color: #3b82f6; }
-        .section { margin: 20px 0; }
-        .stat { display: inline-block; padding: 10px; margin: 5px; background: #f1f5f9; border-radius: 8px; }
-        .habit { padding: 8px; margin: 5px 0; background: #f8fafc; border-radius: 4px; }
-      </style>
-    </head>
-    <body>
-      <h1>📊 HabitFlow Report</h1>
-      <p>Generated: ${new Date().toLocaleDateString()}</p>
-      
-      <div class="section">
-        <h2>Overview</h2>
-        <div class="stat"><strong>Total Habits:</strong> ${state.habits.length}</div>
-        <div class="stat"><strong>Active Days:</strong> ${Object.keys(state.logs).length}</div>
-        <div class="stat"><strong>Best Streak:</strong> ${computeBestStreak(getToday())} days</div>
-      </div>
-      
-      <div class="section">
-        <h2>Habits</h2>
-        ${state.habits.map(h => `<div class="habit"><strong>${h.icon}</strong> ${h.name} - ${h.completedDays} days completed</div>`).join('')}
-      </div>
-    </body>
-    </html>
-  `;
-  
+  // Build values first — never nest template literals inside document.write
+  const generatedDate = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  const totalHabits   = state.habits.length;
+  const activeDays    = Object.keys(state.logs).length;
+  const bestStreak    = computeBestStreak(getToday());
+  const currentStreak = computeStreak(getToday());
+  const today         = getToday();
+  const completion    = dayCompletionPct(today);
+  const startDate     = state.settings.startDate;
+
+  // Per-habit stats
+  let habitsRows = '';
+  state.habits.forEach(function(h) {
+    let total = 0, done = 0, d = startDate;
+    while (d <= today) {
+      total++;
+      if (state.logs[d] && state.logs[d].done && state.logs[d].done[h.id]) done++;
+      d = new Date(new Date(d + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
+    }
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    const cat = HABIT_CATEGORIES[h.category] ? HABIT_CATEGORIES[h.category].label : h.category;
+    const color = HABIT_CATEGORIES[h.category] ? HABIT_CATEGORIES[h.category].color : '#3b82f6';
+    habitsRows +=
+      '<tr>' +
+        '<td>' + h.icon + ' ' + h.name + '</td>' +
+        '<td style="color:' + color + '">' + cat + '</td>' +
+        '<td>' + done + ' / ' + total + '</td>' +
+        '<td>' +
+          '<div style="background:#e2e8f0;border-radius:4px;height:8px;width:100px;">' +
+            '<div style="background:' + color + ';width:' + pct + '%;height:8px;border-radius:4px;"></div>' +
+          '</div>' +
+        '</td>' +
+        '<td><strong>' + pct + '%</strong></td>' +
+      '</tr>';
+  });
+
+  // Category breakdown
+  const catMap = {};
+  state.habits.forEach(function(h) {
+    if (!catMap[h.category]) catMap[h.category] = { done: 0, total: 0 };
+    let d = startDate;
+    while (d <= today) {
+      catMap[h.category].total++;
+      if (state.logs[d] && state.logs[d].done && state.logs[d].done[h.id]) catMap[h.category].done++;
+      d = new Date(new Date(d + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
+    }
+  });
+  let catRows = '';
+  Object.keys(catMap).forEach(function(cat) {
+    const info  = HABIT_CATEGORIES[cat] || { label: cat, icon: '❓', color: '#94a3b8' };
+    const pct   = catMap[cat].total > 0 ? Math.round((catMap[cat].done / catMap[cat].total) * 100) : 0;
+    catRows +=
+      '<tr>' +
+        '<td>' + info.icon + ' ' + info.label + '</td>' +
+        '<td>' + catMap[cat].done + ' / ' + catMap[cat].total + '</td>' +
+        '<td><strong style="color:' + info.color + '">' + pct + '%</strong></td>' +
+      '</tr>';
+  });
+
+  // Build complete HTML string using plain concatenation — no nested template literals
+  const html =
+    '<!DOCTYPE html>' +
+    '<html lang="en"><head><meta charset="UTF-8">' +
+    '<title>HabitFlow Report</title>' +
+    '<style>' +
+      'body{font-family:Arial,sans-serif;padding:32px;max-width:900px;margin:0 auto;color:#0f172a}' +
+      'h1{color:#3b82f6;margin:0 0 4px}' +
+      '.sub{color:#64748b;margin:0 0 24px;font-size:13px}' +
+      '.hero{display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap}' +
+      '.card{flex:1;min-width:140px;padding:16px;border-radius:12px;text-align:center;background:#f1f5f9}' +
+      '.card .num{font-size:32px;font-weight:800;color:#3b82f6}' +
+      '.card .lbl{font-size:12px;color:#64748b;margin-top:4px}' +
+      'h2{font-size:16px;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin:28px 0 12px}' +
+      'table{width:100%;border-collapse:collapse;font-size:13px}' +
+      'th{text-align:left;padding:8px 12px;background:#f8fafc;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.05em}' +
+      'td{padding:10px 12px;border-bottom:1px solid #f1f5f9}' +
+      'tr:last-child td{border-bottom:none}' +
+      '.footer{margin-top:40px;text-align:center;font-size:11px;color:#94a3b8}' +
+      '@media print{body{padding:16px}.footer{position:fixed;bottom:0;width:100%}}' +
+    '</style>' +
+    '</head><body>' +
+    '<h1>🌿 HabitFlow Report</h1>' +
+    '<p class="sub">Generated on ' + generatedDate + ' &nbsp;·&nbsp; Arc start: ' + startDate + '</p>' +
+
+    '<div class="hero">' +
+      '<div class="card"><div class="num">' + currentStreak + '</div><div class="lbl">Current Streak 🔥</div></div>' +
+      '<div class="card"><div class="num">' + bestStreak + '</div><div class="lbl">Best Streak ⭐</div></div>' +
+      '<div class="card"><div class="num">' + completion + '%</div><div class="lbl">Today\'s Completion</div></div>' +
+      '<div class="card"><div class="num">' + totalHabits + '</div><div class="lbl">Total Habits</div></div>' +
+      '<div class="card"><div class="num">' + activeDays + '</div><div class="lbl">Active Days</div></div>' +
+    '</div>' +
+
+    '<h2>Habits</h2>' +
+    '<table>' +
+      '<thead><tr><th>Habit</th><th>Category</th><th>Completions</th><th>Progress</th><th>Rate</th></tr></thead>' +
+      '<tbody>' + (habitsRows || '<tr><td colspan="5" style="color:#94a3b8;text-align:center">No habits added yet</td></tr>') + '</tbody>' +
+    '</table>' +
+
+    '<h2>By Category</h2>' +
+    '<table>' +
+      '<thead><tr><th>Category</th><th>Completions</th><th>Rate</th></tr></thead>' +
+      '<tbody>' + (catRows || '<tr><td colspan="3" style="color:#94a3b8;text-align:center">No data</td></tr>') + '</tbody>' +
+    '</table>' +
+
+    '<div class="footer">HabitFlow &nbsp;·&nbsp; Your data never leaves this device</div>' +
+    '</body></html>';
+
   const win = window.open('', '_blank');
-  win.document.write(htmlContent);
+  if (!win) { showToast('⚠️ Allow pop-ups to export PDF'); return; }
+  win.document.open();
+  win.document.write(html);
   win.document.close();
-  win.focus();
-  win.print();
-  setTimeout(() => win.close(), 1000);
-  showToast('✅ PDF export initiated');
+  // Wait for layout then print — do NOT auto-close
+  win.addEventListener('load', function() { win.focus(); win.print(); });
+  showToast('📄 PDF report opened — use Print to save');
 }
 
 function shareProgress() {
