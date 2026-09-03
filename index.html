@@ -27,7 +27,171 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3.2">
+  <style>
+    .focus-hero-card {
+      background: var(--bg-surface, #080e1a);
+      border: 1px solid var(--border-soft, #1e2c47);
+      border-radius: var(--radius-lg, 18px);
+      padding: 24px 16px;
+      margin-bottom: 24px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    .timer-clock-wrap {
+      position: relative;
+      width: 230px;
+      height: 230px;
+      margin: 10px auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timer-clock-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      display: block;
+    }
+    .timer-clock-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      text-align: center;
+    }
+    .timer-status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-dim, #8ba0c2);
+      border: 1px solid var(--border-soft, #1e2c47);
+      margin-bottom: 4px;
+      transition: all 0.25s ease;
+    }
+    .timer-status-pill.running {
+      background: rgba(111, 184, 232, 0.15);
+      color: var(--accent, #6fb8e8);
+      border-color: var(--accent, #6fb8e8);
+      box-shadow: 0 0 12px var(--accent-glow, rgba(111, 184, 232, 0.3));
+    }
+    .timer-status-pill.paused {
+      background: rgba(255, 138, 76, 0.15);
+      color: #ff8a4c;
+      border-color: #ff8a4c;
+    }
+    .timer-digits {
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--frost, #cfe6ff);
+      margin: 2px 0 6px;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-sub-mode {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-dim, #8ba0c2);
+    }
+    .timer-nudge-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 0 auto 16px;
+    }
+    .nudge-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 18px;
+      min-height: 44px;
+      min-width: 105px;
+      border-radius: 24px;
+      background: var(--bg-elevated, #0e182a);
+      border: 1px solid var(--border-soft, #1e2c47);
+      color: var(--frost, #cfe6ff);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.15s ease;
+    }
+    .nudge-pill-btn:hover {
+      border-color: var(--accent, #6fb8e8);
+      color: #ffffff;
+    }
+    .nudge-pill-btn:active {
+      transform: scale(0.94);
+      background: var(--accent-soft, rgba(111, 184, 232, 0.25));
+    }
+    .timer-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 18px;
+    }
+    .preset-card-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 4px;
+      min-height: 52px;
+      border-radius: var(--radius-md, 12px);
+      background: var(--bg-elevated, #0e182a);
+      border: 1px solid var(--border-soft, #1e2c47);
+      color: var(--text-dim, #8ba0c2);
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.15s ease;
+    }
+    .preset-card-btn:hover {
+      border-color: var(--border, #2d3f60);
+      color: var(--text, #f0f6fc);
+    }
+    .preset-card-btn.active {
+      background: var(--accent-soft, rgba(111, 184, 232, 0.18));
+      border-color: var(--accent, #6fb8e8);
+      color: var(--accent, #6fb8e8);
+      box-shadow: 0 0 12px var(--accent-glow, rgba(111, 184, 232, 0.25));
+    }
+    .preset-card-val {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .preset-card-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-faint, #54688a);
+      margin-top: 2px;
+    }
+    .preset-card-btn.active .preset-card-lbl {
+      color: var(--accent, #6fb8e8);
+    }
+  </style>
 </head>
 <body>
   <noscript>
@@ -178,12 +342,12 @@
           <!-- Focus Timer Hero -->
           <div class="focus-hero-card">
             <!-- Circular Countdown Ring -->
-            <div class="timer-ring-container">
-              <svg class="timer-ring-svg" viewBox="0 0 260 260">
-                <circle class="timer-ring-bg" cx="130" cy="130" r="105" />
-                <circle class="timer-ring-progress" id="timerRingProgress" cx="130" cy="130" r="105" />
+            <div class="timer-clock-wrap">
+              <svg class="timer-clock-svg" viewBox="0 0 240 240" width="230" height="230" style="display:block;margin:0 auto;">
+                <circle cx="120" cy="120" r="100" fill="none" stroke="rgba(255, 255, 255, 0.07)" stroke-width="8" />
+                <circle id="timerRingProgress" cx="120" cy="120" r="100" fill="none" stroke="var(--accent, #6fb8e8)" stroke-width="8" stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="0" style="transition: stroke-dashoffset 0.3s ease;" />
               </svg>
-              <div class="timer-digits-wrap">
+              <div class="timer-clock-inner">
                 <div class="timer-status-pill" id="focusStatusBadge">READY TO FOCUS</div>
                 <div class="timer-digits disp" id="focusTimerDisplay">25:00</div>
                 <div class="timer-sub-mode" id="focusSubModeText">25-Min Pomodoro</div>
@@ -192,27 +356,31 @@
 
             <!-- Quick Nudge Adjustment Buttons -->
             <div class="timer-nudge-row" id="timerNudgeRow">
-              <button class="nudge-btn" id="btnTimerNudgeMinus" title="Subtract 5 Minutes">− 5 min</button>
-              <button class="nudge-btn" id="btnTimerNudgePlus" title="Add 5 Minutes">+ 5 min</button>
+              <button type="button" class="nudge-pill-btn nudge-btn" id="btnTimerNudgeMinus" title="Subtract 5 Minutes" aria-label="Subtract 5 Minutes">
+                <span style="font-size:16px;line-height:1;">−</span> <span>5 min</span>
+              </button>
+              <button type="button" class="nudge-pill-btn nudge-btn" id="btnTimerNudgePlus" title="Add 5 Minutes" aria-label="Add 5 Minutes">
+                <span style="font-size:16px;line-height:1;">+</span> <span>5 min</span>
+              </button>
             </div>
 
             <!-- Responsive 4-Column Presets Grid -->
             <div class="timer-presets-grid" id="timerPresetsGrid">
-              <button class="preset-btn active" data-minutes="25">
-                <span class="preset-val">25m</span>
-                <span class="preset-lbl">Pomo</span>
+              <button type="button" class="preset-card-btn preset-btn active" data-minutes="25" aria-label="25 Minute Pomodoro">
+                <span class="preset-card-val preset-val">25m</span>
+                <span class="preset-card-lbl preset-lbl">Pomo</span>
               </button>
-              <button class="preset-btn" data-minutes="50">
-                <span class="preset-val">50m</span>
-                <span class="preset-lbl">Ultra</span>
+              <button type="button" class="preset-card-btn preset-btn" data-minutes="50" aria-label="50 Minute Ultra Work">
+                <span class="preset-card-val preset-val">50m</span>
+                <span class="preset-card-lbl preset-lbl">Ultra</span>
               </button>
-              <button class="preset-btn" data-minutes="90">
-                <span class="preset-val">90m</span>
-                <span class="preset-lbl">Deep</span>
+              <button type="button" class="preset-card-btn preset-btn" data-minutes="90" aria-label="90 Minute Deep Work">
+                <span class="preset-card-val preset-val">90m</span>
+                <span class="preset-card-lbl preset-lbl">Deep</span>
               </button>
-              <button class="preset-btn" data-minutes="0">
-                <span class="preset-val">⏱️</span>
-                <span class="preset-lbl">Open</span>
+              <button type="button" class="preset-card-btn preset-btn" data-minutes="0" aria-label="Open Stopwatch Mode">
+                <span class="preset-card-val preset-val">⏱️</span>
+                <span class="preset-card-lbl preset-lbl">Open</span>
               </button>
             </div>
 
@@ -539,6 +707,6 @@
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <!-- CORE ENGINE SCRIPT -->
-  <script src="app.js"></script>
+  <script src="app.js?v=3.2"></script>
 </body>
 </html>

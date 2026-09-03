@@ -1,7 +1,7 @@
-// Winter Arc Pro — Service Worker v3.0
-// 100% Offline-Ready & Private
+// Winter Arc Pro — Service Worker v3.2
+// 100% Offline-Ready, Fast Updates, Network-First for App Shell
 
-const CACHE_NAME = "winter-arc-pro-v3.0";
+const CACHE_NAME = "winter-arc-pro-v3.2";
 const SHELL_FILES = [
   "./",
   "./index.html",
@@ -31,7 +31,10 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+        keys.filter((k) => k !== CACHE_NAME).map((k) => {
+          console.log("[SW] Purging outdated cache:", k);
+          return caches.delete(k);
+        })
       );
     }).then(() => self.clients.claim())
   );
@@ -48,7 +51,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // For Google Fonts or static assets: Cache first, fallback to network
+  // For Google Fonts or static external assets: Cache first, fallback to network
   if (url.hostname.includes("fonts.googleapis.com") || url.hostname.includes("fonts.gstatic.com")) {
     event.respondWith(
       caches.match(req).then((cached) => {
@@ -65,20 +68,16 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // For App Shell files: Stale-While-Revalidate
+  // Network-First for core app files (HTML, CSS, JS) so mobile devices get live updates instantly
   event.respondWith(
-    caches.match(req).then((cached) => {
-      const fetchPromise = fetch(req)
-        .then((networkRes) => {
-          if (networkRes && networkRes.status === 200 && networkRes.type === "basic") {
-            const clone = networkRes.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-          }
-          return networkRes;
-        })
-        .catch(() => cached);
-
-      return cached || fetchPromise;
-    })
+    fetch(req)
+      .then((networkRes) => {
+        if (networkRes && networkRes.status === 200) {
+          const clone = networkRes.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+        }
+        return networkRes;
+      })
+      .catch(() => caches.match(req))
   );
 });

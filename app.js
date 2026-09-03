@@ -778,26 +778,26 @@
     const daysLeftEl = document.getElementById("arcDaysLeft");
     const linearBar = document.getElementById("arcLinearBar");
 
-    spanEl.textContent = `${formatDisplayDate(s.startDate, "short")} → ${formatDisplayDate(s.endDate, "short")}`;
+    if (spanEl) spanEl.textContent = `${formatDisplayDate(s.startDate, "short")} → ${formatDisplayDate(s.endDate, "short")}`;
 
     const totalArcDays = Math.max(1, daysBetween(s.startDate, s.endDate) + 1);
 
     if (today < s.startDate) {
-      badge.textContent = "Not Started";
+      if (badge) badge.textContent = "Not Started";
       const beforeDays = daysBetween(today, s.startDate);
-      daysLeftEl.textContent = `Starts in ${beforeDays} day${beforeDays === 1 ? "" : "s"}`;
-      linearBar.style.width = "0%";
+      if (daysLeftEl) daysLeftEl.textContent = `Starts in ${beforeDays} day${beforeDays === 1 ? "" : "s"}`;
+      if (linearBar) linearBar.style.width = "0%";
     } else if (today > s.endDate) {
-      badge.textContent = "Arc Complete";
-      daysLeftEl.textContent = "Challenge Completed";
-      linearBar.style.width = "100%";
+      if (badge) badge.textContent = "Arc Complete";
+      if (daysLeftEl) daysLeftEl.textContent = "Challenge Completed";
+      if (linearBar) linearBar.style.width = "100%";
     } else {
       const currentDayNum = Math.min(totalArcDays, daysBetween(s.startDate, today) + 1);
       const remainingDays = daysBetween(today, s.endDate);
-      badge.textContent = `Day ${currentDayNum} / ${totalArcDays}`;
-      daysLeftEl.textContent = `${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`;
+      if (badge) badge.textContent = `Day ${currentDayNum} / ${totalArcDays}`;
+      if (daysLeftEl) daysLeftEl.textContent = `${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`;
       const elapsedPct = Math.round((currentDayNum / totalArcDays) * 100);
-      linearBar.style.width = `${elapsedPct}%`;
+      if (linearBar) linearBar.style.width = `${elapsedPct}%`;
     }
 
     const soundIcon = document.getElementById("topbarSoundIcon");
@@ -1066,7 +1066,7 @@
     const badge = document.getElementById("focusStatusBadge");
     const sub = document.getElementById("focusSubModeText");
 
-    const circumference = 660; // 2 * Math.PI * 105
+    const circumference = (ring && ring.r && ring.r.baseVal) ? (2 * Math.PI * ring.r.baseVal.value) : 628;
 
     if (isStopwatchMode) {
       if (disp) disp.textContent = formatTimerDigits(stopwatchSec);
@@ -2349,14 +2349,30 @@
     });
     document.getElementById("btnFocusReset")?.addEventListener("click", resetFocusTimer);
 
-    // Quick Nudge Buttons (-5m / +5m)
-    document.getElementById("btnTimerNudgeMinus")?.addEventListener("click", () => nudgeTimer(-300));
-    document.getElementById("btnTimerNudgePlus")?.addEventListener("click", () => nudgeTimer(300));
+    // Quick Nudge Buttons (-5m / +5m) (Mobile & PC safe)
+    const btnNudgeMinus = document.getElementById("btnTimerNudgeMinus");
+    const btnNudgePlus = document.getElementById("btnTimerNudgePlus");
 
-    // Timer Preset Buttons Grid (Responsive & No-Overflow)
-    document.querySelectorAll("#timerPresetsGrid .preset-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll("#timerPresetsGrid .preset-btn").forEach((b) => b.classList.remove("active"));
+    if (btnNudgeMinus) {
+      btnNudgeMinus.addEventListener("click", (e) => {
+        if (e) e.preventDefault();
+        nudgeTimer(-300);
+      });
+    }
+
+    if (btnNudgePlus) {
+      btnNudgePlus.addEventListener("click", (e) => {
+        if (e) e.preventDefault();
+        nudgeTimer(300);
+      });
+    }
+
+    // Timer Preset Buttons Grid (Responsive & Mobile Touch Safe)
+    const presetBtns = document.querySelectorAll("#timerPresetsGrid button");
+    presetBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        if (e) e.preventDefault();
+        presetBtns.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
         const mins = parseInt(btn.dataset.minutes, 10);
         if (mins === 0) {
@@ -2522,8 +2538,8 @@
     });
   }
 
-  // Self-booting initialization
-  window.addEventListener("DOMContentLoaded", () => {
+  // Self-booting initialization (Safe against cached DOMContentLoaded race conditions)
+  function bootEngine() {
     try {
       renderAll();
       initEvents();
@@ -2531,6 +2547,12 @@
     } catch (err) {
       console.error("[Winter Arc Pro] Boot exception:", err);
     }
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bootEngine);
+  } else {
+    bootEngine();
+  }
 
 })();
