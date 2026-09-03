@@ -177,21 +177,49 @@
 
           <!-- Focus Timer Hero -->
           <div class="focus-hero-card">
-            <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;">Session in Progress</div>
-            <div class="timer-digits disp" id="focusTimerDisplay">50:00</div>
+            <!-- Circular Countdown Ring -->
+            <div class="timer-ring-container">
+              <svg class="timer-ring-svg" viewBox="0 0 260 260">
+                <circle class="timer-ring-bg" cx="130" cy="130" r="105" />
+                <circle class="timer-ring-progress" id="timerRingProgress" cx="130" cy="130" r="105" />
+              </svg>
+              <div class="timer-digits-wrap">
+                <div class="timer-status-pill" id="focusStatusBadge">READY TO FOCUS</div>
+                <div class="timer-digits disp" id="focusTimerDisplay">25:00</div>
+                <div class="timer-sub-mode" id="focusSubModeText">25-Min Pomodoro</div>
+              </div>
+            </div>
 
-            <!-- Preset Buttons -->
-            <div class="timer-preset-row">
-              <button class="chip" data-minutes="25">25m Pomodoro</button>
-              <button class="chip active" data-minutes="50">50m Ultra</button>
-              <button class="chip" data-minutes="90">90m Deep</button>
-              <button class="chip" data-minutes="0">Stopwatch</button>
+            <!-- Quick Nudge Adjustment Buttons -->
+            <div class="timer-nudge-row" id="timerNudgeRow">
+              <button class="nudge-btn" id="btnTimerNudgeMinus" title="Subtract 5 Minutes">− 5 min</button>
+              <button class="nudge-btn" id="btnTimerNudgePlus" title="Add 5 Minutes">+ 5 min</button>
+            </div>
+
+            <!-- Responsive 4-Column Presets Grid -->
+            <div class="timer-presets-grid" id="timerPresetsGrid">
+              <button class="preset-btn active" data-minutes="25">
+                <span class="preset-val">25m</span>
+                <span class="preset-lbl">Pomo</span>
+              </button>
+              <button class="preset-btn" data-minutes="50">
+                <span class="preset-val">50m</span>
+                <span class="preset-lbl">Ultra</span>
+              </button>
+              <button class="preset-btn" data-minutes="90">
+                <span class="preset-val">90m</span>
+                <span class="preset-lbl">Deep</span>
+              </button>
+              <button class="preset-btn" data-minutes="0">
+                <span class="preset-val">⏱️</span>
+                <span class="preset-lbl">Open</span>
+              </button>
             </div>
 
             <!-- Habit Session Link Tag -->
             <div style="margin-bottom:18px;">
               <label for="focusHabitSelect" style="font-size:11.5px;color:var(--text-dim);display:block;margin-bottom:6px;">Credit time toward habit:</label>
-              <select class="form-input" id="focusHabitSelect" style="max-width:260px;margin:0 auto;display:inline-block;"></select>
+              <select class="form-input" id="focusHabitSelect" style="max-width:280px;margin:0 auto;display:inline-block;"></select>
             </div>
 
             <!-- Timer Action Controls -->

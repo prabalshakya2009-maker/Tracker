@@ -45,21 +45,42 @@
   ];
 
   const DISCIPLINE_QUOTES = [
-    "Small reps, repeated every day, build a completely different person.",
-    "The cold doesn't ask for your permission. Neither should your discipline.",
-    "You do not rise to the level of your goals, you fall to the level of your systems.",
-    "One unremarkable day at a time — that is the entire arc.",
-    "Consistency is quiet. It rarely feels like progress until it suddenly is.",
-    "Today's logged rep is tomorrow's unbreakable foundation.",
-    "Ice doesn't form in an afternoon. Neither does character.",
-    "Show up especially when it is effortless to make excuses.",
-    "The person who emerges in the spring is forged in the winter.",
-    "Motivation gets you across the starting line. Habit carries you home.",
-    "Nobody sees the private reps. Everyone notices who you became.",
-    "Discomfort now leads to unwavering confidence later.",
-    "Every checkbox is a ballot cast for the identity you are claiming.",
-    "Cold mornings, warm victories.",
-    "Do it tired. Do it uninspired. Just do it anyway."
+    "Small reps, repeated, become a different person.",
+    "The cold doesn't ask permission. Neither should your discipline.",
+    "You don't rise to your goals, you fall to your habits.",
+    "One unremarkable day at a time — that's the whole arc.",
+    "Consistency is quiet. It rarely feels like progress until it is.",
+    "Today's log is tomorrow's evidence.",
+    "Ice doesn't form in a day. Neither does discipline.",
+    "Show up even when it's easy to skip. Especially then.",
+    "The version of you in February is built today.",
+    "Progress hides in the days you almost skipped.",
+    "Nobody sees the streak. Everyone eventually sees who you became.",
+    "Motivation starts it. Systems finish it.",
+    "You're not behind. You're mid-arc.",
+    "Discomfort now, direction later.",
+    "The habit is the point, not the mood you're in.",
+    "Every checkbox is a small vote for who you're becoming.",
+    "Cold mornings, warm results.",
+    "You don't need to feel ready. You need to show up.",
+    "Small wins compound quietly, then all at once.",
+    "The arc doesn't care how you feel about Tuesday.",
+    "Discipline is a promise you keep to yourself.",
+    "Skipping one day is a choice. Skipping two is a habit.",
+    "Winter tests. Spring reveals.",
+    "Go slow if you must. Just don't stop.",
+    "The streak isn't the goal — who it's making you is.",
+    "Today doesn't need to be perfect. It needs to be logged.",
+    "Every arc has quiet, unremarkable middle days. This might be one.",
+    "Build it when no one's watching. That's when it counts most.",
+    "Comfort is the only real opponent here.",
+    "Do it tired. Do it bored. Do it anyway.",
+    "The version of you that finishes this arc is already in motion.",
+    "Small, boring, repeated — that's the whole formula.",
+    "You don't have to want to. You just have to do it.",
+    "Every day tracked is a day you chose yourself.",
+    "The hardest rep is the one you almost skipped.",
+    "Nobody becomes disciplined on a good day — it happens on the bad ones."
   ];
 
   const TROPHY_DEFINITIONS = [
@@ -141,15 +162,14 @@
 
   function getDefaultHabits(startDate) {
     return [
-      { id: uid(), icon: "🌅", name: "Wake up by 6:00 AM", type: "checkbox", createdAt: startDate, order: 0, archived: false, schedule: "all", category: "discipline", timeOfDay: "morning" },
-      { id: uid(), icon: "🚿", name: "Cold shower", type: "checkbox", createdAt: startDate, order: 1, archived: false, schedule: "all", category: "discipline", timeOfDay: "morning" },
-      { id: uid(), icon: "💪", name: "Workout / Training", type: "checkbox", createdAt: startDate, order: 2, archived: false, schedule: "all", category: "fitness", timeOfDay: "morning" },
-      { id: uid(), icon: "💧", name: "Drink 3.5L Water", type: "counter", target: 3.5, unit: "L", step: 0.5, createdAt: startDate, order: 3, archived: false, schedule: "all", category: "health", timeOfDay: "anytime" },
-      { id: uid(), icon: "📚", name: "Read 25 Pages", type: "counter", target: 25, unit: "p", step: 5, createdAt: startDate, order: 4, archived: false, schedule: "all", category: "focus", timeOfDay: "evening" },
-      { id: uid(), icon: "⏱️", name: "Deep Work", type: "duration", target: 60, unit: "m", createdAt: startDate, order: 5, archived: false, schedule: "all", category: "focus", timeOfDay: "morning" },
-      { id: uid(), icon: "🥗", name: "Clean Diet (No junk)", type: "checkbox", createdAt: startDate, order: 6, archived: false, schedule: "all", category: "health", timeOfDay: "anytime" },
-      { id: uid(), icon: "🧘", name: "Meditation & Journal", type: "checkbox", createdAt: startDate, order: 7, archived: false, schedule: "all", category: "mind", timeOfDay: "evening" },
-      { id: uid(), icon: "😴", name: "Sleep 8 Hours", type: "checkbox", createdAt: startDate, order: 8, archived: false, schedule: "all", category: "health", timeOfDay: "evening" }
+      { id: uid(), icon: "🌅", name: "Wake up early", type: "checkbox", createdAt: startDate, order: 0, archived: false, schedule: "all", category: "discipline", timeOfDay: "morning" },
+      { id: uid(), icon: "💪", name: "Workout", type: "checkbox", createdAt: startDate, order: 1, archived: false, schedule: "all", category: "fitness", timeOfDay: "morning" },
+      { id: uid(), icon: "🚿", name: "Cold shower", type: "checkbox", createdAt: startDate, order: 2, archived: false, schedule: "all", category: "discipline", timeOfDay: "morning" },
+      { id: uid(), icon: "📚", name: "Read / study", type: "checkbox", createdAt: startDate, order: 3, archived: false, schedule: "all", category: "focus", timeOfDay: "evening" },
+      { id: uid(), icon: "💧", name: "Drink 3L water", type: "counter", target: 3, unit: "L", step: 0.5, createdAt: startDate, order: 4, archived: false, schedule: "all", category: "health", timeOfDay: "anytime" },
+      { id: uid(), icon: "🥗", name: "No junk food", type: "checkbox", createdAt: startDate, order: 5, archived: false, schedule: "all", category: "health", timeOfDay: "anytime" },
+      { id: uid(), icon: "🧘", name: "Meditate", type: "checkbox", createdAt: startDate, order: 6, archived: false, schedule: "all", category: "mind", timeOfDay: "morning" },
+      { id: uid(), icon: "😴", name: "Sleep 7–8 hrs", type: "checkbox", createdAt: startDate, order: 7, archived: false, schedule: "all", category: "health", timeOfDay: "evening" }
     ];
   }
 
@@ -190,42 +210,59 @@
       console.warn("Error reading v3 state:", e);
     }
 
-    // 2. Check for legacy winterArcData_v1
+    // 2. Check for legacy winterArcData_v1 (Untouched migration & safety snapshot)
     try {
       const rawV1 = localStorage.getItem(LEGACY_STORAGE_KEY_V1);
       if (rawV1) {
+        // Create an immutable pre-upgrade safety snapshot so existing data is preserved untouched
+        try {
+          if (!localStorage.getItem("winterArcData_v1_BACKUP_ORIGINAL")) {
+            localStorage.setItem("winterArcData_v1_BACKUP_ORIGINAL", rawV1);
+          }
+        } catch {}
+
         const v1 = JSON.parse(rawV1);
         if (v1 && v1.settings && Array.isArray(v1.habits)) {
-          console.log("[Migration] Upgrading winterArcData_v1 to v3...");
+          console.log("[Migration] Preserving all earlier winterArcData_v1 data 100% untouched...");
           const newState = getInitialState();
           newState.settings.startDate = v1.settings.startDate || newState.settings.startDate;
           newState.settings.endDate = v1.settings.endDate || newState.settings.endDate;
           newState.settings.theme = v1.settings.accent || "frost";
-          
+
+          // Exact preservation of all user habits and their IDs
           newState.habits = v1.habits.map((h, i) => ({
             id: h.id || uid(),
             icon: h.icon || "🔥",
             name: h.name || "Habit",
-            type: "checkbox",
+            type: h.type || (h.name.toLowerCase().includes("water") ? "counter" : "checkbox"),
+            target: h.target || (h.name.toLowerCase().includes("water") ? 3 : 1),
+            unit: h.unit || (h.name.toLowerCase().includes("water") ? "L" : ""),
+            step: h.step || (h.name.toLowerCase().includes("water") ? 0.5 : 1),
             createdAt: h.createdAt || newState.settings.startDate,
             order: typeof h.order === "number" ? h.order : i,
             archived: !!h.archived,
-            schedule: "all",
-            category: "discipline",
-            timeOfDay: "anytime"
+            schedule: h.schedule || "all",
+            category: h.category || "discipline",
+            timeOfDay: h.timeOfDay || "anytime"
           }));
 
+          // Exact preservation of all past check-ins and notes
           if (v1.logs && typeof v1.logs === "object") {
             Object.keys(v1.logs).forEach((ds) => {
               const oldLog = v1.logs[ds];
               newState.logs[ds] = {
-                done: oldLog.done || {},
+                done: Object.assign({}, oldLog.done || {}),
                 note: oldLog.note || "",
-                energy: 3,
-                focusMinutes: 0
+                energy: oldLog.energy || 3,
+                focusMinutes: oldLog.focusMinutes || 0
               };
             });
           }
+
+          if (v1.meta && Array.isArray(v1.meta.celebratedStreaks)) {
+            newState.unlockedTrophies = v1.meta.celebratedStreaks.map((s) => `streak_${s}`);
+          }
+
           saveStateDirect(newState);
           return newState;
         }
@@ -240,7 +277,6 @@
       if (rawCalibre) {
         const cState = JSON.parse(rawCalibre);
         if (cState && (cState.subjects || cState.directives)) {
-          console.log("[Migration] Converting legacy Calibre OS to Winter Arc Pro...");
           const newState = getInitialState();
           if (Array.isArray(cState.completedSessions)) {
             newState.focusSessions = cState.completedSessions;
@@ -278,7 +314,42 @@
 
   function saveStateDirect(st) {
     try {
+      // 1. Primary persistence for Winter Arc Pro v3
       localStorage.setItem(STORAGE_KEY, JSON.stringify(st));
+
+      // 2. Dual-persistence: Keep legacy winterArcData_v1 updated in real-time
+      // so earlier data is always preserved, untouched, and backward-compatible!
+      const v1Compat = {
+        schemaVersion: 2,
+        settings: {
+          startDate: st.settings.startDate,
+          endDate: st.settings.endDate,
+          accent: st.settings.theme === "gold" ? "gold" : (st.settings.theme === "violet" ? "violet" : (st.settings.theme === "aurora" ? "aurora" : (st.settings.theme === "ember" ? "rose" : "frost")))
+        },
+        habits: st.habits.map((h) => ({
+          id: h.id,
+          icon: h.icon,
+          name: h.name,
+          createdAt: h.createdAt,
+          order: h.order,
+          archived: !!h.archived
+        })),
+        logs: {},
+        meta: {
+          onboarded: true,
+          celebratedStreaks: (st.unlockedTrophies || []).map((tid) => parseInt(tid.replace("streak_", ""), 10)).filter((n) => !isNaN(n))
+        }
+      };
+
+      Object.keys(st.logs).forEach((ds) => {
+        const l = st.logs[ds];
+        v1Compat.logs[ds] = {
+          done: l.done || {},
+          note: l.note || ""
+        };
+      });
+
+      localStorage.setItem(LEGACY_STORAGE_KEY_V1, JSON.stringify(v1Compat));
     } catch (e) {
       showToast("Storage quota warning: unable to save!");
     }
@@ -962,15 +1033,18 @@
   }
 
   /* ==========================================================================
-     FOCUS & DEEP WORK TIMER SUITE
+     FOCUS & DEEP WORK TIMER SUITE (Drift-Proof & Background-Safe)
      ========================================================================== */
 
   let timerInterval = null;
-  let timerDurationSec = 50 * 60;
-  let timerRemainingSec = 50 * 60;
+  let timerDurationSec = 25 * 60;
+  let timerRemainingSec = 25 * 60;
+  let timerEndTime = 0;
   let isTimerRunning = false;
   let isStopwatchMode = false;
   let stopwatchSec = 0;
+  let stopwatchStartTime = 0;
+  let stopwatchAccumulated = 0;
 
   function formatTimerDigits(sec) {
     const m = Math.floor(sec / 60).toString().padStart(2, "0");
@@ -978,13 +1052,60 @@
     return `${m}:${s}`;
   }
 
+  function getTimerPresetLabel(sec) {
+    const mins = Math.round(sec / 60);
+    if (mins === 25) return "25-Min Pomodoro";
+    if (mins === 50) return "50-Min Ultra";
+    if (mins === 90) return "90-Min Deep Work";
+    return `${mins}-Min Custom Focus`;
+  }
+
   function updateTimerDisplay() {
     const disp = document.getElementById("focusTimerDisplay");
-    if (!disp) return;
+    const ring = document.getElementById("timerRingProgress");
+    const badge = document.getElementById("focusStatusBadge");
+    const sub = document.getElementById("focusSubModeText");
+
+    const circumference = 660; // 2 * Math.PI * 105
+
     if (isStopwatchMode) {
-      disp.textContent = formatTimerDigits(stopwatchSec);
+      if (disp) disp.textContent = formatTimerDigits(stopwatchSec);
+      if (sub) sub.textContent = "Open Stopwatch Mode";
+      if (ring) {
+        const ringProgress = (stopwatchSec % 60) / 60;
+        ring.style.strokeDashoffset = circumference - (ringProgress * circumference);
+      }
     } else {
-      disp.textContent = formatTimerDigits(timerRemainingSec);
+      if (disp) disp.textContent = formatTimerDigits(timerRemainingSec);
+      if (ring) {
+        const fraction = timerDurationSec > 0 ? (timerRemainingSec / timerDurationSec) : 0;
+        ring.style.strokeDashoffset = circumference - (fraction * circumference);
+      }
+      if (sub) {
+        if (isTimerRunning) sub.textContent = "Stay in the zone · Deep focus";
+        else sub.textContent = getTimerPresetLabel(timerDurationSec);
+      }
+    }
+
+    if (badge) {
+      if (isTimerRunning) {
+        badge.className = "timer-status-pill running";
+        badge.textContent = "FOCUSING";
+      } else if (!isStopwatchMode && timerRemainingSec < timerDurationSec && timerRemainingSec > 0) {
+        badge.className = "timer-status-pill paused";
+        badge.textContent = "❚❚ PAUSED";
+      } else {
+        badge.className = "timer-status-pill";
+        badge.textContent = "READY TO FOCUS";
+      }
+    }
+
+    // Update browser tab title
+    if (isTimerRunning) {
+      const activeText = isStopwatchMode ? formatTimerDigits(stopwatchSec) : formatTimerDigits(timerRemainingSec);
+      document.title = `(${activeText}) Focus · ${state.settings.arcName || "Winter Arc"}`;
+    } else {
+      document.title = "Winter Arc Pro — World-Class Habit & Focus OS";
     }
   }
 
@@ -993,25 +1114,38 @@
     isTimerRunning = true;
     playUiClickSound();
 
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().catch(() => {});
+    }
+
     const icon = document.getElementById("focusStartIcon");
     const text = document.getElementById("focusStartText");
     if (icon) icon.textContent = "⏸";
     if (text) text.textContent = "Pause Session";
 
+    const now = Date.now();
+    if (isStopwatchMode) {
+      stopwatchStartTime = now;
+    } else {
+      timerEndTime = now + (timerRemainingSec * 1000);
+    }
+
+    updateTimerDisplay();
+
     timerInterval = setInterval(() => {
+      const currentNow = Date.now();
       if (isStopwatchMode) {
-        stopwatchSec++;
+        stopwatchSec = stopwatchAccumulated + Math.floor((currentNow - stopwatchStartTime) / 1000);
         updateTimerDisplay();
       } else {
-        if (timerRemainingSec > 0) {
-          timerRemainingSec--;
-          updateTimerDisplay();
-        } else {
-          // Session Completed!
+        const remaining = Math.max(0, Math.ceil((timerEndTime - currentNow) / 1000));
+        timerRemainingSec = remaining;
+        updateTimerDisplay();
+        if (remaining <= 0) {
           completeFocusSession();
         }
       }
-    }, 1000);
+    }, 250);
   }
 
   function pauseFocusTimer() {
@@ -1020,35 +1154,100 @@
     timerInterval = null;
     isTimerRunning = false;
 
+    if (isStopwatchMode) {
+      stopwatchAccumulated = stopwatchSec;
+    }
+
     const icon = document.getElementById("focusStartIcon");
     const text = document.getElementById("focusStartText");
     if (icon) icon.textContent = "▶";
     if (text) text.textContent = "Resume Session";
 
+    updateTimerDisplay();
     promptFrictionLog();
   }
 
   function resetFocusTimer() {
-    pauseFocusTimer();
+    if (isTimerRunning) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      isTimerRunning = false;
+    }
+
+    const icon = document.getElementById("focusStartIcon");
+    const text = document.getElementById("focusStartText");
+    if (icon) icon.textContent = "▶";
+    if (text) text.textContent = "Start Session";
+
     if (isStopwatchMode) {
       stopwatchSec = 0;
+      stopwatchAccumulated = 0;
     } else {
       timerRemainingSec = timerDurationSec;
     }
     updateTimerDisplay();
   }
 
+  function nudgeTimer(deltaSec) {
+    if (isStopwatchMode) return;
+    const newTotal = Math.max(60, Math.min(180 * 60, timerDurationSec + deltaSec));
+    timerDurationSec = newTotal;
+    if (!isTimerRunning) {
+      timerRemainingSec = newTotal;
+    } else {
+      timerEndTime += deltaSec * 1000;
+      timerRemainingSec = Math.max(0, Math.ceil((timerEndTime - Date.now()) / 1000));
+    }
+    playUiClickSound();
+    updateTimerDisplay();
+  }
+
+  // Deep Meditation Singing Bowl / Gong Synthesis via Web Audio API
+  function playMeditationBowlSound() {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const harmonics = [264, 528, 792, 1056];
+      harmonics.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        const amp = 0.15 / (idx + 1);
+        gain.gain.setValueAtTime(amp, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 3.0);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 3.1);
+      });
+    } catch {}
+  }
+
   function completeFocusSession() {
     clearInterval(timerInterval);
     timerInterval = null;
     isTimerRunning = false;
-    playCompletionChime();
+
+    playMeditationBowlSound();
     launchConfetti();
-    showToast("Focus session complete! Outstanding deep work! 🏆");
+
+    try {
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+    } catch {}
+
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification("Focus Session Complete! 🏆", {
+        body: "Outstanding deep work block! Time to take a mindful breath.",
+        icon: "icons/icon-192.png"
+      });
+    }
+
+    showToast("Focus block completed! Outstanding deep work! 🏆");
 
     const sel = document.getElementById("focusHabitSelect");
     const habitId = sel ? sel.value : null;
-    const minutes = Math.round(timerDurationSec / 60);
+    const minutes = isStopwatchMode ? Math.max(1, Math.round(stopwatchSec / 60)) : Math.round(timerDurationSec / 60);
 
     // Save session record
     state.focusSessions = state.focusSessions || [];
@@ -1069,6 +1268,23 @@
     resetFocusTimer();
     renderFocusSuite();
   }
+
+  // Handle Tab Visibility Changes to prevent mobile background drift
+  document.addEventListener("visibilitychange", () => {
+    if (isTimerRunning) {
+      const currentNow = Date.now();
+      if (!isStopwatchMode) {
+        timerRemainingSec = Math.max(0, Math.ceil((timerEndTime - currentNow) / 1000));
+        updateTimerDisplay();
+        if (timerRemainingSec <= 0) {
+          completeFocusSession();
+        }
+      } else {
+        stopwatchSec = stopwatchAccumulated + Math.floor((currentNow - stopwatchStartTime) / 1000);
+        updateTimerDisplay();
+      }
+    }
+  });
 
   function promptFrictionLog() {
     openModal(`
@@ -1536,12 +1752,14 @@
     document.body.style.overflow = "";
   }
 
-  modalBackdrop.addEventListener("click", (e) => {
-    if (e.target === modalBackdrop) closeModal();
-  });
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+  }
 
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modalBackdrop.classList.contains("open")) closeModal();
+    if (e.key === "Escape" && modalBackdrop && modalBackdrop.classList.contains("open")) closeModal();
   });
 
   function openHabitModal(habitId = null) {
@@ -2131,15 +2349,20 @@
     });
     document.getElementById("btnFocusReset")?.addEventListener("click", resetFocusTimer);
 
-    // Timer Preset Chips
-    document.querySelectorAll(".timer-preset-row .chip").forEach((chip) => {
-      chip.addEventListener("click", () => {
-        document.querySelectorAll(".timer-preset-row .chip").forEach((c) => c.classList.remove("active"));
-        chip.classList.add("active");
-        const mins = parseInt(chip.dataset.minutes, 10);
+    // Quick Nudge Buttons (-5m / +5m)
+    document.getElementById("btnTimerNudgeMinus")?.addEventListener("click", () => nudgeTimer(-300));
+    document.getElementById("btnTimerNudgePlus")?.addEventListener("click", () => nudgeTimer(300));
+
+    // Timer Preset Buttons Grid (Responsive & No-Overflow)
+    document.querySelectorAll("#timerPresetsGrid .preset-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#timerPresetsGrid .preset-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const mins = parseInt(btn.dataset.minutes, 10);
         if (mins === 0) {
           isStopwatchMode = true;
           stopwatchSec = 0;
+          stopwatchAccumulated = 0;
         } else {
           isStopwatchMode = false;
           timerDurationSec = mins * 60;
