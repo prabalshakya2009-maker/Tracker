@@ -2010,16 +2010,14 @@
   function openShortcutsModal() {
     openModal(`
       <div class="modal-top-bar">
-        <div class="modal-title disp">⌨️ Keyboard Shortcuts</div>
+        <div class="modal-title disp">Keyboard Shortcuts</div>
         <button class="modal-close-btn" id="mShortcutsClose">✕</button>
       </div>
       <div style="font-size:13px;line-height:1.8;color:var(--text-dim);">
-        <p><b style="color:var(--text);">1</b> — Go to Today View</p>
+        <p><b style="color:var(--text);">1</b> — Go to Today Hub</p>
         <p><b style="color:var(--text);">2</b> — Go to Focus Mode</p>
-        <p><b style="color:var(--text);">3</b> — Go to Calendar</p>
-        <p><b style="color:var(--text);">4</b> — Go to Analytics</p>
-        <p><b style="color:var(--text);">5</b> — Go to Share Studio</p>
-        <p><b style="color:var(--text);">6</b> — Go to Settings</p>
+        <p><b style="color:var(--text);">3</b> — Go to Progress Center</p>
+        <p><b style="color:var(--text);">4</b> — Go to Settings &amp; Studio</p>
         <p><b style="color:var(--text);">Space</b> — Toggle / Pause focus timer</p>
         <p><b style="color:var(--text);">?</b> — Open this Help modal</p>
       </div>
@@ -2265,20 +2263,31 @@
      ========================================================================== */
 
   function switchTab(tabName) {
-    document.querySelectorAll(".view-panel").forEach((v) => v.classList.remove("active"));
-    document.querySelectorAll(".sidebar-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === tabName));
-    document.querySelectorAll(".nav-tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === tabName));
+    let activeTab = tabName;
+    if (tabName === "calendar" || tabName === "stats") activeTab = "progress";
+    if (tabName === "manage" || tabName === "studio") activeTab = "settings";
 
-    const target = document.getElementById(`view-${tabName}`);
+    document.querySelectorAll(".view-panel").forEach((v) => v.classList.remove("active"));
+    document.querySelectorAll(".sidebar-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === activeTab));
+    document.querySelectorAll(".nav-tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === activeTab));
+
+    const target = document.getElementById(`view-${activeTab}`);
     if (target) target.classList.add("active");
 
     const scrollArea = document.getElementById("viewsScroll");
     if (scrollArea) scrollArea.scrollTop = 0;
 
-    if (tabName === "calendar") renderCalendar();
-    if (tabName === "stats") renderStats();
-    if (tabName === "studio") drawShareCard();
-    if (tabName === "focus") renderFocusSuite();
+    if (activeTab === "progress") {
+      renderCalendar();
+      renderStats();
+    }
+    if (activeTab === "settings") {
+      renderThemeSwatches();
+      renderManageHabits();
+      drawShareCard();
+    }
+    if (activeTab === "focus") renderFocusSuite();
+    if (activeTab === "today") renderToday();
   }
 
   function renderAll() {
@@ -2290,6 +2299,7 @@
     renderStats();
     renderThemeSwatches();
     renderManageHabits();
+    drawShareCard();
 
     const nameInput = document.getElementById("inputArcName");
     const startInput = document.getElementById("inputStartDate");
@@ -2326,6 +2336,59 @@
         currentTimeFilter = chip.dataset.time;
         renderTodayHabits();
       });
+    });
+
+    // Daily Reflection Energy Rating Buttons
+    document.querySelectorAll("#energyRatingRow .energy-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const level = parseInt(btn.dataset.level, 10);
+        const today = todayStr();
+        const log = getLog(today, true);
+        log.energy = level;
+        saveState();
+        playUiClickSound();
+        renderReflection();
+        showToast(`Energy logged: Level ${level} / 5 ⚡`);
+      });
+    });
+
+    // Daily Reflection Journal Notes & Auto-Save
+    const journalTextarea = document.getElementById("todayJournalText");
+    let autoSaveTimer = null;
+    if (journalTextarea) {
+      journalTextarea.addEventListener("input", () => {
+        const statusEl = document.getElementById("journalAutoSaveStatus");
+        if (statusEl) statusEl.textContent = "Typing...";
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(() => {
+          const today = todayStr();
+          const log = getLog(today, true);
+          log.note = journalTextarea.value;
+          saveState();
+          if (statusEl) {
+            statusEl.textContent = "Auto-saved ✓";
+            setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 2500);
+          }
+        }, 800);
+      });
+    }
+
+    // Daily Reflection Save Button
+    document.getElementById("btnSaveReflection")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      const today = todayStr();
+      const log = getLog(today, true);
+      const txt = document.getElementById("todayJournalText")?.value || "";
+      log.note = txt;
+      saveState();
+      playCompletionChime();
+      const statusEl = document.getElementById("journalAutoSaveStatus");
+      if (statusEl) {
+        statusEl.textContent = "Saved ✓";
+        setTimeout(() => { if (statusEl) statusEl.textContent = ""; }, 3000);
+      }
+      showToast("Daily reflection saved! 📝");
     });
 
     // Sound toggle
@@ -2500,10 +2563,8 @@
       if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") return;
       if (e.key === "1") switchTab("today");
       if (e.key === "2") switchTab("focus");
-      if (e.key === "3") switchTab("calendar");
-      if (e.key === "4") switchTab("stats");
-      if (e.key === "5") switchTab("studio");
-      if (e.key === "6") switchTab("manage");
+      if (e.key === "3") switchTab("progress");
+      if (e.key === "4") switchTab("settings");
       if (e.key === "?") openShortcutsModal();
       if (e.code === "Space") {
         e.preventDefault();

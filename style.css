@@ -160,6 +160,11 @@ button {
   cursor: pointer;
   touch-action: manipulation;
   user-select: none;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:active, .action-pill-btn:active, .nudge-pill-btn:active, .preset-card-btn:active, .nav-tab-btn:active, .energy-btn:active {
+  transform: scale(0.95);
 }
 
 button:focus-visible, input:focus-visible, textarea:focus-visible, .focusable:focus-visible {
@@ -233,13 +238,14 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, .focusable:fo
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 14px;
+  padding: 12px 14px;
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 600;
   color: var(--text-dim);
   background: transparent;
-  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
   text-align: left;
 }
 
@@ -252,10 +258,18 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, .focusable:fo
   background: var(--accent-soft);
   color: var(--accent);
   border: 1px solid var(--accent-glow);
+  box-shadow: 0 0 16px var(--accent-soft);
 }
 
-.sidebar-btn .icon {
-  font-size: 18px;
+.sidebar-btn .nav-svg {
+  flex-shrink: 0;
+  stroke: var(--text-dim);
+  transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+.sidebar-btn.active .nav-svg {
+  stroke: var(--accent);
+  transform: scale(1.1);
 }
 
 .sidebar-footer {
@@ -754,43 +768,61 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, .focusable:fo
 
 /* Reflection & Energy Box */
 .reflection-card {
-  background: var(--bg-card);
+  background: var(--bg-surface, var(--bg-card));
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-lg);
-  padding: 16px;
-  margin-top: 20px;
+  padding: 20px 16px;
+  margin-top: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
 }
 
 .energy-rating-row {
-  display: flex;
-  gap: 8px;
-  margin: 10px 0 14px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin: 12px 0 16px;
 }
 
 .energy-btn {
-  flex: 1;
-  padding: 8px 4px;
-  border-radius: var(--radius-md);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-soft);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-dim);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
+  padding: 10px 4px;
+  min-height: 48px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-soft);
+  color: var(--text-dim);
+  cursor: pointer;
+  touch-action: manipulation;
   transition: all 0.15s ease;
 }
 
-.energy-btn span.emoji {
-  font-size: 18px;
+.energy-btn:hover {
+  border-color: var(--border);
+  color: var(--text);
 }
 
 .energy-btn.selected {
-  background: var(--accent-soft);
   border-color: var(--accent);
+  background: var(--accent-soft);
   color: var(--accent);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+.energy-level-badge {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.energy-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .journal-textarea {
@@ -1514,20 +1546,22 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, .focusable:fo
   background: rgba(248, 113, 113, 0.28);
 }
 
-/* ==================== BOTTOM NAV (MOBILE) ==================== */
+/* ==================== BOTTOM NAV (MOBILE 4-TAB) ==================== */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 30;
-  background: rgba(6, 10, 20, 0.92);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  z-index: 999;
+  background: rgba(8, 12, 20, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid var(--border-soft);
-  display: flex;
-  justify-content: space-around;
-  padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 8px 12px max(10px, env(safe-area-inset-bottom, 12px));
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
 }
 
 @media (min-width: 860px) {
@@ -1537,26 +1571,35 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, .focusable:fo
 }
 
 .nav-tab-btn {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  background: none;
-  color: var(--text-faint);
-  font-size: 10.5px;
+  justify-content: center;
+  gap: 4px;
+  min-height: 48px;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 11px;
   font-weight: 600;
-  padding: 4px 0;
-  border-radius: var(--radius-sm);
-  transition: all 0.15s ease;
+  padding: 6px 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
 }
 
-.nav-tab-btn .icon {
-  font-size: 18px;
+.nav-tab-btn .nav-svg {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.2s ease;
 }
 
 .nav-tab-btn.active {
   color: var(--accent);
+  background: var(--accent-soft);
+  border-color: rgba(56, 189, 248, 0.22);
+}
+
+.nav-tab-btn.active .nav-svg {
+  transform: scale(1.12);
+  stroke: var(--accent);
 }
 
 /* ==================== MODALS & DIALOGS ==================== */

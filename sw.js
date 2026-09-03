@@ -1,7 +1,7 @@
-// Winter Arc Pro — Service Worker v3.2
+// Winter Arc Pro — Service Worker v3.3
 // 100% Offline-Ready, Fast Updates, Network-First for App Shell
 
-const CACHE_NAME = "winter-arc-pro-v3.2";
+const CACHE_NAME = "winter-arc-pro-v3.3";
 const SHELL_FILES = [
   "./",
   "./index.html",
