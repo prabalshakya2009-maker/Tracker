@@ -1566,7 +1566,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, .focusable:fo
 
 @media (min-width: 860px) {
   .bottom-nav {
-    display: none;
+    display: none !important;
   }
 }
 

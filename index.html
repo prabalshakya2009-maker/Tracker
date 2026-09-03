@@ -233,7 +233,7 @@
       color: var(--accent);
     }
 
-    /* High-End 4-Tab Mobile Navigation */
+    /* High-End 4-Tab Mobile Navigation (Visible only on mobile/tablet < 860px) */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -251,6 +251,11 @@
       gap: 6px;
       z-index: 9999;
       box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
+    }
+    @media (min-width: 860px) {
+      .bottom-nav {
+        display: none !important;
+      }
     }
     .nav-tab-btn {
       display: flex;
