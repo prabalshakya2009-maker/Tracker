@@ -1,24 +1,66 @@
 {
-  "name": "HabitFlow - World-Class Habit Tracker",
-  "short_name": "HabitFlow",
-  "description": "The ultimate habit tracking PWA with 10 themes, analytics, calendar, streaks, reminders, and 20+ practical features.",
+  "name": "Winter Arc Tracker — Habit & Focus OS",
+  "short_name": "Winter Arc",
+  "description": "The world-class, private, bugproof habit tracker and deep work focus suite for your Winter Arc.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0f172a",
-  "theme_color": "#3b82f6",
+  "orientation": "any",
+  "background_color": "#060a14",
+  "theme_color": "#060a14",
+  "categories": ["productivity", "lifestyle", "health"],
   "icons": [
-    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
-    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icons/favicon-64.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
   ],
-  "categories": ["health", "lifestyle", "productivity", "utilities"],
   "shortcuts": [
-    { "name": "Today", "short_name": "Today", "description": "View today's habits", "url": "./index.html?view=today", "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }] },
-    { "name": "Calendar", "short_name": "Calendar", "description": "View your calendar", "url": "./index.html?view=calendar", "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }] },
-    { "name": "Stats", "short_name": "Stats", "description": "View your progress stats", "url": "./index.html?view=stats", "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }] },
-    { "name": "Manage", "short_name": "Manage", "description": "Manage your habits", "url": "./index.html?view=manage", "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }] }
-  ],
-  "prefer_related_applications": false
+    {
+      "name": "Today's Habits",
+      "url": "./index.html#today",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Deep Work Timer",
+      "url": "./index.html#focus",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Heatmap Calendar",
+      "url": "./index.html#calendar",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Analytics & Trophies",
+      "url": "./index.html#stats",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }

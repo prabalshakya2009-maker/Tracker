@@ -1,1928 +1,516 @@
 <!DOCTYPE html>
-<html lang="en" id="htmlRoot" data-theme="dark" data-palette="default">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>HabitFlow - World-Class Habit Tracker</title>
-<meta name="description" content="The ultimate habit tracking PWA with 10 themes, analytics, calendar, streaks, reminders, and 20+ practical features.">
-<meta name="theme-color" content="#0f172a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="HabitFlow">
-<meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-<style>
-/* ========== CSS CUSTOM PROPERTIES - 10 COLOR PALETTES ========== */
-:root[data-theme="dark"][data-palette="default"]{--bg:#0f172a;--bg-elevated:#1e293b;--bg-card:#334155;--border:#475569;--border-soft:#64748b;--text:#e2e8f0;--text-dim:#94a3b8;--text-faint:#64748b;--danger:#ef4444;--success:#10b981;--warning:#f59e0b;--primary:#3b82f6;--primary-light:#60a5fa;--accent:#f472b6;--accent-light:#fbcfe8;--radius-lg:18px;--radius-md:14px;--radius-sm:10px;}
-:root[data-theme="light"][data-palette="default"]{--bg:#f8fafc;--bg-elevated:#ffffff;--bg-card:#f1f5f9;--border:#e2e8f0;--border-soft:#cbd5e1;--text:#0f172a;--text-dim:#64748b;--text-faint:#94a3b8;--danger:#ef4444;--success:#10b981;--warning:#f59e0b;--primary:#3b82f6;--primary-light:#60a5fa;--accent:#ec4899;--accent-light:#fbcfe8;--radius-lg:18px;--radius-md:14px;--radius-sm:10px;}
-:root[data-theme="dark"][data-palette="ocean"]{--bg:#0c4a6e;--bg-elevated:#075985;--bg-card:#0284c7;--border:#0ea5e9;--border-soft:#38bdf8;--text:#e0f2fe;--text-dim:#7dd3fc;--text-faint:#38bdf8;--danger:#f87171;--success:#34d399;--warning:#fbbf24;--primary:#0ea5e9;--primary-light:#38bdf8;--accent:#f472b6;--accent-light:#fbcfe8;}
-:root[data-theme="dark"][data-palette="forest"]{--bg:#052e16;--bg-elevated:#064e3b;--bg-card:#065f46;--border:#10b981;--border-soft:#34d399;--text:#d1fae5;--text-dim:#6ee7b7;--text-faint:#34d399;--danger:#f87171;--success:#34d399;--warning:#fbbf24;--primary:#10b981;--primary-light:#34d399;--accent:#f472b6;--accent-light:#fbcfe8;}
-:root[data-theme="dark"][data-palette="sunset"]{--bg:#7c2d12;--bg-elevated:#9a3412;--bg-card:#c2410c;--border:#ea580c;--border-soft:#fb923c;--text:#fff7ed;--text-dim:#fed7aa;--text-faint:#fb923c;--danger:#f87171;--success:#34d399;--warning:#fbbf24;--primary:#ea580c;--primary-light:#fb923c;--accent:#f472b6;--accent-light:#fbcfe8;}
-:root[data-theme="dark"][data-palette="purple"]{--bg:#3b0764;--bg-elevated:#4c1d95;--bg-card:#5b21b6;--border:#7e22ce;--border-soft:#a855f7;--text:#ede9fe;--text-dim:#d8b4fe;--text-faint:#a855f7;--danger:#f87171;--success:#34d399;--warning:#fbbf24;--primary:#7e22ce;--primary-light:#a855f7;--accent:#f472b6;--accent-light:#fbcfe8;}
-:root[data-theme="dark"][data-palette="pink"]{--bg:#581c87;--bg-elevated:#6b21a8;--bg-card:#7c3aed;--border:#8b5cf6;--border-soft:#a78bfa;--text:#f3e8ff;--text-dim:#ddd6fe;--text-faint:#a78bfa;--danger:#f87171;--success:#34d399;--warning:#fbbf24;--primary:#8b5cf6;--primary-light:#a78bfa;--accent:#ec4899;--accent-light:#fbcfe8;}
-:root[data-theme="dark"][data-palette="orange"]{--bg:#7c2d12;--bg-elevated:#9a3412;--bg-card:#b45309;--border:#d97706;--border-soft:#f59e0b;--text:#fffbeb;--text-dim:#fde68a;--text-faint:#f59e0b;--danger:#f87171;--success:#34d399;--warning:#fbbf24;--primary:#d97706;--primary-light:#f59e0b;--accent:#ec4899;--accent-light:#fbcfe8;}
-:root[data-theme="dark"][data-palette="teal"]{--bg:#115e59;--bg-elevated:#134e4a;--bg-card:#0f766e;--border:#0d9488;--border-soft:#2dd4bf;--text:#ccfbf1;--text-dim:#99f6e4;--text-faint:#2dd4bf;--danger:#f87171;--success:#34d399;--warning:#fbbf24;--primary:#0d9488;--primary-light:#2dd4bf;--accent:#f472b6;--accent-light:#fbcfe8;}
-:root[data-theme="dark"][data-palette="indigo"]{--bg:#1e3a8a;--bg-elevated:#1e40af;--bg-card:#3730a3;--border:#4338ca;--border-soft:#6366f1;--text:#e0e7ff;--text-dim:#c7d2fe;--text-faint:#6366f1;--danger:#f87171;--success:#34d399;--warning:#fbbf24;--primary:#4338ca;--primary-light:#6366f1;--accent:#ec4899;--accent-light:#fbcfe8;}
-:root[data-theme="light"][data-palette="ocean"]{--bg:#e0f2fe;--bg-elevated:#f0f9ff;--bg-card:#bae6fd;--border:#7dd3fc;--border-soft:#38bdf8;--text:#0c4a6e;--text-dim:#075985;--text-faint:#0284c7;--danger:#dc2626;--success:#059669;--warning:#d97706;--primary:#0284c7;--primary-light:#0ea5e9;--accent:#db2777;--accent-light:#fbcfe8;}
-:root[data-theme="light"][data-palette="forest"]{--bg:#d1fae5;--bg-elevated:#ecfdf5;--bg-card:#a7f3d0;--border:#6ee7b7;--border-soft:#34d399;--text:#064e3b;--text-dim:#065f46;--text-faint:#065f46;--danger:#dc2626;--success:#059669;--warning:#d97706;--primary:#059669;--primary-light:#10b981;--accent:#be185d;--accent-light:#fbcfe8;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>Winter Arc Pro — World-Class Habit & Focus OS</title>
+  <meta name="description" content="The world-class, private, bugproof daily habit tracker and deep work focus suite for your Winter Arc.">
+  <meta name="theme-color" content="#060a14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Winter Arc">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;overscroll-behavior-y:none;transition:background .3s,color .3s}
-.disp{font-family:'Poppins','Inter',sans-serif;font-weight:600}
-button,input,textarea,select{font-family:inherit;font-size:16px}button{touch-action:manipulation;cursor:pointer;border:none;background:none}
-button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-.app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+  <!-- OpenGraph Meta -->
+  <meta property="og:title" content="Winter Arc Tracker Pro">
+  <meta property="og:description" content="A private, world-class daily habit and focus tracker. Build unbreakable discipline.">
+  <meta property="og:type" content="website">
 
-.theme-switcher{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:50;display:flex;gap:6px;background:var(--bg-elevated);padding:6px;border-radius:30px;box-shadow:0 4px 12px rgba(0,0,0,.15);flex-wrap:nowrap;overflow-x:auto;max-width:95vw;scrollbar-width:none}
-.theme-switcher::-webkit-scrollbar{display:none}
-.theme-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;flex-shrink:0}
-.theme-btn.active{background:var(--primary);color:#fff;transform:scale(1.1)}
-.theme-btn:hover{transform:scale(1.08)}
-.theme-label{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:50;background:var(--bg-elevated);padding:6px 12px;border-radius:20px;font-size:11px;color:var(--text-dim);box-shadow:0 4px 12px rgba(0,0,0,.15)}
-.topbar{position:sticky;top:0;left:0;right:0;z-index:10;padding:12px 16px 8px;background:var(--bg);border-bottom:1px solid var(--border);margin-bottom:16px}
-.topbar-row{display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px}
-.brand-icon{font-size:20px}
-.day-badge{background:var(--primary);color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.user-greeting{font-size:13px;color:var(--text-dim)}
-main#views{flex:1;padding:0 16px calc(80px + env(safe-area-inset-bottom));overflow-y:auto}
-.view{display:none;animation:fadeIn .3s}.view.active{display:block}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-h2.view-title{font-size:20px;font-weight:700;margin:0 0 4px;color:var(--text)}p.view-sub{font-size:13px;color:var(--text-dim);margin:0 0 16px;line-height:1.5}
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
-.quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
-.stat-box{background:var(--bg-elevated);border-radius:var(--radius-md);padding:12px;text-align:center;border:1px solid var(--border)}
-.stat-value{font-size:22px;font-weight:700;color:var(--primary)}
-.stat-label{font-size:10px;color:var(--text-dim);margin-top:2px}
+  <!-- Typography: Space Grotesk & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-.streak-card{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:var(--radius-lg);padding:20px;margin-bottom:20px;color:#fff;position:relative;overflow:hidden}
-.streak-card::before{content:"";position:absolute;right:-20px;bottom:-20px;font-size:120px;opacity:.1}
-.streak-value{font-size:42px;font-weight:800;line-height:1;margin:0}
-.streak-label{font-size:13px;opacity:.9;margin-top:4px}
-.streak-sub{font-size:12px;opacity:.8;margin-top:8px}
-.streak-badges{display:flex;gap:4px;margin-top:12px;flex-wrap:wrap}
-.streak-badge{background:rgba(255,255,255,.2);padding:2px 6px;border-radius:12px;font-size:10px;font-weight:600}
-
-.habit-list{margin-bottom:20px}
-.habit-item{display:flex;align-items:center;gap:12px;background:var(--bg-card);padding:14px 16px;margin-bottom:8px;border-radius:var(--radius-md);border:1px solid var(--border);cursor:pointer;transition:all .2s;position:relative}
-.habit-item:hover{transform:translateX(4px);box-shadow:0 4px 8px rgba(0,0,0,.1)}
-.habit-item.completed{border-color:var(--success);background:rgba(16,185,129,.1)}
-.habit-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--text-faint);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all .2s}
-.habit-item.completed .habit-check{background:var(--success);border-color:var(--success);color:#fff}
-.habit-icon{font-size:20px;width:24px;text-align:center;flex-shrink:0}
-.habit-info{flex:1;overflow:hidden}
-.habit-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.habit-category{font-size:10px;background:var(--bg-elevated);padding:2px 6px;border-radius:8px;color:var(--text-dim);display:inline-block;margin-top:4px}
-.habit-category.health{color:#60a5fa}.habit-category.work{color:#f97316}.habit-category.mindfulness{color:#a78bfa}
-.habit-category.fitness{color:#34d399}.habit-category.creative{color:#ec4899}.habit-category.learning{color:#6366f1}
-.habit-category.social{color:#06b6d4}.habit-category.sleep{color:#8b5cf6}
-.habit-meta{font-size:11px;color:var(--text-faint);display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
-.habit-meta .streak-icon{font-size:12px}
-.habit-edit-btn{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:8px;background:var(--bg-elevated);color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;opacity:0;transition:opacity .2s}
-.habit-item:hover .habit-edit-btn{opacity:1}
-.habit-frequency{font-size:9px;background:var(--bg-elevated);padding:2px 4px;border-radius:6px;color:var(--text-faint)}
-
-.empty-state{text-align:center;padding:40px 20px;color:var(--text-dim)}
-.empty-icon{font-size:48px;margin-bottom:16px;opacity:.5}
-.empty-title{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text)}
-.empty-sub{font-size:13px;line-height:1.5}
-.btn-primary-full{width:100%;padding:14px;background:var(--primary);color:#fff;border-radius:var(--radius-md);font-size:14px;font-weight:700;margin-top:16px}
-.btn-ghost-full{width:100%;padding:14px;background:var(--bg-elevated);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-md);font-size:14px;font-weight:600;margin-top:8px}
-
-.calendar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.calendar-nav{display:flex;gap:8px}
-.calendar-btn{width:32px;height:32px;border-radius:8px;background:var(--bg-elevated);color:var(--text);display:flex;align-items:center;justify-content:center;transition:all .2s}
-.calendar-btn:hover{background:var(--border-soft);color:var(--text)}
-.current-month{font-size:15px;font-weight:700}
-.month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.weekday-label{text-align:center;font-size:10px;color:var(--text-faint);padding-bottom:8px}
-.day-cell{aspect-ratio:1;background:var(--bg-card);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .2s;border:1px solid var(--border)}
-.day-cell:hover{border-color:var(--primary);transform:scale(1.05)}
-.day-cell.today{border:2px solid var(--primary);font-weight:700}
-.day-cell.completed{background:var(--success);color:#fff;border-color:var(--success)}
-.day-cell.partial{background:var(--warning);color:#fff;border-color:var(--warning)}
-.day-cell.past{opacity:.5}
-.day-cell.empty{visibility:hidden;cursor:default}
-.calendar-legend{display:flex;gap:4px;align-items:center;margin-top:12px;font-size:11px;color:var(--text-dim)}
-.legend-dot{width:8px;height:8px;border-radius:50%;background:var(--bg-card)}
-.legend-dot:nth-child(1){background:var(--border-soft)}.legend-dot:nth-child(2){background:var(--primary)}.legend-dot:nth-child(3){background:var(--success)}
-
-.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.stat-card{background:var(--bg-card);padding:16px;border-radius:var(--radius-md);border:1px solid var(--border)}
-.stat-title{font-size:12px;color:var(--text-dim);margin-bottom:4px}
-.stat-number{font-size:24px;font-weight:800;color:var(--primary)}
-.trend-up{color:var(--success);font-size:12px;margin-top:4px}
-.trend-down{color:var(--danger);font-size:12px;margin-top:4px}
-
-.habit-stat{margin-bottom:16px}
-.habit-stat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.habit-stat-name{font-size:13px;font-weight:600}
-.habit-stat-pct{font-size:12px;color:var(--text-dim)}
-.stat-bar{height:8px;background:var(--bg-elevated);border-radius:4px;overflow:hidden}
-.stat-bar-fill{height:100%;background:var(--primary);border-radius:4px;transition:width .5s ease}
-
-.category-stats{margin-top:24px}
-.category-stat-item{display:flex;align-items:center;gap:12px;background:var(--bg-card);padding:12px;border-radius:var(--radius-md);border:1px solid var(--border);margin-bottom:8px}
-.category-icon{font-size:24px;width:40px;text-align:center}
-.category-info{flex:1}
-.category-name{font-size:13px;font-weight:600}
-.category-count{font-size:11px;color:var(--text-faint)}
-.category-bar{width:80px;height:6px;background:var(--bg-elevated);border-radius:3px;overflow:hidden}
-.category-bar-fill{height:100%;border-radius:3px;background:var(--primary)}
-
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center}
-.overlay.active{display:flex}
-.modal{width:100%;max-width:520px;background:var(--bg-elevated);border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));max-height:85vh;overflow-y:auto;animation:slideUp .3s}
-@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.modal-title{font-size:18px;font-weight:700}
-.modal-close{width:36px;height:36px;border-radius:8px;background:var(--bg-card);color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
-.modal-close:hover{background:var(--border)}
-
-.form-group{margin-bottom:16px}
-.form-label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:6px}
-.form-input{width:100%;padding:12px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px}
-.form-input:focus{border-color:var(--primary);outline:none}
-.form-select{width:100%;padding:12px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px}
-.form-textarea{width:100%;padding:12px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;min-height:100px;resize:vertical}
-
-.category-grid-selector{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
-.category-option{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .2s}
-.category-option:hover{border-color:var(--primary)}
-.category-option.selected{border-color:var(--primary);background:var(--primary);color:#fff}
-.category-option .cat-icon{font-size:20px}
-.category-option .cat-label{font-size:9px;margin-top:4px}
-
-.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--bg-elevated);border-top:1px solid var(--border);padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
-.nav-row{display:flex;justify-content:space-around;gap:4px}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:12px;transition:all .2s}
-.nav-item:hover{background:var(--border-soft)}
-.nav-item.active{background:var(--primary);color:#fff}
-.nav-icon{font-size:22px}
-.nav-label{font-size:10px;font-weight:600}
-
-.toast-host{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;width:100%;pointer-events:none}
-.toast{background:var(--bg-elevated);color:var(--text);padding:12px 20px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:toastIn .3s;pointer-events:auto}
-@keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
-.toast.leaving{animation:toastOut .3s forwards}@keyframes toastOut{to{opacity:0;transform:translateY(-20px)}}
-.toast-undo{background:var(--primary);color:#fff;padding:10px 16px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:toastIn .3s;pointer-events:auto;display:flex;align-items:center;gap:12px}
-.toast-undo button{background:rgba(255,255,255,.3);color:#fff;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer}
-
-.fab{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));right:20px;z-index:40;width:56px;height:56px;border-radius:50%;background:var(--primary);color:#fff;box-shadow:0 4px 16px rgba(59,130,246,.4);display:flex;align-items:center;justify-content:center;font-size:24px;transition:all .2s}
-.fab:hover{transform:scale(1.1);box-shadow:0 6px 20px rgba(59,130,246,.5)}
-.fab:active{transform:scale(0.95)}
-
-.biometric-protected{filter:blur(4px);pointer-events:none}
-.biometric-overlay{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column}
-.biometric-icon{font-size:64px;margin-bottom:20px;animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-.biometric-btn{background:var(--primary);color:#fff;padding:12px 30px;border-radius:30px;font-size:14px;font-weight:700;margin-top:20px;box-shadow:0 4px 12px rgba(59,130,246,.3)}
-
-.quote-card{background:var(--bg-card);border-left:4px solid var(--accent);padding:16px;margin-bottom:16px;border-radius:0 var(--radius-md) var(--radius-md) 0}
-.quote-text{font-style:italic;color:var(--text);font-size:13px;line-height:1.6;margin-bottom:8px}
-.quote-author{font-size:11px;color:var(--text-faint);font-weight:600}
-
-.loader{display:flex;align-items:center;justify-content:center;padding:40px}
-.loader::after{content:"";width:24px;height:24px;border:3px solid var(--border-soft);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-
-@media (max-width:400px){.stat-value{font-size:18px}.streak-value{font-size:36px}.nav-label{font-size:9px}}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}}
-
-.install-prompt{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:150;background:var(--bg-elevated);padding:12px 16px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.2);display:none;flex-direction:column;gap:8px;min-width:300px}
-.install-prompt.show{display:flex;animation:slideDown .3s}@keyframes slideDown{from{transform:translate(-50%,-100%)}to{transform:translate(-50%,0)}}
-.install-title{font-size:13px;font-weight:600}
-.install-actions{display:flex;gap:8px}
-.install-btn{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
-.install-btn.primary{background:var(--primary);color:#fff}
-.install-btn.secondary{background:var(--bg-card);color:var(--text)}
-.install-close{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-
-/* ========== NEW FEATURES ========== */
-.frequency-selector{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-.freq-option{flex:1;min-width:70px;text-align:center;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
-.freq-option.selected{border-color:var(--primary);background:var(--primary);color:#fff}
-.priority-indicator{width:8px;height:8px;border-radius:50%;display:inline-block}
-.priority-high{background:var(--danger)}.priority-medium{background:var(--warning)}.priority-low{background:var(--success)}
-.week-review{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;margin-bottom:16px}
-.week-review-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.week-review-title{font-size:14px;font-weight:700}
-.week-review-score{font-size:24px;font-weight:800;color:var(--primary)}
-.week-review-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
-.week-review-day{text-align:center;font-size:11px}
-.week-review-day-icon{font-size:18px}
-.undo-toast{background:var(--primary);color:#fff;padding:12px 20px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:toastIn .3s;pointer-events:auto}
-.undo-toast button{background:rgba(255,255,255,.3);color:#fff;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;margin-left:10px}
-.drag-handle{position:absolute;left:-6px;top:50%;transform:translateY(-50%);cursor:grab;font-size:16px;color:var(--text-faint);display:none}
-.habit-item.dragging{opacity:.5;transform:scale(.98)}
-.habit-item.drag-over{border-top:2px solid var(--primary)}
-.habit-notes{font-size:12px;color:var(--text-dim);margin-top:4px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.achievements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:12px}
-.achievement-item{text-align:center;padding:10px;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border)}
-.achievement-icon{font-size:28px}
-.achievement-name{font-size:10px;color:var(--text-dim);margin-top:4px;font-weight:600}
-</style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="app">
-  <div class="theme-switcher" role="group" aria-label="Theme selection">
-    <button class="theme-btn active" data-theme="dark" data-palette="default" onclick="setTheme('dark','default',this)" aria-label="Dark default theme">🌙</button>
-    <button class="theme-btn" data-theme="light" data-palette="default" onclick="setTheme('light','default',this)" aria-label="Light default theme">☀️</button>
-    <button class="theme-btn" data-theme="dark" data-palette="ocean" onclick="setTheme('dark','ocean',this)" aria-label="Ocean theme">🌊</button>
-    <button class="theme-btn" data-theme="dark" data-palette="forest" onclick="setTheme('dark','forest',this)" aria-label="Forest theme">🌲</button>
-    <button class="theme-btn" data-theme="dark" data-palette="sunset" onclick="setTheme('dark','sunset',this)" aria-label="Sunset theme">🌅</button>
-    <button class="theme-btn" data-theme="dark" data-palette="purple" onclick="setTheme('dark','purple',this)" aria-label="Purple theme">🟣</button>
-    <button class="theme-btn" data-theme="dark" data-palette="pink" onclick="setTheme('dark','pink',this)" aria-label="Pink theme">💖</button>
-    <button class="theme-btn" data-theme="dark" data-palette="orange" onclick="setTheme('dark','orange',this)" aria-label="Orange theme">🟠</button>
-    <button class="theme-btn" data-theme="dark" data-palette="teal" onclick="setTheme('dark','teal',this)" aria-label="Teal theme">💎</button>
-    <button class="theme-btn" data-theme="dark" data-palette="indigo" onclick="setTheme('dark','indigo',this)" aria-label="Indigo theme">靛</button>
+  <noscript>
+    <div style="padding:40px 20px;text-align:center;background:#060a14;color:#cfe6ff;min-height:100vh;">
+      <h2>JavaScript is required</h2>
+      <p>Winter Arc runs 100% privately in your browser. Please enable JavaScript to access your tracker.</p>
+    </div>
+  </noscript>
+
+  <div class="app-container">
+
+    <!-- DESKTOP SIDEBAR (Visible on tablets and desktop >= 860px) -->
+    <aside class="desktop-sidebar" aria-label="Desktop Navigation">
+      <div>
+        <div class="sidebar-brand">
+          <span style="font-size:24px;">❄️</span>
+          <span class="disp" id="desktopBrandTitle">WINTER ARC</span>
+        </div>
+        <nav class="sidebar-nav">
+          <button class="sidebar-btn active" data-tab="today" aria-label="Today">
+            <span class="icon">🔥</span><span>Today</span>
+          </button>
+          <button class="sidebar-btn" data-tab="focus" aria-label="Focus &amp; Deep Work">
+            <span class="icon">⏱️</span><span>Focus Mode</span>
+          </button>
+          <button class="sidebar-btn" data-tab="calendar" aria-label="Calendar Heatmap">
+            <span class="icon">📅</span><span>Calendar</span>
+          </button>
+          <button class="sidebar-btn" data-tab="stats" aria-label="Stats &amp; Trophies">
+            <span class="icon">📊</span><span>Analytics</span>
+          </button>
+          <button class="sidebar-btn" data-tab="studio" aria-label="Share Card Studio">
+            <span class="icon">🎨</span><span>Share Studio</span>
+          </button>
+          <button class="sidebar-btn" data-tab="manage" aria-label="Manage &amp; Settings">
+            <span class="icon">⚙️</span><span>Settings</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="action-pill-btn" id="btnSidebarSoundToggle" style="justify-content:center;">
+          <span id="sidebarSoundIcon">🔊</span> <span id="sidebarSoundText">Audio FX On</span>
+        </button>
+        <button class="action-pill-btn" id="btnSidebarHelp" style="justify-content:center;">
+          <span>⌨️</span> <span>Shortcuts (?)</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN APP VIEWPORT -->
+    <main class="app-main">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-content">
+          <div class="brand-row">
+            <div class="brand-title">
+              <span style="font-size:20px;">❄️</span>
+              <span class="disp" id="topbarBrandText">WINTER ARC</span>
+            </div>
+            <div class="topbar-actions">
+              <div class="day-badge disp" id="topbarDayBadge">Day 1 / 180</div>
+              <button class="action-pill-btn" id="btnSoundToggle" aria-label="Toggle Sound FX">
+                <span id="topbarSoundIcon">🔊</span>
+              </button>
+              <button class="action-pill-btn" id="btnHelpModal" aria-label="Keyboard Shortcuts">?</button>
+            </div>
+          </div>
+          <div class="arc-progress-bar-wrap">
+            <div class="arc-progress-bar-fill" id="arcLinearBar" style="width: 0%;"></div>
+          </div>
+          <div class="range-meta-row">
+            <span id="arcDateSpan">Sept 2, 2026 → Feb 28, 2027</span>
+            <span id="arcDaysLeft">180 days remaining</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- VIEWS SCROLL CONTAINER -->
+      <div class="views-scroll" id="viewsScroll">
+
+        <!-- ==================== TAB 1: TODAY ==================== -->
+        <section class="view-panel active" id="view-today" aria-label="Today">
+          <div id="todayGatedBanner" style="display:none;"></div>
+
+          <div id="todayMainContent">
+            <!-- 7-Day Glance Strip -->
+            <div class="glance-strip" id="glanceStrip" aria-label="7-day glance"></div>
+
+            <!-- Hero Circular Completion Ring -->
+            <div class="ring-hero">
+              <div class="ring-container">
+                <svg class="ring-svg" viewBox="0 0 160 160">
+                  <circle class="ring-bg-circle" cx="80" cy="80" r="70" />
+                  <circle class="ring-progress-circle" id="heroRingCircle" cx="80" cy="80" r="70" />
+                </svg>
+                <div class="ring-center-content">
+                  <span class="ring-pct-text disp" id="heroRingPct">0%</span>
+                  <span class="ring-sub-text" id="heroRingRatio">0 / 0 done</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Streak Freeze Protection Banner (if available/used) -->
+            <div id="freezeBannerWrap" style="margin-bottom:16px;"></div>
+
+            <!-- Discipline Quote -->
+            <div class="quote-banner" id="todayQuoteBanner">"Consistency is quiet. It rarely feels like progress until it is."</div>
+
+            <!-- Filter Chips: Time of Day & Categories -->
+            <div class="filter-row" id="timeFilterRow">
+              <button class="chip active" data-time="all">All Day</button>
+              <button class="chip" data-time="morning">🌅 Morning</button>
+              <button class="chip" data-time="afternoon">☀️ Afternoon</button>
+              <button class="chip" data-time="evening">🌙 Evening</button>
+              <button class="chip" data-time="anytime">⚡ Any Time</button>
+            </div>
+
+            <!-- Habit Cards List -->
+            <div class="habit-list" id="todayHabitList"></div>
+
+            <!-- Daily Reflection & Energy Log -->
+            <div class="reflection-card">
+              <div style="font-size:13px;font-weight:700;color:var(--frost);margin-bottom:4px;">Daily Reflection &amp; Energy</div>
+              <div style="font-size:11.5px;color:var(--text-dim);">How was your energy and focus today?</div>
+              
+              <div class="energy-rating-row" id="energyRatingRow">
+                <button class="energy-btn" data-level="1"><span class="emoji">😴</span><span>Drained</span></button>
+                <button class="energy-btn" data-level="2"><span class="emoji">😐</span><span>Low</span></button>
+                <button class="energy-btn" data-level="3"><span class="emoji">🙂</span><span>Steady</span></button>
+                <button class="energy-btn" data-level="4"><span class="emoji">🔥</span><span>Strong</span></button>
+                <button class="energy-btn" data-level="5"><span class="emoji">👑</span><span>Peak</span></button>
+              </div>
+
+              <textarea class="journal-textarea" id="todayJournalText" placeholder="Log your wins, obstacles, or lessons from today..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 2: FOCUS & DEEP WORK ==================== -->
+        <section class="view-panel" id="view-focus" aria-label="Focus &amp; Deep Work">
+          <div class="view-header">
+            <h1 class="disp">Deep Work Suite</h1>
+            <p>Monk mode timer and client-side procedural soundscapes.</p>
+          </div>
+
+          <!-- Focus Timer Hero -->
+          <div class="focus-hero-card">
+            <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;">Session in Progress</div>
+            <div class="timer-digits disp" id="focusTimerDisplay">50:00</div>
+
+            <!-- Preset Buttons -->
+            <div class="timer-preset-row">
+              <button class="chip" data-minutes="25">25m Pomodoro</button>
+              <button class="chip active" data-minutes="50">50m Ultra</button>
+              <button class="chip" data-minutes="90">90m Deep</button>
+              <button class="chip" data-minutes="0">Stopwatch</button>
+            </div>
+
+            <!-- Habit Session Link Tag -->
+            <div style="margin-bottom:18px;">
+              <label for="focusHabitSelect" style="font-size:11.5px;color:var(--text-dim);display:block;margin-bottom:6px;">Credit time toward habit:</label>
+              <select class="form-input" id="focusHabitSelect" style="max-width:260px;margin:0 auto;display:inline-block;"></select>
+            </div>
+
+            <!-- Timer Action Controls -->
+            <div class="timer-controls">
+              <button class="btn-large btn-primary" id="btnFocusStart">
+                <span id="focusStartIcon">▶</span> <span id="focusStartText">Start Session</span>
+              </button>
+              <button class="btn-large btn-ghost" id="btnFocusReset">Reset</button>
+            </div>
+          </div>
+
+          <!-- Ambient Audio Synthesizer -->
+          <div class="audio-synth-box">
+            <div class="synth-header">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--frost);">Ambient Focus Synthesizer</div>
+                <div style="font-size:11px;color:var(--text-dim);">100% Web Audio API procedural synthesis · zero external downloads</div>
+              </div>
+              <button class="action-pill-btn" id="btnToggleNoisePlay">Play Sound</button>
+            </div>
+
+            <div class="sound-type-grid" id="soundTypeGrid">
+              <button class="sound-btn active" data-sound="brown">🌊 Brown Noise</button>
+              <button class="sound-btn" data-sound="pink">🌸 Pink Noise</button>
+              <button class="sound-btn" data-sound="white">📻 White Noise</button>
+              <button class="sound-btn" data-sound="rain">🌧️ Rain Storm</button>
+              <button class="sound-btn" data-sound="binaural">🧠 40Hz Gamma</button>
+            </div>
+
+            <div class="volume-slider-row">
+              <span>Volume</span>
+              <input type="range" class="volume-slider" id="synthVolumeSlider" min="0" max="100" value="35">
+              <span id="synthVolLabel">35%</span>
+            </div>
+          </div>
+
+          <!-- Today's Focus Log Summary -->
+          <div class="stat-card" style="text-align:left;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:12px;color:var(--text-dim);">Today's Focus Time</div>
+              <div class="stat-val disp" id="todayFocusMinutes">0 min</div>
+            </div>
+            <div>
+              <div style="font-size:12px;color:var(--text-dim);">Completed Blocks</div>
+              <div class="stat-val disp ember" id="todayFocusSessions">0</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 3: CALENDAR ==================== -->
+        <section class="view-panel" id="view-calendar" aria-label="Calendar Heatmap">
+          <div class="view-header">
+            <h1 class="disp">Heatmap Calendar</h1>
+            <p>Every single day of your arc. Tap any day to inspect or log retroactive notes.</p>
+          </div>
+
+          <!-- Calendar Scale Legend -->
+          <div class="calendar-legend">
+            <span>Discipline Intensity:</span>
+            <div class="legend-scale">
+              <div class="legend-cell" style="background:var(--bg-elevated);border:1px solid var(--border-soft);" title="0%"></div>
+              <div class="legend-cell" style="background:rgba(111,184,232,0.25);" title="25%"></div>
+              <div class="legend-cell" style="background:rgba(111,184,232,0.5);" title="50%"></div>
+              <div class="legend-cell" style="background:rgba(111,184,232,0.75);" title="75%"></div>
+              <div class="legend-cell" style="background:var(--accent);" title="100%"></div>
+            </div>
+            <span style="margin-left:8px;">🛡️ = Freeze / Rest</span>
+          </div>
+
+          <div id="calendarMonthsWrap"></div>
+        </section>
+
+        <!-- ==================== TAB 4: STATS & TROPHIES ==================== -->
+        <section class="view-panel" id="view-stats" aria-label="Analytics &amp; Trophies">
+          <div class="view-header">
+            <h1 class="disp">Discipline Analytics</h1>
+            <p>Comprehensive insights, weekday heat, and earned milestone trophies.</p>
+          </div>
+
+          <!-- 4 Hero Stat Cards -->
+          <div class="stats-hero-grid">
+            <div class="stat-card">
+              <div class="stat-val disp ember" id="statCurrentStreak">0</div>
+              <div class="stat-lbl">CURRENT STREAK</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val disp" id="statBestStreak">0</div>
+              <div class="stat-lbl">BEST STREAK</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val disp" id="statArcCompletion">0%</div>
+              <div class="stat-lbl">ARC COMPLETION</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-val disp" id="statTotalReps">0</div>
+              <div class="stat-lbl">TOTAL REPS</div>
+            </div>
+          </div>
+
+          <!-- Weekday Consistency Bar Chart -->
+          <div class="weekday-chart-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:13.5px;font-weight:700;color:var(--frost);">Weekday Consistency Pattern</div>
+              <div style="font-size:11px;color:var(--accent);" id="strongestDayBadge">Strongest: -</div>
+            </div>
+            <div class="weekday-bars-container" id="weekdayBarsContainer"></div>
+          </div>
+
+          <!-- Per-Habit Completion Breakdown -->
+          <div class="settings-section">
+            <div class="settings-section-title">📊 Habit Breakdown</div>
+            <div id="habitStatsList"></div>
+          </div>
+
+          <!-- Unlockable Milestone Trophies -->
+          <div class="settings-section">
+            <div class="settings-section-title">🏆 Trophies &amp; Achievements</div>
+            <div style="font-size:11.5px;color:var(--text-dim);margin-bottom:12px;">Milestones unlocked during your Winter Arc journey.</div>
+            <div class="trophies-grid" id="trophiesGrid"></div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 5: SHARE CARD STUDIO ==================== -->
+        <section class="view-panel" id="view-studio" aria-label="Share Card Studio">
+          <div class="view-header">
+            <h1 class="disp">Share Card Studio</h1>
+            <p>Generate high-resolution, branded social cards to share your discipline.</p>
+          </div>
+
+          <div class="card-studio-box">
+            <div class="canvas-preview-wrap">
+              <canvas id="shareCanvas" width="1080" height="1920"></canvas>
+            </div>
+
+            <div class="card-options-grid">
+              <div class="form-group">
+                <label for="shareCardRatio">Card Aspect Ratio</label>
+                <select class="form-input" id="shareCardRatio">
+                  <option value="9:16">Story / Reel (9:16 - 1080x1920)</option>
+                  <option value="1:1">Square Post (1:1 - 1080x1080)</option>
+                  <option value="16:9">Twitter / Landscape (16:9 - 1920x1080)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="shareCardStyle">Card Visual Theme</label>
+                <select class="form-input" id="shareCardStyle">
+                  <option value="current">Match Current Theme</option>
+                  <option value="glacier">Glacier Ice</option>
+                  <option value="obsidian">Obsidian Gold</option>
+                  <option value="cyber">Cyberpunk Aurora</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="button-stack">
+              <button class="btn-large btn-primary" id="btnShareNative" style="justify-content:center;">
+                <span>📤</span> <span>Share via Native Sheet</span>
+              </button>
+              <button class="btn-large btn-ghost" id="btnDownloadCard" style="justify-content:center;">
+                <span>💾</span> <span>Download PNG High-Res</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 6: MANAGE & SETTINGS ==================== -->
+        <section class="view-panel" id="view-manage" aria-label="Settings &amp; Manage">
+          <div class="view-header">
+            <h1 class="disp">Settings &amp; Configuration</h1>
+            <p>Customize your habits, dates, themes, and cloud backup.</p>
+          </div>
+
+          <!-- Theme Appearance -->
+          <div class="settings-section">
+            <div class="settings-section-title">🎨 Theme &amp; Aesthetics</div>
+            <div class="theme-swatches-row" id="themeSwatchesRow"></div>
+          </div>
+
+          <!-- Sound FX & Confetti -->
+          <div class="settings-section">
+            <div class="settings-section-title">🔊 Sound FX &amp; Haptics</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <span style="font-size:13px;">Mechanical Click &amp; Chime Audio</span>
+              <input type="checkbox" id="chkAudioFeedback" checked style="width:18px;height:18px;accent-color:var(--accent);">
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:13px;">Confetti Blizzard Celebration</span>
+              <input type="checkbox" id="chkConfetti" checked style="width:18px;height:18px;accent-color:var(--accent);">
+            </div>
+          </div>
+
+          <!-- Habits Management -->
+          <div class="settings-section">
+            <div class="settings-section-title">📋 Habits Configuration</div>
+            <div id="manageHabitList"></div>
+            <button class="btn-large btn-ghost" id="btnOpenAddHabit" style="width:100%;margin-top:12px;justify-content:center;">
+              + Add a Habit
+            </button>
+            <button class="action-pill-btn" id="btnToggleArchived" style="margin-top:12px;display:none;">
+              ▾ Archived Habits (0)
+            </button>
+            <div id="archivedHabitList" style="display:none;margin-top:10px;"></div>
+          </div>
+
+          <!-- Arc Dates & Name -->
+          <div class="settings-section">
+            <div class="settings-section-title">❄️ Arc Details &amp; Timeline</div>
+            <div class="form-group">
+              <label for="inputArcName">Arc Title</label>
+              <input type="text" class="form-input" id="inputArcName" value="WINTER ARC">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="form-group">
+                <label for="inputStartDate">Start Date</label>
+                <input type="date" class="form-input" id="inputStartDate">
+              </div>
+              <div class="form-group">
+                <label for="inputEndDate">End Date</label>
+                <input type="date" class="form-input" id="inputEndDate">
+              </div>
+            </div>
+            <button class="btn-large btn-primary" id="btnSaveArcDates" style="width:100%;justify-content:center;margin-top:6px;">
+              Save Arc Dates
+            </button>
+          </div>
+
+          <!-- Streak Freeze Bank -->
+          <div class="settings-section">
+            <div class="settings-section-title">🛡️ Streak Freeze Protection</div>
+            <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;">
+              Protect your streak when life, illness, or travel interrupts. You have <b id="freezeBankCount" style="color:var(--gold);">2 freezes</b> available this month.
+            </div>
+            <button class="btn-large btn-ghost" id="btnApplyFreezeToday" style="width:100%;justify-content:center;">
+              Apply Streak Freeze to Today
+            </button>
+          </div>
+
+          <!-- Cloud Sync (GitHub Gist) -->
+          <div class="settings-section">
+            <div class="settings-section-title">☁️ Cross-Device Cloud Sync (GitHub Gist)</div>
+            <div style="font-size:12px;color:var(--text-dim);margin-bottom:12px;">
+              Sync seamlessly across your phone, laptop, and tablet without any centralized backend server. Credentials stay 100% on your device.
+            </div>
+            <div class="form-group">
+              <label for="inputGistToken">GitHub Personal Access Token (with 'gist' permission)</label>
+              <input type="password" class="form-input" id="inputGistToken" placeholder="ghp_xxxxxxxxxxxx">
+            </div>
+            <div class="form-group">
+              <label for="inputGistId">Gist ID (leave empty to create a new private Gist)</label>
+              <input type="text" class="form-input" id="inputGistId" placeholder="e.g. 7f8a9b0c1d2e3f4">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button class="btn-large btn-primary" id="btnGistPush" style="justify-content:center;">Push to Cloud</button>
+              <button class="btn-large btn-ghost" id="btnGistPull" style="justify-content:center;">Pull from Cloud</button>
+            </div>
+          </div>
+
+          <!-- Backup & Data Freedom -->
+          <div class="settings-section">
+            <div class="settings-section-title">💾 Backup &amp; Data Freedom</div>
+            <div class="button-stack">
+              <button class="btn-large btn-ghost" id="btnExportJSON" style="justify-content:center;">Export Full Backup (.json)</button>
+              <button class="btn-large btn-ghost" id="btnExportCSV" style="justify-content:center;">Export Spreadsheet Data (.csv)</button>
+              <button class="btn-large btn-ghost" id="btnTriggerImport" style="justify-content:center;">Import Backup (.json)</button>
+              <input type="file" id="inputImportFile" accept="application/json" style="display:none;">
+              <button class="btn-large btn-danger" id="btnResetAllData" style="justify-content:center;">Reset All Data</button>
+            </div>
+          </div>
+
+          <!-- Install & PWA -->
+          <div class="settings-section">
+            <div class="settings-section-title">📲 Install App &amp; Offline</div>
+            <button class="btn-large btn-primary" id="btnPwaInstall" style="width:100%;justify-content:center;display:none;margin-bottom:12px;">
+              Install as Standalone App
+            </button>
+            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">
+              <b>iPhone / Safari:</b> Tap Share → "Add to Home Screen".<br>
+              <b>Android / Chrome:</b> Tap Menu → "Install App".<br>
+              <b>Privacy:</b> 100% Client-Side. No telemetry, no tracking, zero server dependency.
+            </div>
+          </div>
+        </section>
+
+      </div> <!-- /views-scroll -->
+
+      <!-- MOBILE BOTTOM NAVIGATION -->
+      <nav class="bottom-nav" aria-label="Mobile Navigation">
+        <button class="nav-tab-btn active" data-tab="today">
+          <span class="icon">🔥</span><span>Today</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="focus">
+          <span class="icon">⏱️</span><span>Focus</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="calendar">
+          <span class="icon">📅</span><span>Calendar</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="stats">
+          <span class="icon">📊</span><span>Stats</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="studio">
+          <span class="icon">🎨</span><span>Studio</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="manage">
+          <span class="icon">⚙️</span><span>Settings</span>
+        </button>
+      </nav>
+
+    </main>
   </div>
-  <div class="theme-label" id="themeLabel">Dark Default</div>
 
-  <header class="topbar" role="banner">
-    <div class="topbar-row">
-      <div class="brand">
-        <span class="brand-icon">🌿</span>
-        <span class="disp">HabitFlow</span>
-      </div>
-      <div class="day-badge" id="dayBadge" aria-live="polite">Day 1</div>
-    </div>
-    <div class="user-greeting" id="userGreeting" data-i18n="welcome">Welcome back!</div>
-  </header>
-
-  <main id="views">
-    <!-- TODAY VIEW -->
-    <section class="view active" id="view-today" aria-labelledby="todayTitle">
-      <h2 class="view-title" id="todayTitle" data-i18n="today">Today</h2>
-      <p class="view-sub" id="todayDate">Loading...</p>
-      
-      <div class="quote-card" aria-label="Daily inspiration">
-        <div class="quote-text" id="dailyQuote">"Success is the sum of small efforts, repeated day in and day out."</div>
-        <div class="quote-author" id="quoteAuthor">- Robert Collier</div>
-      </div>
-
-      <div class="streak-card" role="img" aria-label="Current streak">
-        <span class="streak-value" id="currentStreak">0</span>
-        <div class="streak-label">Current Streak</div>
-        <div class="streak-sub" id="streakDescription">Keep it going! You've completed habits for 0 consecutive days.</div>
-        <div class="streak-badges" id="streakBadges"></div>
-      </div>
-
-      <div class="quick-stats" aria-label="Quick statistics">
-        <div class="stat-box">
-          <div class="stat-value" id="todayCompletion">0%</div>
-          <div class="stat-label">Today's Completion</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value" id="totalCompleted">0</div>
-          <div class="stat-label">Total Completed</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-value" id="activeHabits">0</div>
-          <div class="stat-label">Active Habits</div>
-        </div>
-      </div>
-
-      <div class="habit-list" id="todayHabitList" aria-label="Today's habits">
-        <div class="empty-state">
-          <div class="empty-icon">🚫</div>
-          <div class="empty-title" data-i18n="noHabits">No habits yet</div>
-          <div class="empty-sub">Add your first habit to start tracking your progress today!</div>
-          <button class="btn-primary-full" onclick="openHabitModal()">+ Add First Habit</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- CALENDAR VIEW -->
-    <section class="view" id="view-calendar" aria-labelledby="calendarTitle">
-      <h2 class="view-title" id="calendarTitle" data-i18n="calendar">Calendar</h2>
-      <p class="view-sub">Track your progress over time</p>
-      
-      <div class="calendar-header">
-        <button class="calendar-btn" id="prevMonthBtn" aria-label="Previous month">❮</button>
-        <span class="current-month" id="currentMonth">September 2024</span>
-        <button class="calendar-btn" id="nextMonthBtn" aria-label="Next month">❯</button>
-      </div>
-      
-      <div class="month-grid" id="monthGrid" role="grid" aria-label="Current month">
-        <span class="weekday-label" aria-label="Sunday">S</span>
-        <span class="weekday-label" aria-label="Monday">M</span>
-        <span class="weekday-label" aria-label="Tuesday">T</span>
-        <span class="weekday-label" aria-label="Wednesday">W</span>
-        <span class="weekday-label" aria-label="Thursday">T</span>
-        <span class="weekday-label" aria-label="Friday">F</span>
-        <span class="weekday-label" aria-label="Saturday">S</span>
-      </div>
-      <div class="calendar-legend" aria-label="Legend">
-        <span class="legend-dot" aria-hidden="true"></span>
-        <span>Less</span>
-        <span class="legend-dot" aria-hidden="true"></span>
-        <span>Some</span>
-        <span class="legend-dot" aria-hidden="true"></span>
-        <span>More</span>
-      </div>
-
-      <!-- Weekly Review -->
-      <div class="week-review" style="margin-top:20px;">
-        <div class="week-review-header">
-          <span class="week-review-title">Weekly Review</span>
-          <span class="week-review-score" id="weekReviewScore">0%</span>
-        </div>
-        <div id="weekReviewGrid" class="week-review-grid"></div>
-        <div style="font-size:11px;color:var(--text-dim);margin-top:12px;text-align:center;">Your best day this week is highlighted</div>
-      </div>
-    </section>
-
-    <!-- STATS VIEW -->
-    <section class="view" id="view-stats" aria-labelledby="statsTitle">
-      <h2 class="view-title" id="statsTitle" data-i18n="stats">Statistics</h2>
-      <p class="view-sub">Your progress analytics</p>
-      
-      <div class="stats-grid" aria-label="Key statistics">
-        <div class="stat-card">
-          <div class="stat-title">Completion Rate</div>
-          <div class="stat-number" id="overallCompletion">0%</div>
-          <div class="trend-up">⬆️ +12% vs last month</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title">Best Streak</div>
-          <div class="stat-number" id="bestStreak">0</div>
-          <div class="stat-label">Days</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title">Total Habits</div>
-          <div class="stat-number" id="totalHabits">0</div>
-          <div class="stat-label">All time</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title">Active Days</div>
-          <div class="stat-number" id="activeDays">0</div>
-          <div class="stat-label">In past 30 days</div>
-        </div>
-      </div>
-
-      <!-- Achievements Section -->
-      <div class="section-label" style="font-size:12px;font-weight:700;color:var(--text-dim);margin:24px 0 12px;">🏆 Achievements</div>
-      <div id="achievementsWrap" class="achievements-grid"></div>
-
-      <div class="section-label" style="font-size:12px;font-weight:700;color:var(--text-dim);margin:24px 0 12px;">By Category</div>
-      <div class="category-stats" id="categoryStatsWrap"></div>
-
-      <div class="section-label" style="font-size:12px;font-weight:700;color:var(--text-dim);margin:24px 0 12px;">Habit Trends</div>
-      <div id="habitStatsWrap"></div>
-
-      <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;">
-        <button class="btn-ghost-full" style="flex:1;min-width:120px;" onclick="exportJSON()" aria-label="Export data as JSON">📥 JSON</button>
-        <button class="btn-ghost-full" style="flex:1;min-width:120px;" onclick="exportCSV()" aria-label="Export data as CSV">📊 CSV</button>
-        <button class="btn-ghost-full" style="flex:1;min-width:120px;" onclick="exportPDF()" aria-label="Export data as PDF">📄 PDF</button>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
-        <button class="btn-ghost-full" style="flex:1;min-width:120px;" onclick="importJSON()" aria-label="Import data">📤 Import</button>
-        <button class="btn-ghost-full" style="flex:1;min-width:120px;" onclick="shareProgress()" aria-label="Share progress">📤 Share</button>
-      </div>
-    </section>
-
-    <!-- MANAGE VIEW -->
-    <section class="view" id="view-manage" aria-labelledby="manageTitle">
-      <h2 class="view-title" id="manageTitle" data-i18n="manage">Manage Habits</h2>
-      <p class="view-sub">Add, edit, and organize your habits</p>
-
-      <button class="fab" onclick="openHabitModal()" aria-label="Add new habit">
-        <span aria-hidden="true">+</span>
-        <span class="sr-only">Add Habit</span>
-      </button>
-
-      <div id="habitManager">
-        <div class="empty-state">
-          <div class="empty-icon">🔍</div>
-          <div class="empty-title">No habits found</div>
-          <div class="empty-sub">Tap the + button to add habits</div>
-          <button class="btn-primary-full" onclick="openHabitModal()">+ Add Habit</button>
-        </div>
-      </div>
-
-      <div class="section-label" style="font-size:12px;font-weight:700;color:var(--text-dim);margin:24px 0 12px;">Settings</div>
-      
-      <div style="background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);padding:16px;margin-bottom:12px;">
-        <div class="form-group">
-          <label class="form-label" for="notificationsToggle">Daily Reminders</label>
-          <select id="notificationsToggle" class="form-select" onchange="toggleNotifications(this.value)">
-            <option value="off">Off</option>
-            <option value="morning">Morning (8 AM)</option>
-            <option value="evening">Evening (6 PM)</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="biometricToggle">Biometric Lock</label>
-          <select id="biometricToggle" class="form-select" onchange="toggleBiometric(this.value)">
-            <option value="off">Off</option>
-            <option value="on">On (Unlock required)</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="languageSelect">Language</label>
-          <select id="languageSelect" class="form-select" onchange="changeLanguage(this.value)">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="pt">Português</option>
-            <option value="it">Italiano</option>
-            <option value="ja">日本語</option>
-            <option value="zh">中文</option>
-            <option value="ko">한국어</option>
-            <option value="ru">Русский</option>
-            <option value="ar">العربية</option>
-            <option value="hi">हिन्दी</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="weekStart">Week Starts On</label>
-          <select id="weekStart" class="form-select" onchange="changeWeekStart(this.value)">
-            <option value="monday">Monday</option>
-            <option value="sunday">Sunday</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);padding:16px;">
-        <button class="btn-ghost-full" onclick="resetData()" style="color:var(--danger)">⚠️ Reset All Data</button>
-        <div style="font-size:11px;color:var(--text-faint);margin-top:12px;text-align:center;">Data is stored locally on this device. Use Export to back up.</div>
-      </div>
-    </section>
-  </main>
-
-  <nav class="bottomnav" role="navigation" aria-label="Main navigation">
-    <button class="nav-item active" onclick="switchView('today')" aria-current="page">
-      <span class="nav-icon" aria-hidden="true">🔥</span>
-      <span class="nav-label" data-i18n="today">Today</span>
-    </button>
-    <button class="nav-item" onclick="switchView('calendar')" aria-label="Go to Calendar view">
-      <span class="nav-icon" aria-hidden="true">📅</span>
-      <span class="nav-label" data-i18n="calendar">Calendar</span>
-    </button>
-    <button class="nav-item" onclick="switchView('stats')" aria-label="Go to Stats view">
-      <span class="nav-icon" aria-hidden="true">📊</span>
-      <span class="nav-label" data-i18n="stats">Stats</span>
-    </button>
-    <button class="nav-item" onclick="switchView('manage')" aria-label="Go to Manage view">
-      <span class="nav-icon" aria-hidden="true">⚙️</span>
-      <span class="nav-label" data-i18n="manage">Manage</span>
-    </button>
-  </nav>
-</div>
-
-<!-- Habit Modal (Supports Add & Edit) -->
-<div class="overlay" id="habitOverlay">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="habitModalTitle">
-    <div class="modal-header">
-      <h3 class="modal-title" id="habitModalTitle">Add Habit</h3>
-      <button class="modal-close" onclick="closeHabitModal()" aria-label="Close modal">×</button>
-    </div>
-    <form id="habitForm" onsubmit="saveHabit(event)">
-      <input type="hidden" id="editingHabitId">
-      
-      <div class="form-group">
-        <label class="form-label" for="habitName">Habit Name</label>
-        <input type="text" id="habitName" class="form-input" placeholder="e.g., Morning Meditation" required>
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label" for="habitCategory">Category</label>
-        <div class="category-grid-selector" id="categoryGrid">
-          <div class="category-option" data-category="health" onclick="selectCategory('health', this)">
-            <span class="cat-icon">💧</span>
-            <span class="cat-label">Health</span>
-          </div>
-          <div class="category-option" data-category="work" onclick="selectCategory('work', this)">
-            <span class="cat-icon">💼</span>
-            <span class="cat-label">Work</span>
-          </div>
-          <div class="category-option" data-category="mindfulness" onclick="selectCategory('mindfulness', this)">
-            <span class="cat-icon">🧘</span>
-            <span class="cat-label">Mindfulness</span>
-          </div>
-          <div class="category-option" data-category="fitness" onclick="selectCategory('fitness', this)">
-            <span class="cat-icon">🏃</span>
-            <span class="cat-label">Fitness</span>
-          </div>
-          <div class="category-option" data-category="creative" onclick="selectCategory('creative', this)">
-            <span class="cat-icon">🎨</span>
-            <span class="cat-label">Creative</span>
-          </div>
-          <div class="category-option" data-category="learning" onclick="selectCategory('learning', this)">
-            <span class="cat-icon">📚</span>
-            <span class="cat-label">Learning</span>
-          </div>
-          <div class="category-option" data-category="social" onclick="selectCategory('social', this)">
-            <span class="cat-icon">🤝</span>
-            <span class="cat-label">Social</span>
-          </div>
-          <div class="category-option" data-category="sleep" onclick="selectCategory('sleep', this)">
-            <span class="cat-icon">🛌</span>
-            <span class="cat-label">Sleep</span>
-          </div>
-        </div>
-        <input type="hidden" id="habitCategory" required>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="habitIcon">Icon</label>
-        <div class="category-grid-selector" id="iconGrid" style="grid-template-columns:repeat(6,1fr)">
-          <div class="category-option" onclick="selectIcon('💪', this)">💪</div>
-          <div class="category-option" onclick="selectIcon('🏃', this)">🏃</div>
-          <div class="category-option" onclick="selectIcon('📚', this)">📚</div>
-          <div class="category-option" onclick="selectIcon('💧', this)">💧</div>
-          <div class="category-option" onclick="selectIcon('🧘', this)">🧘</div>
-          <div class="category-option" onclick="selectIcon('😴', this)">😴</div>
-          <div class="category-option" onclick="selectIcon('🥗', this)">🥗</div>
-          <div class="category-option" onclick="selectIcon('📝', this)">📝</div>
-          <div class="category-option" onclick="selectIcon('🎵', this)">🎵</div>
-          <div class="category-option" onclick="selectIcon('📅', this)">📅</div>
-          <div class="category-option" onclick="selectIcon('⏰', this)">⏰</div>
-          <div class="category-option" onclick="selectIcon('✨', this)">✨</div>
-        </div>
-        <input type="hidden" id="habitIcon" required>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="habitFrequency">Frequency</label>
-        <div class="frequency-selector" id="frequencySelector">
-          <div class="freq-option selected" data-freq="daily" onclick="selectFrequency('daily', this)">Daily</div>
-          <div class="freq-option" data-freq="weekly" onclick="selectFrequency('weekly', this)">Weekly</div>
-          <div class="freq-option" data-freq="custom" onclick="selectFrequency('custom', this)">Custom</div>
-        </div>
-        <select id="habitCustomDays" class="form-select" style="margin-top:8px;display:none;" multiple size="7">
-          <option value="0">Sun</option>
-          <option value="1">Mon</option>
-          <option value="2">Tue</option>
-          <option value="3">Wed</option>
-          <option value="4">Thu</option>
-          <option value="5">Fri</option>
-          <option value="6">Sat</option>
-        </select>
-        <input type="hidden" id="habitFrequencyValue" value="daily">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="habitPriority">Priority</label>
-        <select id="habitPriority" class="form-select">
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="low">Low</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="habitReminder">Daily Reminder</label>
-        <select id="habitReminder" class="form-select">
-          <option value="">No reminder</option>
-          <option value="08:00">8:00 AM</option>
-          <option value="09:00">9:00 AM</option>
-          <option value="10:00">10:00 AM</option>
-          <option value="11:00">11:00 AM</option>
-          <option value="12:00">12:00 PM</option>
-          <option value="13:00">1:00 PM</option>
-          <option value="14:00">2:00 PM</option>
-          <option value="15:00">3:00 PM</option>
-          <option value="16:00">4:00 PM</option>
-          <option value="17:00">5:00 PM</option>
-          <option value="18:00">6:00 PM</option>
-          <option value="19:00">7:00 PM</option>
-          <option value="20:00">8:00 PM</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="habitNotes">Notes (optional)</label>
-        <textarea id="habitNotes" class="form-textarea" placeholder="Add extra details, motivation, or reminders..."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="habitTemplate">Use Template</label>
-        <select id="habitTemplate" class="form-select" onchange="applyTemplate(this.value)">
-          <option value="">Select a template...</option>
-          <option value="morning">Morning Routine</option>
-          <option value="workout">Workout</option>
-          <option value="study">Study/Learning</option>
-          <option value="sleep">Sleep Routine</option>
-          <option value="productivity">Productivity</option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn-primary-full" id="saveBtn">Save Habit</button>
-      <button type="button" class="btn-ghost-full" id="deleteBtn" style="color:var(--danger);display:none;" onclick="deleteHabitFromModal()">Delete Habit</button>
-    </form>
+  <!-- UNIVERSAL MODAL SYSTEM -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-sheet" id="modalSheetContent"></div>
   </div>
-</div>
 
-<div class="toast-host" id="toastHost" role="status" aria-live="polite"></div>
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-<div class="install-prompt" id="installPrompt">
-  <div class="install-title">Install HabitFlow App</div>
-  <div style="font-size:12px;color:var(--text-dim);">Get the full app experience with home screen icon and offline access</div>
-  <div class="install-actions">
-    <button class="install-btn primary" id="installBtn">Install</button>
-    <button class="install-btn secondary" onclick="closeInstallPrompt()">Maybe later</button>
-  </div>
-  <button class="install-close" onclick="closeInstallPrompt()" aria-label="Close install prompt">×</button>
-</div>
-
-<div class="biometric-overlay" id="biometricOverlay" style="display:none;">
-  <div class="biometric-icon" id="biometricIcon">🔒</div>
-  <div class="disp" style="font-size:18px;margin-bottom:16px;">Biometric Unlock</div>
-  <button class="biometric-btn" onclick="authenticateBiometric()">Verify</button>
-  <button class="modal-close" style="margin-top:20px;width:200px;" onclick="closeBiometric()">Cancel</button>
-</div>
-
-<script>
-/* ========== DATA STRUCTURES & STATE ========== */
-const STORAGE_KEY = "habitFlow_v2";
-const THEME_KEY = "habitFlowTheme_v2";
-const LANG_KEY = "habitFlowLang_v2";
-const BIOMETRIC_KEY = "habitFlowBiometric_v2";
-const UNDO_KEY = "habitFlowUndo_v2";
-
-const HABIT_CATEGORIES = {
-  health: { label: "Health", icon: "💧", color: "#60a5fa" },
-  work: { label: "Work", icon: "💼", color: "#f97316" },
-  mindfulness: { label: "Mindfulness", icon: "🧘", color: "#a78bfa" },
-  fitness: { label: "Fitness", icon: "🏃", color: "#34d399" },
-  creative: { label: "Creative", icon: "🎨", color: "#ec4899" },
-  learning: { label: "Learning", icon: "📚", color: "#6366f1" },
-  social: { label: "Social", icon: "🤝", color: "#06b6d4" },
-  sleep: { label: "Sleep", icon: "🛌", color: "#8b5cf6" }
-};
-
-const DAILY_QUOTES = [
-  { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
-  { text: "Habits are the compound interest of self-improvement.", author: "James Clear" },
-  { text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
-  { text: "Small daily improvements are the key to staggering long-term results.", author: "Robin Sharma" },
-  { text: "Excellence is not a distinct act, but a habit.", author: "Aristotle" },
-  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { text: "Consistency is more important than intensity.", author: "James Clear" },
-  { text: "Daily progress, not perfection.", author: "Marian Wright Edelman" }
-];
-
-const HABIT_TEMPLATES = {
-  morning: [
-    { name: "Wake up early", icon: "🌅", category: "health", frequency: "daily" },
-    { name: "Morning meditation", icon: "🧘", category: "mindfulness", frequency: "daily" },
-    { name: "Drink water", icon: "💧", category: "health", frequency: "daily" },
-    { name: "Exercise", icon: "🏃", category: "fitness", frequency: "daily" },
-    { name: "Healthy breakfast", icon: "🥗", category: "health", frequency: "daily" }
-  ],
-  workout: [
-    { name: "Cardio workout", icon: "🏃", category: "fitness", frequency: "daily" },
-    { name: "Strength training", icon: "💪", category: "fitness", frequency: "daily" },
-    { name: "Stretching", icon: "🧘", category: "fitness", frequency: "daily" },
-    { name: "Water intake", icon: "💧", category: "health", frequency: "daily" }
-  ],
-  study: [
-    { name: "Read for 30 min", icon: "📚", category: "learning", frequency: "daily" },
-    { name: "Practice skills", icon: "📝", category: "learning", frequency: "daily" },
-    { name: "Review notes", icon: "📝", category: "learning", frequency: "weekly" },
-    { name: "Learn new concept", icon: "💡", category: "learning", frequency: "daily" }
-  ],
-  sleep: [
-    { name: "Sleep by 10 PM", icon: "🛌", category: "sleep", frequency: "daily" },
-    { name: "No screens before bed", icon: "📵", category: "mindfulness", frequency: "daily" },
-    { name: "Read before sleep", icon: "📚", category: "sleep", frequency: "daily" },
-    { name: "Dark room", icon: "🌙", category: "sleep", frequency: "daily" }
-  ],
-  productivity: [
-    { name: "Plan the day", icon: "📅", category: "work", frequency: "daily" },
-    { name: "Focus time", icon: "⏰", category: "work", frequency: "daily" },
-    { name: "Tidy workspace", icon: "🧹", category: "work", frequency: "weekly" },
-    { name: "Review goals", icon: "🎯", category: "work", frequency: "weekly" }
-  ]
-};
-
-const LANGUAGES = {
-  en: { today: "Today", calendar: "Calendar", stats: "Stats", manage: "Manage", addHabit: "Add Habit", welcome: "Welcome back!", day: "Day", noHabits: "No habits yet" },
-  es: { today: "Hoy", calendar: "Calendario", stats: "Estadísticas", manage: "Gestionar", addHabit: "Agregar Hábito", welcome: "¡Bienvenido de nuevo!", day: "Día", noHabits: "Sin hábitos aún" },
-  fr: { today: "Aujourd'hui", calendar: "Calendrier", stats: "Statistiques", manage: "Gérer", addHabit: "Ajouter un Habitude", welcome: "Bon retour!", day: "Jour", noHabits: "Aucun habitude" },
-  de: { today: "Heute", calendar: "Kalender", stats: "Statistiken", manage: "Verwalten", addHabit: "Gewohnheit hinzufügen", welcome: "Willkommen zurück!", day: "Tag", noHabits: "Noch keine Gewohnheiten" },
-  pt: { today: "Hoje", calendar: "Calendário", stats: "Estatísticas", manage: "Gerenciar", addHabit: "Adicionar Hábito", welcome: "Bem-vindo de volta!", day: "Dia", noHabits: "Nenhum hábito ainda" },
-  it: { today: "Oggi", calendar: "Calendario", stats: "Statistiche", manage: "Gestisci", addHabit: "Aggiungi Abitudine", welcome: "Bentornato!", day: "Giorno", noHabits: "Nessuna abitudine" },
-  ja: { today: "今日", calendar: "カレンダー", stats: "統計", manage: "管理", addHabit: "習慣を追加", welcome: "おかえりなさい！", day: "日", noHabits: "習慣がありません" },
-  zh: { today: "今天", calendar: "日历", stats: "统计", manage: "管理", addHabit: "添加习惯", welcome: "欢迎回来！", day: "日", noHabits: "还没有习惯" },
-  ko: { today: "오늘", calendar: "달력", stats: "통계", manage: "관리", addHabit: "습관 추가", welcome: "어서오세요!", day: "일", noHabits: "아직 습관 없음" },
-  ru: { today: "Сегодня", calendar: "Календарь", stats: "Статистика", manage: "Управление", addHabit: "Добавить привычку", welcome: "С возвращением!", day: "День", noHabits: "Еще нет привычек" },
-  ar: { today: "اليوم", calendar: "تقويم", stats: "إحصائيات", manage: "إدارة", addHabit: "إضافة عادة", welcome: "مرحبًا بك!", day: "يوم", noHabits: "لا توجد عادات بعد" },
-  hi: { today: "आज", calendar: "कैलेंडर", stats: "आंकड़े", manage: "प्रबंधित करें", addHabit: "आदत जोड़ें", welcome: "वापसी पर खुशी है!", day: "दिन", noHabits: "अभी कोई आदत नहीं" }
-};
-
-/* ========== STATE MANAGEMENT ========== */
-let state = {
-  habits: [],
-  logs: {},
-  settings: { startDate: new Date().toISOString().split('T')[0], theme: 'dark', palette: 'default', language: 'en', weekStart: 'monday' },
-  meta: { biometricEnabled: false }
-};
-
-let undoStack = [];
-let editingHabitId = null;
-let lastAction = null;
-let deferredPrompt = null;
-let calYear = new Date().getFullYear();
-let calMonth = new Date().getMonth();
-
-/* ========== STORAGE FUNCTIONS ========== */
-function loadState() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) state = JSON.parse(saved);
-    if (!state.settings) state.settings = { startDate: new Date().toISOString().split('T')[0], theme: 'dark', palette: 'default', language: 'en', weekStart: 'monday' };
-    if (!state.meta) state.meta = { biometricEnabled: false };
-  } catch (e) { console.error("Failed to load state:", e); }
-  return state;
-}
-
-function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch (e) { showToast("Failed to save data"); }
-}
-
-function pushUndo(action) {
-  undoStack.push(action);
-  if (undoStack.length > 20) undoStack.shift();
-  localStorage.setItem(UNDO_KEY, JSON.stringify(undoStack));
-}
-
-function undoLastAction() {
-  if (undoStack.length === 0) { showToast("Nothing to undo"); return; }
-  const action = undoStack.pop();
-  if (action.type === 'toggle') {
-    state.logs[action.date].done[action.habitId] = !state.logs[action.date].done[action.habitId];
-  } else if (action.type === 'add') {
-    state.habits = state.habits.filter(h => h.id !== action.habitId);
-  } else if (action.type === 'delete') {
-    state.habits.push(action.habit);
-  }
-  saveState();
-  renderToday();
-  renderCalendar();
-  renderStats();
-  showToast("Action undone!");
-}
-
-/* ========== UTILITIES ========== */
-function getToday() {
-  const now = new Date();
-  return now.toISOString().split('T')[0];
-}
-
-function formatDate(dateStr) {
-  const date = new Date(dateStr + 'T00:00:00');
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString(getLanguage(), options);
-}
-
-function getDaysBetween(start, end) {
-  const d1 = new Date(start + 'T00:00:00');
-  const d2 = new Date(end + 'T00:00:00');
-  return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
-}
-
-function getLanguage() {
-  return state.settings.language || 'en';
-}
-
-function getWeekStart() {
-  return state.settings.weekStart || 'monday';
-}
-
-function isHabitDueOn(habit, dateStr) {
-  const freq = habit.frequency || 'daily';
-  if (freq === 'daily') return true;
-  if (freq === 'weekly') {
-    const day = new Date(dateStr + 'T00:00:00').getDay();
-    const weekStart = getWeekStart() === 'monday' ? (day === 0 ? 6 : day - 1) : day;
-    return weekStart === 0;
-  }
-  if (freq === 'custom') {
-    const days = habit.customDays || [];
-    const day = new Date(dateStr + 'T00:00:00').getDay();
-    return days.includes(day);
-  }
-  return true;
-}
-
-/* ========== THEME MANAGEMENT ========== */
-function setTheme(theme, palette, btnEl) {
-  state.settings.theme = theme;
-  state.settings.palette = palette;
-  document.documentElement.setAttribute('data-theme', theme);
-  document.documentElement.setAttribute('data-palette', palette);
-  
-  // Update active button
-  document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-  if (btnEl) {
-    btnEl.classList.add('active');
-  } else {
-    // Find the correct button
-    const btns = document.querySelectorAll('.theme-btn');
-    btns.forEach(btn => {
-      if (btn.dataset.theme === theme && btn.dataset.palette === palette) btn.classList.add('active');
-    });
-  }
-  
-  let themeName = theme.charAt(0).toUpperCase() + theme.slice(1);
-  if (palette !== 'default') themeName += ' ' + palette.charAt(0).toUpperCase() + palette.slice(1);
-  document.getElementById('themeLabel').textContent = themeName;
-  
-  localStorage.setItem(THEME_KEY, theme + ':' + palette);
-  saveState();
-}
-
-function loadTheme() {
-  const savedTheme = localStorage.getItem(THEME_KEY);
-  if (savedTheme && savedTheme.includes(':')) {
-    const [theme, palette] = savedTheme.split(':');
-    setTheme(theme, palette);
-    return;
-  }
-  if (state.settings.theme && state.settings.palette) {
-    setTheme(state.settings.theme, state.settings.palette);
-    return;
-  }
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  setTheme(isDark ? 'dark' : 'light', 'default');
-}
-
-/* ========== USER INTERFACE ========== */
-function showToast(message) {
-  const host = document.getElementById('toastHost');
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = message;
-  host.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add('leaving');
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
-
-function showUndoToast(action) {
-  const host = document.getElementById('toastHost');
-  const toast = document.createElement('div');
-  toast.className = 'undo-toast';
-  toast.innerHTML = `Done! <button onclick="undoLastAction()">Undo</button>`;
-  host.appendChild(toast);
-  setTimeout(() => {
-    toast.classList.add('leaving');
-    setTimeout(() => toast.remove(), 5000);
-  }, 5000);
-}
-
-function switchView(viewName) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(`view-${viewName}`).classList.add('active');
-  
-  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-  const navIndex = ['today', 'calendar', 'stats', 'manage'].indexOf(viewName);
-  if (navIndex >= 0) {
-    document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
-    document.querySelectorAll('.nav-item')[navIndex].setAttribute('aria-current', 'page');
-  }
-  
-  document.getElementById('views').scrollTop = 0;
-  
-  if (viewName === 'today') renderToday();
-  if (viewName === 'calendar') { renderCalendar(); renderWeeklyReview(); }
-  if (viewName === 'stats') { renderStats(); renderAchievements(); }
-  if (viewName === 'manage') renderManage();
-}
-
-/* ========== HABIT CRUD ========== */
-function createHabit(name, category, icon, reminder, frequency, priority, notes, customDays) {
-  const habit = {
-    id: `h${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    name,
-    category,
-    icon,
-    reminder,
-    frequency: frequency || 'daily',
-    priority: priority || 'medium',
-    notes: notes || '',
-    customDays: customDays || [],
-    createdAt: getToday(),
-    completedDays: 0,
-    archived: false
-  };
-  state.habits.push(habit);
-  saveState();
-  renderToday();
-  renderCalendar();
-  renderStats();
-  renderManage();
-  showToast(`Habit "${name}" added!`);
-  pushUndo({ type: 'add', habitId: habit.id });
-  return habit;
-}
-
-function updateHabit(habitId, name, category, icon, reminder, frequency, priority, notes, customDays) {
-  const habit = state.habits.find(h => h.id === habitId);
-  if (!habit) return;
-  habit.name = name;
-  habit.category = category;
-  habit.icon = icon;
-  habit.reminder = reminder;
-  habit.frequency = frequency;
-  habit.priority = priority;
-  habit.notes = notes;
-  habit.customDays = customDays;
-  saveState();
-  renderToday();
-  renderCalendar();
-  renderStats();
-  renderManage();
-  showToast("Habit updated!");
-}
-
-function deleteHabit(habitId) {
-  const habit = state.habits.find(h => h.id === habitId);
-  if (habit) {
-    state.habits = state.habits.filter(h => h.id !== habitId);
-    // Remove from logs
-    for (const date in state.logs) {
-      if (state.logs[date].done[habitId]) delete state.logs[date].done[habitId];
-    }
-    saveState();
-    renderToday();
-    renderCalendar();
-    renderStats();
-    renderManage();
-    pushUndo({ type: 'delete', habit });
-    showToast("Habit deleted");
-  }
-}
-
-function toggleHabit(habitId, dateStr) {
-  if (!state.logs[dateStr]) state.logs[dateStr] = { done: {} };
-  const habit = state.habits.find(h => h.id === habitId);
-  if (!habit) return;
-  
-  if (state.logs[dateStr].done[habitId]) {
-    delete state.logs[dateStr].done[habitId];
-    if (habit.completedDays > 0) habit.completedDays--;
-  } else {
-    state.logs[dateStr].done[habitId] = true;
-    habit.completedDays++;
-  }
-  saveState();
-  renderToday();
-  renderCalendar();
-  renderStats();
-  pushUndo({ type: 'toggle', habitId, date: dateStr });
-  
-  const dayCompletion = dayCompletionPct(dateStr);
-  if (dayCompletion === 100) {
-    showToast("🎉 Day complete! Perfect score!");
-    triggerConfetti();
-  }
-  checkStreaks();
-}
-
-function deleteHabitFromModal() {
-  if (editingHabitId) {
-    deleteHabit(editingHabitId);
-    closeHabitModal();
-  }
-}
-
-/* ========== COMPUTED STATS ========== */
-function computeStreak(today) {
-  let streak = 0;
-  let date = today;
-  
-  while (true) {
-    const due = state.habits.filter(h => !h.archived && isHabitDueOn(h, date));
-    if (due.length === 0) break;
-    const completed = due.filter(h => state.logs[date]?.done[h.id]).length;
-    if (completed === due.length) {
-      streak++;
-      date = new Date(new Date(date + 'T00:00:00').getTime() - 86400000).toISOString().split('T')[0];
-    } else {
-      break;
-    }
-  }
-  return streak;
-}
-
-function computeBestStreak(today) {
-  let best = 0, current = 0;
-  let date = today;
-  
-  while (date >= state.settings.startDate) {
-    const due = state.habits.filter(h => !h.archived && isHabitDueOn(h, date));
-    if (due.length === 0) { date = new Date(new Date(date + 'T00:00:00').getTime() - 86400000).toISOString().split('T')[0]; continue; }
-    const completed = due.filter(h => state.logs[date]?.done[h.id]).length;
-    if (completed === due.length) {
-      current++;
-      if (current > best) best = current;
-    } else {
-      current = 0;
-    }
-    date = new Date(new Date(date + 'T00:00:00').getTime() - 86400000).toISOString().split('T')[0];
-  }
-  return best;
-}
-
-function dayCompletionPct(dateStr) {
-  const dueHabits = state.habits.filter(h => !h.archived && isHabitDueOn(h, dateStr));
-  if (dueHabits.length === 0) return 0;
-  const log = state.logs[dateStr] || { done: {} };
-  const completed = dueHabits.filter(h => log.done[h.id]).length;
-  return Math.round((completed / dueHabits.length) * 100);
-}
-
-function checkStreaks() {
-  const today = getToday();
-  const currentStreak = computeStreak(today);
-  
-  if (currentStreak > 0 && currentStreak % 7 === 0) {
-    showToast(`🔥 Milestone! ${currentStreak}-day streak!`);
-    triggerConfetti();
-  }
-}
-
-function triggerConfetti() {
-  // Simple confetti effect
-  const colors = ['#f43f5e', '#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6'];
-  for (let i = 0; i < 30; i++) {
-    const el = document.createElement('div');
-    el.style.cssText = `position:fixed;top:50%;left:50%;width:8px;height:8px;background:${colors[i % colors.length]};border-radius:50%;z-index:9999;pointer-events:none;animation:confetti ${Math.random()*2+1}s ease-out forwards;`;
-    el.style.transform = `translate(${Math.random()*200-100}px,${Math.random()*200-100}px) rotate(${Math.random()*360}deg)`;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 2000);
-  }
-}
-
-/* ========== RENDERING - TODAY VIEW ========== */
-function renderToday() {
-  const today = getToday();
-  const dateDisplay = document.getElementById('todayDate');
-  dateDisplay.textContent = formatDate(today);
-  document.getElementById('dayBadge').textContent = `Day ${getDaysBetween(state.settings.startDate, today) + 1}`;
-  
-  document.getElementById('userGreeting').textContent = getTranslation('welcome');
-  document.getElementById('dailyQuote').textContent = DAILY_QUOTES[new Date().getDay()].text;
-  document.getElementById('quoteAuthor').textContent = `— ${DAILY_QUOTES[new Date().getDay()].author}`;
-  
-  const currentStreak = computeStreak(today);
-  document.getElementById('currentStreak').textContent = currentStreak;
-  
-  if (currentStreak >= 30) document.getElementById('streakDescription').textContent = "Incredible! You've maintained your habits for over a month!";
-  else if (currentStreak >= 7) document.getElementById('streakDescription').textContent = "Great job! You're building real momentum.";
-  else if (currentStreak >= 3) document.getElementById('streakDescription').textContent = "Keep it up! You're creating a solid routine.";
-  else document.getElementById('streakDescription').textContent = "Start your journey! Every day counts.";
-  
-  const totalCompleted = Object.keys(state.logs).reduce((sum, date) => sum + Object.keys(state.logs[date].done).length, 0);
-  document.getElementById('totalCompleted').textContent = totalCompleted;
-  
-  const activeHabits = state.habits.filter(h => !h.archived).length;
-  document.getElementById('activeHabits').textContent = activeHabits;
-  document.getElementById('todayCompletion').textContent = `${dayCompletionPct(today)}%`;
-  
-  const badgeContainer = document.getElementById('streakBadges');
-  badgeContainer.innerHTML = '';
-  if (currentStreak >= 30) badgeContainer.innerHTML += '<span class="streak-badge">🔥 30 Days</span>';
-  if (currentStreak >= 100) badgeContainer.innerHTML += '<span class="streak-badge">⭐ Centurion</span>';
-  if (currentStreak >= 365) badgeContainer.innerHTML += '<span class="streak-badge">🏆 Champion</span>';
-  
-  const list = document.getElementById('todayHabitList');
-  const dueHabits = state.habits.filter(h => !h.archived && isHabitDueOn(h, today));
-  
-  if (dueHabits.length === 0) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🚫</div>
-        <div class="empty-title">${getTranslation('noHabits')}</div>
-        <div class="empty-sub">Add your first habit to start tracking your progress today!</div>
-        <button class="btn-primary-full" onclick="openHabitModal()">+ ${getTranslation('addHabit')}</button>
-      </div>`;
-    return;
-  }
-  
-  list.innerHTML = dueHabits.map(h => {
-    const isCompleted = state.logs[today]?.done[h.id];
-    const priorityClass = h.priority || 'medium';
-    return `
-      <div class="habit-item ${isCompleted ? 'completed' : ''}" onclick="toggleHabit('${h.id}', '${today}')" role="button" tabindex="0" aria-pressed="${!!isCompleted}" onkeydown="handleHabitKey(event, '${h.id}', '${today}')">
-        <div class="habit-check">${isCompleted ? '✓' : ''}</div>
-        <div class="habit-icon">${h.icon}</div>
-        <div class="habit-info">
-          <div class="habit-name">${h.name}</div>
-          <div class="habit-category habit-category-${h.category}">${getTranslation(h.category) || HABIT_CATEGORIES[h.category].label}</div>
-          <div class="habit-meta">
-            <span class="streak-icon">🔥</span>
-            <span>${h.completedDays} days</span>
-            ${h.reminder ? ` • 🕒 ${h.reminder}` : ''}
-            <span class="priority-indicator priority-${priorityClass}" title="Priority: ${priorityClass}"></span>
-            ${h.frequency !== 'daily' ? `<span class="habit-frequency">${h.frequency}</span>` : ''}
-          </div>
-          ${h.notes ? `<div class="habit-notes">${h.notes}</div>` : ''}
-        </div>
-        <button class="habit-edit-btn" onclick="event.stopPropagation(); editHabit('${h.id}')" aria-label="Edit habit">✏️</button>
-      </div>`;
-  }).join('');
-}
-
-/* ========== RENDERING - CALENDAR VIEW ========== */
-function renderCalendar() {
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  document.getElementById('currentMonth').textContent = `${monthNames[calMonth]} ${calYear}`;
-  
-  const firstDay = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-  const today = getToday();
-  
-  const grid = document.getElementById('monthGrid');
-  // Get existing weekday labels (first 7 children)
-  const weekdayLabels = Array.from(grid.children).slice(0, 7);
-  
-  let html = weekdayLabels.map(d => d.outerHTML).join('');
-  
-  for (let i = 0; i < firstDay; i++) html += '<span class="day-cell empty" aria-hidden="true"></span>';
-  
-  for (let day = 1; day <= daysInMonth; day++) {
-    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    const isToday = dateStr === today;
-    const isPast = dateStr < today;
-    const completedCount = Object.keys(state.logs[dateStr]?.done || {}).length;
-    const totalHabits = state.habits.filter(h => !h.archived && isHabitDueOn(h, dateStr)).length;
-    
-    let className = 'day-cell';
-    if (isToday) className += ' today';
-    if (isPast && !isToday) className += ' past';
-    if (totalHabits > 0 && completedCount >= totalHabits) className += ' completed';
-    else if (totalHabits > 0 && completedCount > 0) className += ' partial';
-    
-    let opacity = 1;
-    if (totalHabits > 0) {
-      if (completedCount === 0) opacity = isPast ? 0.3 : 1;
-      else if (completedCount < totalHabits / 2) opacity = 0.55;
-      else if (completedCount < totalHabits) opacity = 0.8;
-    }
-    
-    const label = `${dateStr}: ${completedCount}/${totalHabits} habits`;
-    html += `<span class="${className}" style="opacity:${opacity}" onclick="openDayFromCalendar('${dateStr}')" role="button" tabindex="0" aria-label="${label}">${day}</span>`;
-  }
-  
-  grid.innerHTML = html;
-  
-  // Update nav button states
-  const startYear = parseInt(state.settings.startDate.split('-')[0]);
-  const startMonth = parseInt(state.settings.startDate.split('-')[1]) - 1;
-  document.getElementById('prevMonthBtn').disabled = (calYear === startYear && calMonth <= startMonth);
-  document.getElementById('nextMonthBtn').disabled = (calYear > new Date().getFullYear() + 1);
-}
-
-function renderWeeklyReview() {
-  const today = new Date();
-  const weekStart = getWeekStart() === 'monday' ? 1 : 0;
-  const day = today.getDay();
-  const diff = (day - weekStart + 7) % 7;
-  const weekStartDate = new Date(today);
-  weekStartDate.setDate(today.getDate() - diff);
-  
-  const weekDays = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(weekStartDate);
-    d.setDate(weekStartDate.getDate() + i);
-    const dateStr = d.toISOString().split('T')[0];
-    const pct = dayCompletionPct(dateStr);
-    weekDays.push({ dateStr, pct, day: d.toLocaleDateString('en-US', { weekday: 'short' }) });
-  }
-  
-  const avgScore = Math.round(weekDays.reduce((sum, d) => sum + d.pct, 0) / 7);
-  document.getElementById('weekReviewScore').textContent = `${avgScore}%`;
-  
-  const grid = document.getElementById('weekReviewGrid');
-  grid.innerHTML = weekDays.map(d => `
-    <div class="week-review-day">
-      <div class="week-review-day-icon">${d.pct === 100 ? '✅' : d.pct > 0 ? '🟡' : '⚪'}</div>
-      <div style="font-size:10px;margin-top:4px;">${d.day}</div>
-      <div style="font-size:10px;color:var(--text-dim);">${d.pct}%</div>
-    </div>
-  `).join('');
-}
-
-/* ========== RENDERING - STATS VIEW ========== */
-function renderStats() {
-  const today = getToday();
-  const totalHabits = state.habits.filter(h => !h.archived).length;
-  const activeDays = Object.keys(state.logs).length;
-  const bestStreak = computeBestStreak(today);
-  
-  document.getElementById('totalHabits').textContent = totalHabits;
-  document.getElementById('activeDays').textContent = activeDays;
-  document.getElementById('bestStreak').textContent = bestStreak;
-  
-  let totalPossible = 0, totalDone = 0;
-  const startDate = state.settings.startDate;
-  let date = startDate;
-  while (date <= today) {
-    const due = state.habits.filter(h => !h.archived && isHabitDueOn(h, date));
-    totalPossible += due.length;
-    totalDone += Object.keys(state.logs[date]?.done || {}).length;
-    date = new Date(new Date(date + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
-  }
-  
-  const overallCompletion = totalPossible > 0 ? Math.round((totalDone / totalPossible) * 100) : 0;
-  document.getElementById('overallCompletion').textContent = `${overallCompletion}%`;
-  
-  // Category stats
-  const categoryStats = {};
-  state.habits.filter(h => !h.archived).forEach(h => {
-    if (!categoryStats[h.category]) categoryStats[h.category] = { total: 0, completed: 0, icon: HABIT_CATEGORIES[h.category].icon, color: HABIT_CATEGORIES[h.category].color };
-    let catDate = state.settings.startDate;
-    while (catDate <= today) {
-      if (isHabitDueOn(h, catDate)) {
-        categoryStats[h.category].total++;
-        if (state.logs[catDate]?.done[h.id]) categoryStats[h.category].completed++;
-      }
-      catDate = new Date(new Date(catDate + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
-    }
-  });
-  
-  let categoryHtml = '';
-  for (const [cat, data] of Object.entries(categoryStats)) {
-    const pct = data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0;
-    categoryHtml += `
-      <div class="category-stat-item">
-        <span class="category-icon">${data.icon}</span>
-        <div class="category-info">
-          <div class="category-name">${HABIT_CATEGORIES[cat]?.label || cat}</div>
-          <div class="category-count">${data.completed}/${data.total} completions</div>
-        </div>
-        <div class="category-bar">
-          <div class="category-bar-fill" style="width:${pct}%;background:${data.color}"></div>
-        </div>
-      </div>`;
-  }
-  document.getElementById('categoryStatsWrap').innerHTML = categoryHtml;
-  
-  // Habit stats
-  const habitStatsHtml = state.habits.filter(h => !h.archived).map(h => {
-    let hDate = state.settings.startDate;
-    let total = 0, completed = 0;
-    while (hDate <= today) {
-      if (isHabitDueOn(h, hDate)) {
-        total++;
-        if (state.logs[hDate]?.done[h.id]) completed++;
-      }
-      hDate = new Date(new Date(hDate + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
-    }
-    const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-    return `
-      <div class="habit-stat">
-        <div class="habit-stat-header">
-          <span class="habit-stat-name">${h.icon} ${h.name}</span>
-          <span class="habit-stat-pct">${completed}/${total} (${pct}%)</span>
-        </div>
-        <div class="stat-bar">
-          <div class="stat-bar-fill" style="width:${pct}%;background:${HABIT_CATEGORIES[h.category]?.color || '#3b82f6'}"></div>
-        </div>
-      </div>`;
-  }).join('');
-  document.getElementById('habitStatsWrap').innerHTML = habitStatsHtml;
-}
-
-function renderAchievements() {
-  const today = getToday();
-  const bestStreak = computeBestStreak(today);
-  const currentStreak = computeStreak(today);
-  const totalCompleted = Object.keys(state.logs).reduce((sum, date) => sum + Object.keys(state.logs[date].done).length, 0);
-  const habitsCount = state.habits.length;
-  
-  const achievements = [
-    { icon: '🔥', name: '7-Day Streak', achieved: bestStreak >= 7 },
-    { icon: '⚡', name: '30-Day Streak', achieved: bestStreak >= 30 },
-    { icon: '🏆', name: '100-Day Streak', achieved: bestStreak >= 100 },
-    { icon: '✅', name: '100 Completions', achieved: totalCompleted >= 100 },
-    { icon: '🎯', name: '500 Completions', achieved: totalCompleted >= 500 },
-    { icon: '💪', name: '5 Habits', achieved: habitsCount >= 5 },
-    { icon: '🏅', name: '10 Habits', achieved: habitsCount >= 10 },
-    { icon: '⭐', name: 'Perfect Day', achieved: dayCompletionPct(today) === 100 },
-    { icon: '📅', name: '7 Active Days', achieved: Object.keys(state.logs).length >= 7 },
-    { icon: '🌙', name: '30 Active Days', achieved: Object.keys(state.logs).length >= 30 }
-  ];
-  
-  const wrap = document.getElementById('achievementsWrap');
-  wrap.innerHTML = achievements.map(a => `
-    <div class="achievement-item" style="opacity:${a.achieved ? 1 : 0.4};">
-      <div class="achievement-icon">${a.icon}</div>
-      <div class="achievement-name">${a.name}</div>
-    </div>
-  `).join('');
-}
-
-/* ========== RENDERING - MANAGE VIEW ========== */
-function renderManage() {
-  const container = document.getElementById('habitManager');
-  const activeHabits = state.habits.filter(h => !h.archived);
-  
-  if (activeHabits.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">🔍</div>
-        <div class="empty-title">No habits found</div>
-        <div class="empty-sub">Tap the + button to add habits</div>
-        <button class="btn-primary-full" onclick="openHabitModal()">+ Add Habit</button>
-      </div>`;
-    return;
-  }
-  
-  container.innerHTML = activeHabits.map(h => `
-    <div class="habit-item" style="cursor:default;" draggable="true" ondragstart="dragStart(event, '${h.id}')" ondragover="dragOver(event)" ondrop="drop(event)" ondragend="dragEnd(event)">
-      <div class="drag-handle" style="display:block;">⠿</div>
-      <div class="habit-icon">${h.icon}</div>
-      <div class="habit-info">
-        <div class="habit-name">${h.name}</div>
-        <div class="habit-category habit-category-${h.category}">${HABIT_CATEGORIES[h.category].label}</div>
-        <div class="habit-meta">
-          <span>${h.completedDays} days</span>
-          <span class="priority-indicator priority-${h.priority}"></span>
-          <span class="habit-frequency">${h.frequency}</span>
-        </div>
-      </div>
-      <button class="habit-edit-btn" style="opacity:1;" onclick="editHabit('${h.id}')" aria-label="Edit habit">✏️</button>
-      <button class="habit-edit-btn" style="opacity:1;right:38px;" onclick="deleteHabit('${h.id}')" aria-label="Delete habit">🗑️</button>
-    </div>
-  `).join('');
-}
-
-let draggingId = null;
-function dragStart(e, id) {
-  draggingId = id;
-  e.target.classList.add('dragging');
-}
-function dragOver(e) {
-  e.preventDefault();
-  e.target.closest('.habit-item')?.classList.add('drag-over');
-}
-function drop(e) {
-  e.preventDefault();
-  const target = e.target.closest('.habit-item');
-  if (target && draggingId) {
-    const targetId = target.querySelector('.habit-name')?.textContent;
-    // Reorder based on name for simplicity, or track by element
-    const items = Array.from(document.querySelectorAll('#habitManager .habit-item'));
-    const sourceIndex = items.findIndex(item => item.querySelector('.drag-handle')?.nextElementSibling?.textContent);
-    const targetIndex = items.indexOf(target);
-    if (sourceIndex >= 0 && targetIndex >= 0 && sourceIndex !== targetIndex) {
-      const [moved] = state.habits.splice(sourceIndex, 1);
-      state.habits.splice(targetIndex, 0, moved);
-      saveState();
-      renderManage();
-      showToast("Habit reordered!");
-    }
-  }
-  draggingId = null;
-}
-function dragEnd(e) {
-  e.target.classList.remove('dragging');
-  document.querySelectorAll('.habit-item').forEach(item => item.classList.remove('drag-over'));
-}
-
-/* ========== MODAL FUNCTIONS ========== */
-function openHabitModal(editId) {
-  const modalTitle = document.getElementById('habitModalTitle');
-  const saveBtn = document.getElementById('saveBtn');
-  const deleteBtn = document.getElementById('deleteBtn');
-  
-  if (editId) {
-    editingHabitId = editId;
-    const h = state.habits.find(x => x.id === editId);
-    if (!h) return;
-    modalTitle.textContent = 'Edit Habit';
-    saveBtn.textContent = 'Update Habit';
-    deleteBtn.style.display = 'block';
-    document.getElementById('habitName').value = h.name;
-    document.getElementById('habitCategory').value = h.category;
-    document.getElementById('habitIcon').value = h.icon;
-    document.getElementById('habitReminder').value = h.reminder || '';
-    document.getElementById('habitNotes').value = h.notes || '';
-    document.getElementById('habitPriority').value = h.priority || 'medium';
-    
-    // Frequency
-    selectFrequency(h.frequency, document.querySelector(`.freq-option[data-freq="${h.frequency}"]`));
-    if (h.frequency === 'custom' && h.customDays) {
-      document.getElementById('habitCustomDays').value = h.customDays.map(String);
-    }
-    
-    // Category selection
-    document.querySelectorAll('#categoryGrid .category-option').forEach(opt => {
-      opt.classList.toggle('selected', opt.dataset.category === h.category);
-    });
-    
-    // Icon selection
-    document.querySelectorAll('#iconGrid .category-option').forEach(opt => {
-      opt.classList.toggle('selected', opt.textContent === h.icon);
-    });
-  } else {
-    editingHabitId = null;
-    modalTitle.textContent = 'Add Habit';
-    saveBtn.textContent = 'Save Habit';
-    deleteBtn.style.display = 'none';
-    document.getElementById('habitName').value = '';
-    document.getElementById('habitCategory').value = 'health';
-    document.getElementById('habitIcon').value = '💪';
-    document.getElementById('habitReminder').value = '';
-    document.getElementById('habitNotes').value = '';
-    document.getElementById('habitPriority').value = 'medium';
-    document.getElementById('habitCustomDays').value = [];
-    selectFrequency('daily', document.querySelector('.freq-option[data-freq="daily"]'));
-    
-    // Reset category selection
-    document.querySelectorAll('#categoryGrid .category-option').forEach(opt => {
-      opt.classList.toggle('selected', opt.dataset.category === 'health');
-    });
-    document.querySelectorAll('#iconGrid .category-option').forEach(opt => {
-      opt.classList.toggle('selected', opt.textContent === '💪');
-    });
-  }
-  
-  document.getElementById('habitOverlay').classList.add('active');
-  setTimeout(() => document.getElementById('habitName').focus(), 100);
-}
-
-function closeHabitModal() {
-  document.getElementById('habitOverlay').classList.remove('active');
-  editingHabitId = null;
-}
-
-function editHabit(habitId) {
-  openHabitModal(habitId);
-}
-
-function selectCategory(category, element) {
-  document.getElementById('habitCategory').value = category;
-  if (element) {
-    element.closest('#categoryGrid').querySelectorAll('.category-option').forEach(opt => opt.classList.remove('selected'));
-    element.classList.add('selected');
-  }
-}
-
-function selectIcon(icon, element) {
-  document.getElementById('habitIcon').value = icon;
-  if (element) {
-    element.closest('#iconGrid').querySelectorAll('.category-option').forEach(opt => opt.classList.remove('selected'));
-    element.classList.add('selected');
-  }
-}
-
-function selectFrequency(freq, element) {
-  document.getElementById('habitFrequencyValue').value = freq;
-  document.querySelectorAll('.freq-option').forEach(opt => opt.classList.remove('selected'));
-  if (element) element.classList.add('selected');
-  
-  const customSelect = document.getElementById('habitCustomDays');
-  if (freq === 'custom') {
-    customSelect.style.display = 'block';
-  } else {
-    customSelect.style.display = 'none';
-  }
-}
-
-function applyTemplate(templateName) {
-  const template = HABIT_TEMPLATES[templateName];
-  if (template && template.length > 0) {
-    const first = template[0];
-    document.getElementById('habitName').value = first.name;
-    document.getElementById('habitIcon').value = first.icon;
-    document.getElementById('habitCategory').value = first.category;
-    document.querySelectorAll('#categoryGrid .category-option').forEach(opt => {
-      opt.classList.toggle('selected', opt.dataset.category === first.category);
-    });
-    document.querySelectorAll('#iconGrid .category-option').forEach(opt => {
-      opt.classList.toggle('selected', opt.textContent === first.icon);
-    });
-    selectFrequency(first.frequency, document.querySelector(`.freq-option[data-freq="${first.frequency}"]`));
-  }
-}
-
-function saveHabit(e) {
-  e.preventDefault();
-  const name = document.getElementById('habitName').value.trim();
-  const category = document.getElementById('habitCategory').value;
-  const icon = document.getElementById('habitIcon').value;
-  const reminder = document.getElementById('habitReminder').value;
-  const notes = document.getElementById('habitNotes').value.trim();
-  const priority = document.getElementById('habitPriority').value;
-  const frequency = document.getElementById('habitFrequencyValue').value;
-  const customDays = Array.from(document.getElementById('habitCustomDays').selectedOptions).map(opt => parseInt(opt.value));
-  
-  if (!name) { showToast("Please enter a habit name"); return; }
-  if (!category) { showToast("Please select a category"); return; }
-  if (!icon) { showToast("Please select an icon"); return; }
-  
-  if (editingHabitId) {
-    updateHabit(editingHabitId, name, category, icon, reminder, frequency, priority, notes, customDays);
-  } else {
-    createHabit(name, category, icon, reminder, frequency, priority, notes, customDays);
-  }
-  closeHabitModal();
-}
-
-/* ========== NOTIFICATIONS & BIOMETRIC ========== */
-function toggleNotifications(value) {
-  if (value !== 'off') {
-    const timeMap = { morning: '08:00', evening: '18:00' };
-    const time = timeMap[value] || value;
-    if ('Notification' in window && Notification.permission === 'granted') {
-      scheduleNotification(time);
-      showToast('Notifications enabled for ' + (value === 'morning' ? 'Morning (8 AM)' : 'Evening (6 PM)'));
-    } else if ('Notification' in window && Notification.permission !== 'denied') {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          scheduleNotification(time);
-          showToast('Notifications enabled!');
-        } else {
-          showToast('Notification permission denied');
-        }
-      });
-    } else {
-      showToast('Notifications are blocked in your browser settings');
-    }
-  } else {
-    showToast('Daily reminders turned off');
-  }
-}
-
-function scheduleNotification(time) {
-  if ('Notification' in window && Notification.permission === 'granted') {
-    const now = new Date();
-    const [hours, minutes] = time.split(':').map(Number);
-    const notifyTime = new Date(now);
-    notifyTime.setHours(hours, minutes, 0, 0);
-    if (notifyTime < now) notifyTime.setDate(notifyTime.getDate() + 1);
-    const delay = notifyTime - now;
-    setTimeout(() => {
-      new Notification('HabitFlow', { body: "Time to check your habits! 🌿", icon: 'icon-192.png' });
-    }, delay);
-  }
-}
-
-function toggleBiometric(value) {
-  state.meta.biometricEnabled = value === 'on';
-  saveState();
-  showToast(`Biometric ${value === 'on' ? 'enabled' : 'disabled'}`);
-}
-
-async function authenticateBiometric() {
-  if ('credentials' in navigator) {
-    try {
-      const credentials = await navigator.credentials.get({ publicKey: { challenge: new Uint8Array(32), rpId: location.hostname } });
-      if (credentials) {
-        document.getElementById('biometricOverlay').style.display = 'none';
-        showToast('✅ Authentication successful');
-        return true;
-      }
-    } catch (err) {
-      showToast('Authentication failed');
-    }
-  }
-  showToast('Biometric not available on this device');
-  return false;
-}
-
-function closeBiometric() {
-  document.getElementById('biometricOverlay').style.display = 'none';
-}
-
-/* ========== EXPORT & IMPORT ========== */
-function exportJSON() {
-  const data = JSON.stringify(state, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `habitflow-${getToday()}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('✅ Data exported as JSON');
-}
-
-function importJSON() {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json';
-  input.onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const imported = JSON.parse(ev.target.result);
-        if (imported.habits && imported.logs) {
-          state = imported;
-          saveState();
-          renderToday();
-          renderCalendar();
-          renderStats();
-          renderManage();
-          showToast('✅ Data imported successfully!');
-        } else {
-          showToast('❌ Invalid file format');
-        }
-      } catch (err) {
-        showToast('❌ Failed to parse file');
-      }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
-}
-
-function exportCSV() {
-  let csv = 'Date,Habit,Category,Completed,Notes\n';
-  for (const [date, log] of Object.entries(state.logs)) {
-    for (const [habitId, completed] of Object.entries(log.done)) {
-      const habit = state.habits.find(h => h.id === habitId);
-      if (habit) {
-        csv += `${date},${habit.name},${habit.category},${completed ? 'Yes' : 'No'},${habit.notes || ''}\n`;
-      }
-    }
-  }
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `habitflow-${getToday()}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('✅ Data exported as CSV');
-}
-
-function exportPDF() {
-  const generatedDate = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-  const totalHabits = state.habits.length;
-  const activeDays = Object.keys(state.logs).length;
-  const bestStreak = computeBestStreak(getToday());
-  const currentStreak = computeStreak(getToday());
-  const today = getToday();
-  const completion = dayCompletionPct(today);
-  const startDate = state.settings.startDate;
-
-  let habitsRows = '';
-  state.habits.forEach(function(h) {
-    let total = 0, done = 0, d = startDate;
-    while (d <= today) {
-      if (isHabitDueOn(h, d)) {
-        total++;
-        if (state.logs[d] && state.logs[d].done && state.logs[d].done[h.id]) done++;
-      }
-      d = new Date(new Date(d + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
-    }
-    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-    const cat = HABIT_CATEGORIES[h.category] ? HABIT_CATEGORIES[h.category].label : h.category;
-    const color = HABIT_CATEGORIES[h.category] ? HABIT_CATEGORIES[h.category].color : '#3b82f6';
-    habitsRows +=
-      '<tr>' +
-        '<td>' + h.icon + ' ' + h.name + '</td>' +
-        '<td style="color:' + color + '">' + cat + '</td>' +
-        '<td>' + done + ' / ' + total + '</td>' +
-        '<td><div style="background:#e2e8f0;border-radius:4px;height:8px;width:100px;"><div style="background:' + color + ';width:' + pct + '%;height:8px;border-radius:4px;"></div></div></td>' +
-        '<td><strong>' + pct + '%</strong></td>' +
-      '</tr>';
-  });
-
-  const catMap = {};
-  state.habits.forEach(function(h) {
-    if (!catMap[h.category]) catMap[h.category] = { done: 0, total: 0 };
-    let d = startDate;
-    while (d <= today) {
-      if (isHabitDueOn(h, d)) {
-        catMap[h.category].total++;
-        if (state.logs[d] && state.logs[d].done && state.logs[d].done[h.id]) catMap[h.category].done++;
-      }
-      d = new Date(new Date(d + 'T00:00:00').getTime() + 86400000).toISOString().split('T')[0];
-    }
-  });
-  let catRows = '';
-  Object.keys(catMap).forEach(function(cat) {
-    const info = HABIT_CATEGORIES[cat] || { label: cat, icon: '❓', color: '#94a3b8' };
-    const pct = catMap[cat].total > 0 ? Math.round((catMap[cat].done / catMap[cat].total) * 100) : 0;
-    catRows += '<tr><td>' + info.icon + ' ' + info.label + '</td><td>' + catMap[cat].done + ' / ' + catMap[cat].total + '</td><td><strong style="color:' + info.color + '">' + pct + '%</strong></td></tr>';
-  });
-
-  const html = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>HabitFlow Report</title><style>body{font-family:Arial,sans-serif;padding:32px;max-width:900px;margin:0 auto;color:#0f172a}h1{color:#3b82f6;margin:0 0 4px}.sub{color:#64748b;margin:0 0 24px;font-size:13px}.hero{display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap}.card{flex:1;min-width:140px;padding:16px;border-radius:12px;text-align:center;background:#f1f5f9}.card .num{font-size:32px;font-weight:800;color:#3b82f6}.card .lbl{font-size:12px;color:#64748b;margin-top:4px}h2{font-size:16px;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin:28px 0 12px}table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;padding:8px 12px;background:#f8fafc;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.05em}td{padding:10px 12px;border-bottom:1px solid #f1f5f9}.footer{margin-top:40px;text-align:center;font-size:11px;color:#94a3b8}@media print{body{padding:16px}}</style></head><body><h1>🌿 HabitFlow Report</h1><p class="sub">Generated on ' + generatedDate + ' &nbsp;·&nbsp; Arc start: ' + startDate + '</p><div class="hero"><div class="card"><div class="num">' + currentStreak + '</div><div class="lbl">Current Streak 🔥</div></div><div class="card"><div class="num">' + bestStreak + '</div><div class="lbl">Best Streak ⭐</div></div><div class="card"><div class="num">' + completion + '%</div><div class="lbl">Today\'s Completion</div></div><div class="card"><div class="num">' + totalHabits + '</div><div class="lbl">Total Habits</div></div><div class="card"><div class="num">' + activeDays + '</div><div class="lbl">Active Days</div></div></div><h2>Habits</h2><table><thead><tr><th>Habit</th><th>Category</th><th>Completions</th><th>Progress</th><th>Rate</th></tr></thead><tbody>' + (habitsRows || '<tr><td colspan="5" style="color:#94a3b8;text-align:center">No habits added yet</td></tr>') + '</tbody></table><h2>By Category</h2><table><thead><tr><th>Category</th><th>Completions</th><th>Rate</th></tr></thead><tbody>' + (catRows || '<tr><td colspan="3" style="color:#94a3b8;text-align:center">No data</td></tr>') + '</tbody></table><div class="footer">HabitFlow &nbsp;·&nbsp; Your data never leaves this device</div></body></html>';
-
-  const win = window.open('', '_blank');
-  if (!win) { showToast('⚠️ Allow pop-ups to export PDF'); return; }
-  win.document.open('text/html', 'replace');
-  win.document.write(html);
-  win.document.close();
-  setTimeout(function() { win.focus(); win.print(); }, 250);
-  showToast('📄 PDF report opened — use Print to save');
-}
-
-function shareProgress() {
-  const shareData = {
-    title: 'HabitFlow Progress',
-    text: `Check out my habit tracking progress!\n\nCompletion: ${dayCompletionPct(getToday())}%\nStreak: ${computeStreak(getToday())} days`,
-    url: location.href
-  };
-  if (navigator.share && navigator.canShare(shareData)) {
-    navigator.share(shareData).catch(err => console.log('Share failed:', err));
-  } else {
-    navigator.clipboard.writeText(shareData.text + '\n\n' + shareData.url).then(() => {
-      showToast('✅ Progress copied to clipboard');
-    });
-  }
-}
-
-function resetData() {
-  if (confirm("Are you sure you want to reset all data? This cannot be undone.")) {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(THEME_KEY);
-    localStorage.removeItem(UNDO_KEY);
-    location.reload();
-  }
-}
-
-/* ========== LANGUAGE & SETTINGS ========== */
-function getTranslation(key) {
-  const lang = getLanguage();
-  return LANGUAGES[lang]?.[key] || LANGUAGES['en']?.[key] || key;
-}
-
-function changeLanguage(lang) {
-  state.settings.language = lang;
-  saveState();
-  document.documentElement.lang = lang;
-  
-  // Apply translations to all elements with data-i18n
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const translation = getTranslation(key);
-    if (translation !== key) el.textContent = translation;
-  });
-  
-  // Update labels that use variables
-  renderToday();
-  showToast(`Language changed to ${LANGUAGES[lang]?.today ? LANGUAGES[lang].today : 'Selected'}`);
-}
-
-function changeWeekStart(value) {
-  state.settings.weekStart = value;
-  saveState();
-  renderCalendar();
-  showToast(`Week starts on ${value === 'monday' ? 'Monday' : 'Sunday'}`);
-}
-
-/* ========== KEYBOARD NAVIGATION ========== */
-document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-  
-  if (e.key === '1') switchView('today');
-  if (e.key === '2') switchView('calendar');
-  if (e.key === '3') switchView('stats');
-  if (e.key === '4') switchView('manage');
-  
-  if (e.key === ' ' && document.getElementById('view-today').classList.contains('active')) {
-    e.preventDefault();
-    const habit = document.querySelector('.habit-item:not(.completed)');
-    if (habit) habit.click();
-  }
-  
-  if (e.key === 'Escape') {
-    closeHabitModal();
-    closeBiometric();
-  }
-});
-
-function handleHabitKey(e, habitId, dateStr) {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    toggleHabit(habitId, dateStr);
-  }
-}
-
-/* ========== CALENDAR NAVIGATION ========== */
-document.getElementById('prevMonthBtn').addEventListener('click', () => {
-  calMonth--;
-  if (calMonth < 0) { calMonth = 11; calYear--; }
-  renderCalendar();
-  renderWeeklyReview();
-});
-
-document.getElementById('nextMonthBtn').addEventListener('click', () => {
-  calMonth++;
-  if (calMonth > 11) { calMonth = 0; calYear++; }
-  renderCalendar();
-  renderWeeklyReview();
-});
-
-function openDayFromCalendar(dateStr) {
-  switchView('today');
-  showToast(`Selected date: ${formatDate(dateStr)}`);
-}
-
-/* ========== PWA INSTALL ========== */
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installPrompt').classList.add('show');
-});
-
-document.getElementById('installBtn').addEventListener('click', async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') showToast('✅ App installed!');
-    deferredPrompt = null;
-    closeInstallPrompt();
-  }
-});
-
-function closeInstallPrompt() {
-  document.getElementById('installPrompt').classList.remove('show');
-}
-
-/* ========== INITIALIZATION ========== */
-function init() {
-  loadState();
-  loadTheme();
-  document.documentElement.lang = state.settings.language;
-  
-  // Apply language to elements
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const translation = getTranslation(key);
-    if (translation !== key) el.textContent = translation;
-  });
-  
-  if (state.habits.length === 0) {
-    showToast('👋 Welcome to HabitFlow! Add your first habit to get started.');
-  } else {
-    renderToday();
-  }
-  
-  renderCalendar();
-  renderWeeklyReview();
-  renderStats();
-  renderAchievements();
-  renderManage();
-  
-  // Restore undo stack
-  try {
-    const savedUndo = localStorage.getItem(UNDO_KEY);
-    if (savedUndo) undoStack = JSON.parse(savedUndo);
-  } catch (e) { console.log("No undo data"); }
-  
-  // Biometric check on load
-  if (state.meta.biometricEnabled) {
-    document.getElementById('biometricOverlay').style.display = 'flex';
-  }
-  
-  // Update time every minute
-  setInterval(() => {
-    if (document.getElementById('view-today').classList.contains('active')) {
-      document.getElementById('todayDate').textContent = formatDate(getToday());
-    }
-  }, 60000);
-  
-  // Daily notification setup
-  if (Notification.permission === 'granted') {
-    scheduleNotification('08:00');
-  }
-}
-
-init();
-
-/* ========== SERVICE WORKER REGISTRATION ========== */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker Registered'))
-      .catch(err => console.log('Service Worker Registration Failed:', err));
-  });
-}
-
-/* ========== NOTIFICATION SUPPORT ========== */
-if ('Notification' in window && Notification.permission !== 'granted') {
-  Notification.requestPermission().then(permission => {
-    if (permission === 'granted') {
-      new Notification('HabitFlow', {
-        body: 'Notifications enabled! You will receive daily reminders.',
-        icon: 'icon-192.png'
-      });
-    }
-  });
-}
-</script>
+  <!-- CORE ENGINE SCRIPT -->
+  <script src="app.js"></script>
 </body>
 </html>

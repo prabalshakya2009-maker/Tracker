@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#112240" />
+      <stop offset="100%" stop-color="#060a14" />
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <circle cx="256" cy="256" r="218" fill="none" stroke="#1e2c47" stroke-width="3" stroke-dasharray="8 8" />
+  <g filter="url(#glow)">
+    <!-- 6 main snowflake axes -->
+    <g stroke="#6fb8e8" stroke-width="16" stroke-linecap="round">
+      <line x1="256" y1="56" x2="256" y2="456" />
+      <line x1="83" y1="156" x2="429" y2="356" />
+      <line x1="83" y1="356" x2="429" y2="156" />
+    </g>
+    <!-- Snowflake branch chevrons -->
+    <g stroke="#cfe6ff" stroke-width="10" stroke-linecap="round">
+      <!-- Top -->
+      <path d="M 226 120 L 256 150 L 286 120 M 236 80 L 256 100 L 276 80" fill="none" />
+      <!-- Bottom -->
+      <path d="M 226 392 L 256 362 L 286 392 M 236 432 L 256 412 L 276 432" fill="none" />
+      <!-- Top Right -->
+      <path d="M 360 170 L 340 200 L 370 220" fill="none" />
+      <!-- Bottom Left -->
+      <path d="M 152 342 L 172 312 L 142 292" fill="none" />
+      <!-- Bottom Right -->
+      <path d="M 370 292 L 340 312 L 360 342" fill="none" />
+      <!-- Top Left -->
+      <path d="M 142 220 L 172 200 L 152 170" fill="none" />
+    </g>
+    <!-- Central Ice Crystal Core -->
+    <circle cx="256" cy="256" r="42" fill="#cfe6ff" />
+    <!-- Inner Flame Dot (The Discipline Spark) -->
+    <circle cx="256" cy="256" r="22" fill="#ff8a4c" />
+  </g>
+</svg>
