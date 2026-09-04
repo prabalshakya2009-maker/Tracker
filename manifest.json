@@ -1,66 +1,25 @@
 {
-  "name": "Winter Arc Tracker — Habit & Focus OS",
+  "name": "Winter Arc Pro — Resilient Habit & Focus OS",
   "short_name": "Winter Arc",
-  "description": "The world-class, private, bugproof habit tracker and deep work focus suite for your Winter Arc.",
+  "description": "Offline-first discipline tracker built on the Resilient Habit Framework.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#060a14",
-  "theme_color": "#060a14",
-  "categories": ["productivity", "lifestyle", "health"],
+  "orientation": "portrait",
+  "background_color": "#0A0F1C",
+  "theme_color": "#0A0F1C",
   "icons": [
     {
-      "src": "icons/favicon-64.png",
-      "sizes": "64x64",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-192.png",
+      "src": "icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Today's Habits",
-      "url": "./index.html#today",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Deep Work Timer",
-      "url": "./index.html#focus",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Heatmap Calendar",
-      "url": "./index.html#calendar",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Analytics & Trophies",
-      "url": "./index.html#stats",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+      "purpose": "any maskable"
     }
   ]
 }

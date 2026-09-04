@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="frost">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#080c14">
-  <meta name="description" content="Winter Arc Pro — World-Class Habit, Streak & Deep Work OS. 100% Private, Client-Side, Drift-Proof.">
+  <meta name="theme-color" content="#0A0F1C">
+  <meta name="description" content="Winter Arc Pro — Offline-first discipline tracker built on the Resilient Habit Framework.">
 
-  <title>Winter Arc Pro — World-Class Habit &amp; Focus OS</title>
+  <title>Winter Arc Pro — Resilient Habit OS</title>
 
   <!-- PWA & Mobile Web Capabilities -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,868 +14,221 @@
   <meta name="apple-mobile-web-app-title" content="Winter Arc">
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- Icons -->
+  <!-- Icons & PWA Manifest -->
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
 
-  <!-- Typography: Space Grotesk & Inter -->
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=3.3">
+  <!-- Tailwind CSS via CDN with Exact Specified Color Palette -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bgDark: '#0A0F1C',
+            cardDark: '#121A2F',
+            cardHover: '#18233E',
+            accent: '#38BDF8',
+            warning: '#FBBF24',
+            success: '#34D399'
+          },
+          fontFamily: {
+            disp: ['"Space Grotesk"', 'sans-serif'],
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif']
+          },
+          boxShadow: {
+            'glow-accent': '0 0 24px rgba(56, 189, 248, 0.35)',
+            'glow-success': '0 0 24px rgba(52, 211, 153, 0.35)',
+            'glow-warning': '0 0 24px rgba(251, 191, 36, 0.35)'
+          }
+        }
+      }
+    };
+  </script>
+
   <style>
-    /* Critical Inline Layout, Transitions & High-End Aesthetic */
-    :root {
-      --bg-canvas: #080c14;
-      --bg-surface: rgba(14, 22, 38, 0.72);
-      --bg-elevated: #111c30;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.16);
-      --accent-glow: rgba(56, 189, 248, 0.3);
-      --frost: #e0f2fe;
-      --text: #f8fafc;
-      --text-dim: #94a3b8;
-      --text-faint: #475569;
-      --border-soft: rgba(255, 255, 255, 0.08);
-      --radius-lg: 18px;
-      --radius-md: 12px;
-    }
-
-    /* Natural Atmospheric Canvas */
+    /* Tactile physics & smooth transitions */
     body {
-      background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 60%), #080c14;
-      color: var(--text);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      margin: 0;
-      padding: 0;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-
-    /* Fluid View Transitions */
-    .view-panel {
-      display: none;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .view-panel.active {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-      animation: tabFadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @keyframes tabFadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Micro-interactions & Tactile Physics */
-    button, .action-pill-btn, .chip, .habit-check-btn, .nudge-pill-btn, .preset-card-btn, .nav-tab-btn {
-      touch-action: manipulation;
+      background-color: #0A0F1C;
+      color: #F1F5F9;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
     }
-    button:active, .action-pill-btn:active, .nudge-pill-btn:active, .preset-card-btn:active, .nav-tab-btn:active {
-      transform: scale(0.95);
+    .touch-bounce:active {
+      transform: scale(0.97);
     }
-
-    /* Focus Hero Card & Timer */
-    .focus-hero-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-lg);
-      padding: 24px 16px;
-      margin-bottom: 24px;
-      text-align: center;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(16px);
+    @keyframes checkPop {
+      0% { transform: scale(0.8); }
+      50% { transform: scale(1.18); }
+      100% { transform: scale(1.0); }
     }
-    .timer-clock-wrap {
-      position: relative;
-      width: 230px;
-      height: 230px;
-      margin: 10px auto 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .timer-clock-svg {
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-      display: block;
-    }
-    .timer-clock-inner {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      text-align: center;
-    }
-    .timer-status-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 4px 14px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-dim);
-      border: 1px solid var(--border-soft);
-      margin-bottom: 4px;
-      transition: all 0.25s ease;
-    }
-    .timer-status-pill.running {
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
-      border-color: var(--accent);
-      box-shadow: 0 0 14px var(--accent-glow);
-    }
-    .timer-status-pill.paused {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
-      border-color: #f59e0b;
-    }
-    .timer-digits {
-      font-size: 56px;
-      font-weight: 700;
-      line-height: 1;
-      letter-spacing: -0.03em;
-      color: var(--frost);
-      margin: 2px 0 6px;
-      font-variant-numeric: tabular-nums;
-    }
-    .timer-sub-mode {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-dim);
-    }
-    .timer-nudge-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin: 0 auto 16px;
-    }
-    .nudge-pill-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 9px 18px;
-      min-height: 44px;
-      min-width: 105px;
-      border-radius: 24px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-soft);
-      color: var(--frost);
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .nudge-pill-btn:hover {
-      border-color: var(--accent);
-      color: #ffffff;
-    }
-    .timer-presets-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      width: 100%;
-      max-width: 400px;
-      margin: 0 auto 18px;
-    }
-    .preset-card-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 4px;
-      min-height: 52px;
-      border-radius: var(--radius-md);
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-soft);
-      color: var(--text-dim);
-      cursor: pointer;
-    }
-    .preset-card-btn.active {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-      color: var(--accent);
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
-    .preset-card-val {
-      font-size: 15px;
-      font-weight: 700;
-      line-height: 1.1;
-    }
-    .preset-card-lbl {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--text-faint);
-      margin-top: 2px;
-    }
-    .preset-card-btn.active .preset-card-lbl {
-      color: var(--accent);
-    }
-
-    /* High-End 4-Tab Mobile Navigation (Visible only on mobile/tablet < 860px) */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: auto;
-      min-height: 64px;
-      background: rgba(8, 12, 20, 0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--border-soft);
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      padding: 8px 12px max(10px, env(safe-area-inset-bottom, 12px));
-      gap: 6px;
-      z-index: 9999;
-      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
-    }
-    @media (min-width: 860px) {
-      .bottom-nav {
-        display: none !important;
-      }
-    }
-    .nav-tab-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      padding: 6px 4px;
-      min-height: 48px;
-      border-radius: 12px;
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-dim);
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .nav-tab-btn .nav-svg {
-      transition: transform 0.2s ease, stroke 0.2s ease;
-    }
-    .nav-tab-btn.active {
-      color: var(--accent);
-      background: var(--accent-soft);
-      border-color: rgba(56, 189, 248, 0.25);
-    }
-    .nav-tab-btn.active .nav-svg {
-      transform: scale(1.1);
-      stroke: var(--accent);
-    }
-
-    /* Working Bottom Reflection Card */
-    .reflection-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-lg);
-      padding: 20px 16px;
-      margin-top: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(16px);
-    }
-    .energy-rating-row {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      margin: 12px 0 16px;
-    }
-    .energy-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      padding: 10px 4px;
-      min-height: 48px;
-      border-radius: 10px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-soft);
-      color: var(--text-dim);
-      cursor: pointer;
-    }
-    .energy-btn.selected {
-      border-color: var(--accent);
-      background: var(--accent-soft);
-      color: var(--accent);
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
-    .energy-level-badge {
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .energy-label {
-      font-size: 9.5px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
+    .check-pop {
+      animation: checkPop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
   </style>
 </head>
-<body>
-  <noscript>
-    <div style="padding:40px 20px;text-align:center;background:#080c14;color:#cfe6ff;min-height:100vh;">
-      <h2>JavaScript is required</h2>
-      <p>Winter Arc runs 100% privately in your browser. Please enable JavaScript to access your tracker.</p>
-    </div>
-  </noscript>
+<body class="bg-bgDark min-h-screen text-slate-100 font-sans antialiased selection:bg-accent selection:text-bgDark">
 
-  <div class="app-container">
+  <!-- App Wrapper Container -->
+  <div class="max-w-xl mx-auto px-4 py-6 md:py-10 flex flex-col min-h-screen justify-between">
 
-    <!-- DESKTOP SIDEBAR (Visible on tablets and desktop >= 860px) -->
-    <aside class="desktop-sidebar" aria-label="Desktop Navigation">
-      <div>
-        <div class="sidebar-brand">
-          <svg class="brand-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="2" x2="12" y2="22"></line>
-            <line x1="2" y1="12" x2="22" y2="12"></line>
-            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-            <line x1="19.07" y1="4.93" x2="4.93" y2="19.07"></line>
-          </svg>
-          <span class="disp" id="desktopBrandTitle">WINTER ARC</span>
+    <!-- TOP SECTION: HEADER & METRICS -->
+    <div>
+      <!-- 1. HEADER (Visual Hierarchy Item 1) -->
+      <header class="flex items-start justify-between gap-4 pb-6 border-b border-slate-800/80">
+        
+        <!-- Left: Date & Resilient Streak Indicator -->
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+            <span class="text-[11px] font-bold tracking-widest uppercase text-accent/90 font-disp">WINTER ARC PRO</span>
+          </div>
+          
+          <h1 id="currentDateDisplay" class="text-xl md:text-2xl font-bold tracking-tight text-white">
+            Today
+          </h1>
+
+          <!-- Streak Dot & Resilient Status Indicator -->
+          <div class="flex items-center gap-2 pt-1">
+            <!-- Dynamic Streak Dot: Emerald for active, pulsing Yellow for paused -->
+            <span id="streakDot" class="w-2.5 h-2.5 rounded-full bg-success shadow-glow-success transition-all duration-300"></span>
+            <span id="streakText" class="text-xs font-semibold text-slate-300 tracking-wide">
+              0 Day Streak
+            </span>
+          </div>
         </div>
-        <nav class="sidebar-nav">
-          <button type="button" class="sidebar-btn active" data-tab="today" aria-label="Today">
-            <svg class="nav-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <span>Today</span>
-          </button>
-          <button type="button" class="sidebar-btn" data-tab="focus" aria-label="Focus &amp; Deep Work">
-            <svg class="nav-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span>Focus Mode</span>
-          </button>
-          <button type="button" class="sidebar-btn" data-tab="progress" aria-label="Progress &amp; Analytics">
-            <svg class="nav-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-            <span>Progress Hub</span>
-          </button>
-          <button type="button" class="sidebar-btn" data-tab="settings" aria-label="Settings &amp; Studio">
-            <svg class="nav-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            <span>Settings</span>
-          </button>
-        </nav>
-      </div>
 
-      <div class="sidebar-footer">
-        <button type="button" class="action-pill-btn" id="btnSidebarSoundToggle" style="justify-content:center;">
-          <span id="sidebarSoundIcon">🔊</span> <span id="sidebarSoundText">Audio FX On</span>
-        </button>
-        <button type="button" class="action-pill-btn" id="btnSidebarHelp" style="justify-content:center;">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span>Shortcuts (?)</span>
-        </button>
-      </div>
-    </aside>
+        <!-- Right: Massive Glowing Consistency Score (Goal: >85%) -->
+        <div class="text-right flex flex-col items-end">
+          <div class="flex items-baseline gap-1">
+            <span id="consistencyScoreVal" class="text-5xl md:text-6xl font-extrabold font-disp tracking-tight text-accent drop-shadow-[0_0_20px_rgba(56,189,248,0.45)]">
+              0%
+            </span>
+          </div>
+          
+          <div class="flex items-center gap-1.5 mt-0.5">
+            <span id="goalBadge" class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
+              GOAL 85%+
+            </span>
+          </div>
 
-    <!-- MAIN APP VIEWPORT -->
-    <main class="app-main">
-
-      <!-- TOPBAR -->
-      <header class="topbar">
-        <div class="topbar-content">
-          <div class="brand-row">
-            <div class="brand-title">
-              <svg class="brand-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;">
-                <line x1="12" y1="2" x2="12" y2="22"></line>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-                <line x1="19.07" y1="4.93" x2="4.93" y2="19.07"></line>
-              </svg>
-              <span class="disp" id="topbarBrandText">WINTER ARC</span>
-            </div>
-            <div class="topbar-actions">
-              <div class="day-badge disp" id="topbarDayBadge">Day 1 / 180</div>
-              <button type="button" class="action-pill-btn" id="btnSoundToggle" aria-label="Toggle Sound FX">
-                <span id="topbarSoundIcon">🔊</span>
-              </button>
-              <button type="button" class="action-pill-btn" id="btnHelpModal" aria-label="Keyboard Shortcuts">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              </button>
-            </div>
-          </div>
-          <div class="arc-progress-bar-wrap">
-            <div class="arc-progress-bar-fill" id="arcLinearBar" style="width: 0%;"></div>
-          </div>
-          <div class="range-meta-row">
-            <span id="arcDateSpan">Sept 2, 2026 → Feb 28, 2027</span>
-            <span id="arcDaysLeft">180 days remaining</span>
-          </div>
+          <span class="text-[11px] text-slate-400 font-medium tracking-wide mt-1">
+            30-Day Rolling Score
+          </span>
         </div>
       </header>
 
-      <!-- VIEWS SCROLL CONTAINER -->
-      <div class="views-scroll" id="viewsScroll">
+      <!-- Resilient Warning Banner (Hidden by default, shown when streak is Paused) -->
+      <div id="pausedWarningBanner" class="hidden mt-4 p-3 rounded-xl bg-warning/10 border border-warning/30 flex items-center gap-3">
+        <div class="w-2 h-2 rounded-full bg-warning animate-ping flex-shrink-0"></div>
+        <p class="text-xs text-warning font-medium leading-relaxed">
+          <strong class="font-bold">Never Miss Twice Warning:</strong> You missed yesterday. Complete all 3 Core Non-Negotiables today to protect your streak from resetting!
+        </p>
+      </div>
 
-        <!-- ==================== TAB 1: TODAY ==================== -->
-        <section class="view-panel active" id="view-today" aria-label="Today">
-          <div id="todayGatedBanner" style="display:none;"></div>
+      <!-- MAIN CONTENT AREA -->
+      <main class="mt-8 space-y-8">
 
-          <div id="todayMainContent">
-            <!-- 7-Day Glance Strip -->
-            <div class="glance-strip" id="glanceStrip" aria-label="7-day glance"></div>
-
-            <!-- Hero Circular Completion Ring -->
-            <div class="ring-hero">
-              <div class="ring-container">
-                <svg class="ring-svg" viewBox="0 0 160 160">
-                  <circle class="ring-bg-circle" cx="80" cy="80" r="70" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="8" />
-                  <circle class="ring-progress-circle" id="heroRingCircle" cx="80" cy="80" r="70" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" />
-                </svg>
-                <div class="ring-center-content">
-                  <span class="ring-pct-text disp" id="heroRingPct">0%</span>
-                  <span class="ring-sub-text" id="heroRingRatio">0 / 0 done</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Streak Freeze Protection Banner (if available/used) -->
-            <div id="freezeBannerWrap" style="margin-bottom:16px;"></div>
-
-            <!-- Discipline Quote -->
-            <div class="quote-banner" id="todayQuoteBanner">"Consistency is quiet. It rarely feels like progress until it is."</div>
-
-            <!-- Filter Chips: Time of Day & Categories -->
-            <div class="filter-row" id="timeFilterRow">
-              <button type="button" class="chip active" data-time="all">All Day</button>
-              <button type="button" class="chip" data-time="morning">Morning</button>
-              <button type="button" class="chip" data-time="afternoon">Afternoon</button>
-              <button type="button" class="chip" data-time="evening">Evening</button>
-              <button type="button" class="chip" data-time="anytime">Any Time</button>
-            </div>
-
-            <!-- Habit Cards List -->
-            <div class="habit-list" id="todayHabitList"></div>
-
-            <!-- Working Bottom Reflection & Energy Log -->
-            <div class="reflection-card">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                <div style="font-size:13.5px;font-weight:700;color:var(--frost);">Daily Reflection &amp; Energy</div>
-                <span id="journalAutoSaveStatus" style="font-size:11px;color:var(--accent);font-weight:600;"></span>
-              </div>
-              <div style="font-size:11.5px;color:var(--text-dim);margin-bottom:12px;">Rate your focus &amp; energy today to track mental fatigue:</div>
-              
-              <div class="energy-rating-row" id="energyRatingRow">
-                <button type="button" class="energy-btn" data-level="1">
-                  <span class="energy-level-badge">1</span>
-                  <span class="energy-label">Drained</span>
-                </button>
-                <button type="button" class="energy-btn" data-level="2">
-                  <span class="energy-level-badge">2</span>
-                  <span class="energy-label">Low</span>
-                </button>
-                <button type="button" class="energy-btn" data-level="3">
-                  <span class="energy-level-badge">3</span>
-                  <span class="energy-label">Steady</span>
-                </button>
-                <button type="button" class="energy-btn" data-level="4">
-                  <span class="energy-level-badge">4</span>
-                  <span class="energy-label">Strong</span>
-                </button>
-                <button type="button" class="energy-btn" data-level="5">
-                  <span class="energy-level-badge">5</span>
-                  <span class="energy-label">Peak</span>
-                </button>
-              </div>
-
-              <textarea class="journal-textarea" id="todayJournalText" placeholder="Log your wins, obstacles, or lessons from today..." rows="3"></textarea>
-              
-              <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-                <button type="button" class="action-pill-btn" id="btnSaveReflection" style="padding:8px 16px;">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Save Reflection</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================== TAB 2: FOCUS & DEEP WORK ==================== -->
-        <section class="view-panel" id="view-focus" aria-label="Focus &amp; Deep Work">
-          <div class="view-header">
-            <h1 class="disp">Deep Work Suite</h1>
-            <p>Monk mode timer and client-side procedural soundscapes.</p>
-          </div>
-
-          <!-- Focus Timer Hero -->
-          <div class="focus-hero-card">
-            <!-- Circular Countdown Ring -->
-            <div class="timer-clock-wrap">
-              <svg class="timer-clock-svg" viewBox="0 0 240 240" width="230" height="230" style="display:block;margin:0 auto;">
-                <circle cx="120" cy="120" r="100" fill="none" stroke="rgba(255, 255, 255, 0.07)" stroke-width="8" />
-                <circle id="timerRingProgress" cx="120" cy="120" r="100" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="0" style="transition: stroke-dashoffset 0.3s ease;" />
-              </svg>
-              <div class="timer-clock-inner">
-                <div class="timer-status-pill" id="focusStatusBadge">READY TO FOCUS</div>
-                <div class="timer-digits disp" id="focusTimerDisplay">25:00</div>
-                <div class="timer-sub-mode" id="focusSubModeText">25-Min Pomodoro</div>
-              </div>
-            </div>
-
-            <!-- Quick Nudge Adjustment Buttons -->
-            <div class="timer-nudge-row" id="timerNudgeRow">
-              <button type="button" class="nudge-pill-btn nudge-btn" id="btnTimerNudgeMinus" title="Subtract 5 Minutes" aria-label="Subtract 5 Minutes">
-                <span style="font-size:16px;line-height:1;">−</span> <span>5 min</span>
-              </button>
-              <button type="button" class="nudge-pill-btn nudge-btn" id="btnTimerNudgePlus" title="Add 5 Minutes" aria-label="Add 5 Minutes">
-                <span style="font-size:16px;line-height:1;">+</span> <span>5 min</span>
-              </button>
-            </div>
-
-            <!-- Responsive 4-Column Presets Grid -->
-            <div class="timer-presets-grid" id="timerPresetsGrid">
-              <button type="button" class="preset-card-btn preset-btn active" data-minutes="25" aria-label="25 Minute Pomodoro">
-                <span class="preset-card-val preset-val">25m</span>
-                <span class="preset-card-lbl preset-lbl">Pomo</span>
-              </button>
-              <button type="button" class="preset-card-btn preset-btn" data-minutes="50" aria-label="50 Minute Ultra Work">
-                <span class="preset-card-val preset-val">50m</span>
-                <span class="preset-card-lbl preset-lbl">Ultra</span>
-              </button>
-              <button type="button" class="preset-card-btn preset-btn" data-minutes="90" aria-label="90 Minute Deep Work">
-                <span class="preset-card-val preset-val">90m</span>
-                <span class="preset-card-lbl preset-lbl">Deep</span>
-              </button>
-              <button type="button" class="preset-card-btn preset-btn" data-minutes="0" aria-label="Open Stopwatch Mode">
-                <span class="preset-card-val preset-val">⏱️</span>
-                <span class="preset-card-lbl preset-lbl">Open</span>
-              </button>
-            </div>
-
-            <!-- Habit Session Link Tag -->
-            <div style="margin-bottom:20px;">
-              <label for="focusHabitSelect" style="font-size:12px;font-weight:600;color:var(--text-dim);display:block;margin-bottom:8px;">Credit time toward habit:</label>
-              <select class="form-input" id="focusHabitSelect" style="max-width:320px;margin:0 auto;display:block;"></select>
-            </div>
-
-            <!-- Timer Action Controls -->
-            <div class="timer-controls">
-              <button type="button" class="btn-large btn-primary" id="btnFocusStart">
-                <span id="focusStartIcon">▶</span> <span id="focusStartText">Start Session</span>
-              </button>
-              <button type="button" class="btn-large btn-ghost" id="btnFocusReset">Reset</button>
-            </div>
-          </div>
-
-          <!-- Ambient Audio Synthesizer -->
-          <div class="audio-synth-box">
-            <div class="synth-header">
-              <div>
-                <div style="font-size:14px;font-weight:700;color:var(--frost);">Ambient Focus Synthesizer</div>
-                <div style="font-size:11px;color:var(--text-dim);">100% Web Audio API procedural synthesis · zero external downloads</div>
-              </div>
-              <button type="button" class="action-pill-btn" id="btnToggleNoisePlay">Play Sound</button>
-            </div>
-
-            <div class="sound-type-grid" id="soundTypeGrid">
-              <button type="button" class="sound-btn active" data-sound="brown">Brown Noise</button>
-              <button type="button" class="sound-btn" data-sound="pink">Pink Noise</button>
-              <button type="button" class="sound-btn" data-sound="white">White Noise</button>
-              <button type="button" class="sound-btn" data-sound="rain">Rain Storm</button>
-              <button type="button" class="sound-btn" data-sound="binaural">40Hz Gamma</button>
-            </div>
-
-            <div class="volume-slider-row">
-              <span>Volume</span>
-              <input type="range" class="volume-slider" id="synthVolumeSlider" min="0" max="100" value="35">
-              <span id="synthVolLabel">35%</span>
-            </div>
-          </div>
-
-          <!-- Today's Focus Log Summary -->
-          <div class="stat-card" style="text-align:left;display:flex;align-items:center;justify-content:space-between;">
+        <!-- 2. THE GRIND (Visual Hierarchy Item 2) -->
+        <section aria-label="Core Non-Negotiables">
+          <div class="flex items-center justify-between mb-3.5">
             <div>
-              <div style="font-size:12px;color:var(--text-dim);">Today's Focus Time</div>
-              <div class="stat-val disp" id="todayFocusMinutes">0 min</div>
+              <h2 class="text-sm font-extrabold tracking-wider uppercase text-slate-200 font-disp">
+                The Grind
+              </h2>
+              <p class="text-[11.5px] text-slate-400">
+                Core Non-Negotiables <span class="text-accent font-semibold">(Max 3)</span> • Missing 1 breaks the day
+              </p>
             </div>
+            
+            <div id="coreCompletedBadge" class="text-xs font-bold font-disp px-2.5 py-1 rounded-lg bg-cardDark border border-slate-700/60 text-slate-300">
+              0 / 3 Done
+            </div>
+          </div>
+
+          <!-- Massive Full-Width Toggle Buttons for Core Habits -->
+          <div id="coreHabitsContainer" class="space-y-3">
+            <!-- Dynamically Rendered by app.js -->
+          </div>
+        </section>
+
+        <!-- 3. THE EXTRAS (Visual Hierarchy Item 3) -->
+        <section aria-label="Bonus Quests" class="opacity-75 hover:opacity-100 transition-opacity duration-200">
+          <div class="flex items-center justify-between mb-3">
             <div>
-              <div style="font-size:12px;color:var(--text-dim);">Completed Blocks</div>
-              <div class="stat-val disp ember" id="todayFocusSessions">0</div>
+              <h2 class="text-xs font-bold tracking-wider uppercase text-slate-300 font-disp">
+                The Extras
+              </h2>
+              <p class="text-[11px] text-slate-400">
+                Bonus Quests • Secondary reps, tracks separately from core score
+              </p>
             </div>
+
+            <div id="bonusCompletedBadge" class="text-[11px] font-semibold px-2 py-0.5 rounded bg-cardDark border border-slate-800 text-slate-400">
+              0 / 3
+            </div>
+          </div>
+
+          <!-- Smaller Buttons for Bonus Quests -->
+          <div id="bonusHabitsContainer" class="space-y-2.5">
+            <!-- Dynamically Rendered by app.js -->
           </div>
         </section>
 
-        <!-- ==================== TAB 3: PROGRESS HUB (Calendar + Analytics + Trophies Unified) ==================== -->
-        <section class="view-panel" id="view-progress" aria-label="Progress Hub">
-          <div class="view-header">
-            <h1 class="disp">Progress Center</h1>
-            <p>Your complete discipline records, heatmap calendar, consistency patterns, and trophies.</p>
-          </div>
+      </main>
+    </div>
 
-          <!-- 4 Hero Stat Cards -->
-          <div class="stats-hero-grid">
-            <div class="stat-card">
-              <div class="stat-val disp ember" id="statCurrentStreak">0</div>
-              <div class="stat-lbl">CURRENT STREAK</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-val disp" id="statBestStreak">0</div>
-              <div class="stat-lbl">BEST STREAK</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-val disp" id="statArcCompletion">0%</div>
-              <div class="stat-lbl">ARC COMPLETION</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-val disp" id="statTotalReps">0</div>
-              <div class="stat-lbl">TOTAL REPS</div>
-            </div>
-          </div>
+    <!-- FOOTER: 30-DAY STATS SUMMARY & PWA OFFLINE CAPABILITY -->
+    <footer class="mt-12 pt-6 border-t border-slate-800/60 text-center space-y-3">
+      
+      <!-- 30-Day Rolling Visual Progress Bar -->
+      <div class="space-y-1.5">
+        <div class="flex justify-between text-xs text-slate-400 font-medium px-1">
+          <span>Rolling Consistency: <strong id="rollingDaysCount" class="text-slate-200">0/30 Days</strong></span>
+          <span id="targetStatusText" class="text-accent font-semibold">Target: 85%</span>
+        </div>
+        <div class="w-full h-2 rounded-full bg-slate-800/80 overflow-hidden">
+          <div id="rollingProgressBar" class="h-full bg-gradient-to-r from-accent to-success transition-all duration-500 rounded-full" style="width: 0%;"></div>
+        </div>
+      </div>
 
-          <!-- Heatmap Calendar Section -->
-          <div class="settings-section" style="margin-top:20px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-              <div class="settings-section-title" style="margin-bottom:0;">Heatmap Calendar</div>
-              <div class="calendar-legend" style="margin-bottom:0;">
-                <div class="legend-scale">
-                  <div class="legend-cell" style="background:var(--bg-elevated);border:1px solid var(--border-soft);" title="0%"></div>
-                  <div class="legend-cell" style="background:rgba(56,189,248,0.25);" title="25%"></div>
-                  <div class="legend-cell" style="background:rgba(56,189,248,0.5);" title="50%"></div>
-                  <div class="legend-cell" style="background:rgba(56,189,248,0.75);" title="75%"></div>
-                  <div class="legend-cell" style="background:var(--accent);" title="100%"></div>
-                </div>
-              </div>
-            </div>
-            <p style="font-size:11.5px;color:var(--text-dim);margin-bottom:14px;">Tap any day to inspect details or log notes retroactively.</p>
-            <div id="calendarMonthsWrap"></div>
-          </div>
+      <!-- Footer Metadata & PWA Controls -->
+      <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 px-1">
+        <div class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+          <span>Resilient Habit Framework • 100% Offline</span>
+        </div>
 
-          <!-- Weekday Consistency Bar Chart -->
-          <div class="weekday-chart-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <div style="font-size:13.5px;font-weight:700;color:var(--frost);">Weekday Consistency Pattern</div>
-              <div style="font-size:11px;color:var(--accent);" id="strongestDayBadge">Strongest: -</div>
-            </div>
-            <div class="weekday-bars-container" id="weekdayBarsContainer"></div>
-          </div>
-
-          <!-- Per-Habit Completion Breakdown -->
-          <div class="settings-section">
-            <div class="settings-section-title">Habit Breakdown</div>
-            <div id="habitStatsList"></div>
-          </div>
-
-          <!-- Unlockable Milestone Trophies -->
-          <div class="settings-section">
-            <div class="settings-section-title">Trophies &amp; Achievements</div>
-            <div style="font-size:11.5px;color:var(--text-dim);margin-bottom:12px;">Milestones unlocked during your Winter Arc journey.</div>
-            <div class="trophies-grid" id="trophiesGrid"></div>
-          </div>
-        </section>
-
-        <!-- ==================== TAB 4: SETTINGS & STUDIO HUB ==================== -->
-        <section class="view-panel" id="view-settings" aria-label="Settings &amp; Studio">
-          <div class="view-header">
-            <h1 class="disp">Settings &amp; Studio</h1>
-            <p>Customize your themes, share social cards, configure timeline, and cloud sync.</p>
-          </div>
-
-          <!-- Theme Appearance -->
-          <div class="settings-section">
-            <div class="settings-section-title">Theme &amp; Aesthetics</div>
-            <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;">Select your preferred natural atmosphere:</div>
-            <div class="theme-swatches-row" id="themeSwatchesRow"></div>
-          </div>
-
-          <!-- Share Card Studio -->
-          <div class="settings-section">
-            <div class="settings-section-title">Share Card Studio</div>
-            <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;">Generate high-resolution social cards to share your discipline.</p>
-
-            <div class="card-studio-box">
-              <div class="canvas-preview-wrap">
-                <canvas id="shareCanvas" width="1080" height="1920"></canvas>
-              </div>
-
-              <div class="card-options-grid">
-                <div class="form-group">
-                  <label for="shareCardRatio">Aspect Ratio</label>
-                  <select class="form-input" id="shareCardRatio">
-                    <option value="9:16">Story / Reel (9:16 - 1080x1920)</option>
-                    <option value="1:1">Square Post (1:1 - 1080x1080)</option>
-                    <option value="16:9">Twitter / Landscape (16:9 - 1920x1080)</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="shareCardStyle">Card Visual Theme</label>
-                  <select class="form-input" id="shareCardStyle">
-                    <option value="current">Match Active Theme</option>
-                    <option value="glacier">Glacier Ice</option>
-                    <option value="obsidian">Obsidian Gold</option>
-                    <option value="cyber">Cyberpunk Aurora</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="button-stack">
-                <button type="button" class="btn-large btn-primary" id="btnShareNative" style="justify-content:center;">
-                  <span>Share via Native Sheet</span>
-                </button>
-                <button type="button" class="btn-large btn-ghost" id="btnDownloadCard" style="justify-content:center;">
-                  <span>Download High-Res PNG</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sound FX & Confetti -->
-          <div class="settings-section">
-            <div class="settings-section-title">Sound FX &amp; Haptics</div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-              <span style="font-size:13px;">Mechanical Click &amp; Chime Audio</span>
-              <input type="checkbox" id="chkAudioFeedback" checked style="width:18px;height:18px;accent-color:var(--accent);">
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:13px;">Confetti Celebration</span>
-              <input type="checkbox" id="chkConfetti" checked style="width:18px;height:18px;accent-color:var(--accent);">
-            </div>
-          </div>
-
-          <!-- Habits Management -->
-          <div class="settings-section">
-            <div class="settings-section-title">Habits Configuration</div>
-            <div id="manageHabitList"></div>
-            <button type="button" class="btn-large btn-ghost" id="btnOpenAddHabit" style="width:100%;margin-top:12px;justify-content:center;">
-              + Add a Habit
-            </button>
-            <button type="button" class="action-pill-btn" id="btnToggleArchived" style="margin-top:12px;display:none;">
-              ▾ Archived Habits (0)
-            </button>
-            <div id="archivedHabitList" style="display:none;margin-top:10px;"></div>
-          </div>
-
-          <!-- Arc Dates & Name -->
-          <div class="settings-section">
-            <div class="settings-section-title">Arc Details &amp; Timeline</div>
-            <div class="form-group">
-              <label for="inputArcName">Arc Title</label>
-              <input type="text" class="form-input" id="inputArcName" value="WINTER ARC">
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div class="form-group">
-                <label for="inputStartDate">Start Date</label>
-                <input type="date" class="form-input" id="inputStartDate">
-              </div>
-              <div class="form-group">
-                <label for="inputEndDate">End Date</label>
-                <input type="date" class="form-input" id="inputEndDate">
-              </div>
-            </div>
-            <button type="button" class="btn-large btn-primary" id="btnSaveArcDates" style="width:100%;justify-content:center;margin-top:6px;">
-              Save Arc Dates
-            </button>
-          </div>
-
-          <!-- Streak Freeze Bank -->
-          <div class="settings-section">
-            <div class="settings-section-title">Streak Freeze Protection</div>
-            <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px;">
-              Protect your streak when life, illness, or travel interrupts. You have <b id="freezeBankCount" style="color:var(--accent);">2 freezes</b> available this month.
-            </div>
-            <button type="button" class="btn-large btn-ghost" id="btnApplyFreezeToday" style="width:100%;justify-content:center;">
-              Apply Streak Freeze to Today
-            </button>
-          </div>
-
-          <!-- Cloud Sync (GitHub Gist) -->
-          <div class="settings-section">
-            <div class="settings-section-title">Cross-Device Cloud Sync (GitHub Gist)</div>
-            <div style="font-size:12px;color:var(--text-dim);margin-bottom:12px;">
-              Sync seamlessly across your phone, laptop, and tablet without any centralized backend server. Credentials stay 100% on your device.
-            </div>
-            <div class="form-group">
-              <label for="inputGistToken">GitHub Personal Access Token (with 'gist' permission)</label>
-              <input type="password" class="form-input" id="inputGistToken" placeholder="ghp_xxxxxxxxxxxx">
-            </div>
-            <div class="form-group">
-              <label for="inputGistId">Gist ID (leave empty to create a new private Gist)</label>
-              <input type="text" class="form-input" id="inputGistId" placeholder="e.g. 7f8a9b0c1d2e3f4">
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <button type="button" class="btn-large btn-primary" id="btnGistPush" style="justify-content:center;">Push to Cloud</button>
-              <button type="button" class="btn-large btn-ghost" id="btnGistPull" style="justify-content:center;">Pull from Cloud</button>
-            </div>
-          </div>
-
-          <!-- Backup & Data Freedom -->
-          <div class="settings-section">
-            <div class="settings-section-title">Backup &amp; Data Freedom</div>
-            <div class="button-stack">
-              <button type="button" class="btn-large btn-ghost" id="btnExportJSON" style="justify-content:center;">Export Full Backup (.json)</button>
-              <button type="button" class="btn-large btn-ghost" id="btnExportCSV" style="justify-content:center;">Export Spreadsheet Data (.csv)</button>
-              <button type="button" class="btn-large btn-ghost" id="btnTriggerImport" style="justify-content:center;">Import Backup (.json)</button>
-              <input type="file" id="inputImportFile" accept="application/json" style="display:none;">
-              <button type="button" class="btn-large btn-danger" id="btnResetAllData" style="justify-content:center;">Reset All Data</button>
-            </div>
-          </div>
-
-          <!-- Install & PWA -->
-          <div class="settings-section">
-            <div class="settings-section-title">Install App &amp; Offline</div>
-            <button type="button" class="btn-large btn-primary" id="btnPwaInstall" style="width:100%;justify-content:center;display:none;margin-bottom:12px;">
-              Install as Standalone App
-            </button>
-            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">
-              <b>iPhone / Safari:</b> Tap Share → "Add to Home Screen".<br>
-              <b>Android / Chrome:</b> Tap Menu → "Install App".<br>
-              <b>Privacy:</b> 100% Client-Side. No telemetry, no tracking, zero server dependency.
-            </div>
-          </div>
-        </section>
-
-      </div> <!-- /views-scroll -->
-
-      <!-- MOBILE BOTTOM NAVIGATION (4 Unified Tabs) -->
-      <nav class="bottom-nav" aria-label="Mobile Navigation">
-        <button type="button" class="nav-tab-btn active" data-tab="today" aria-label="Today">
-          <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          <span>Today</span>
+        <button id="btnAudioToggle" class="text-slate-400 hover:text-accent transition-colors flex items-center gap-1 text-[11px] py-1 px-2 rounded hover:bg-slate-800">
+          <span id="audioIcon">🔊</span>
+          <span id="audioStatusText">Audio On</span>
         </button>
-        <button type="button" class="nav-tab-btn" data-tab="focus" aria-label="Focus Mode">
-          <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span>Focus</span>
-        </button>
-        <button type="button" class="nav-tab-btn" data-tab="progress" aria-label="Progress Center">
-          <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-          <span>Progress</span>
-        </button>
-        <button type="button" class="nav-tab-btn" data-tab="settings" aria-label="Settings &amp; Studio">
-          <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          <span>Settings</span>
-        </button>
-      </nav>
+      </div>
 
-    </main>
-  </div>
+    </footer>
 
-  <!-- UNIVERSAL MODAL SYSTEM -->
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal-sheet" id="modalSheetContent"></div>
   </div>
 
   <!-- TOAST NOTIFICATION CONTAINER -->
-  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+  <div id="toastNotification" class="fixed bottom-6 left-1/2 -translate-x-1/2 pointer-events-none transition-all duration-300 opacity-0 translate-y-4 z-50">
+    <div class="bg-cardDark border border-slate-700/80 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2">
+      <span id="toastIcon">✨</span>
+      <span id="toastMessage">Updated!</span>
+    </div>
+  </div>
 
-  <!-- CORE ENGINE SCRIPT -->
-  <script src="app.js?v=3.3"></script>
+  <!-- CODEBASE SCRIPTS: Modular Static Architecture -->
+  <script src="storage.js"></script>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

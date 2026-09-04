@@ -1,83 +1,93 @@
-// Winter Arc Pro — Service Worker v3.3
-// 100% Offline-Ready, Fast Updates, Network-First for App Shell
+/**
+ * sw.js — Service Worker for Winter Arc Pro
+ * 100% Offline-Capable Progressive Web App (PWA)
+ * GitHub Pages Compatible (Relative Path Scoping)
+ */
 
-const CACHE_NAME = "winter-arc-pro-v3.3";
-const SHELL_FILES = [
-  "./",
-  "./index.html",
-  "./style.css",
-  "./app.js",
-  "./manifest.json",
-  "./icons/icon.svg",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/icon-maskable-512.png",
-  "./icons/apple-touch-icon.png",
-  "./icons/favicon-64.png"
+const CACHE_NAME = 'winter-arc-resilient-v1.0';
+
+const PRECACHE_ASSETS = [
+  './',
+  './index.html',
+  './storage.js',
+  './engine.js',
+  './app.js',
+  './manifest.json',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png'
 ];
 
-self.addEventListener("install", (event) => {
+// Install Event: Pre-cache core shell
+self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(SHELL_FILES).catch((err) => {
-        console.warn("[SW] Cache preload partial warning:", err);
+      return cache.addAll(PRECACHE_ASSETS).catch((err) => {
+        console.warn('[SW] Pre-cache partial warning:', err);
       });
     })
   );
 });
 
-self.addEventListener("activate", (event) => {
+// Activate Event: Clean up outdated caches
+self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((k) => k !== CACHE_NAME).map((k) => {
-          console.log("[SW] Purging outdated cache:", k);
-          return caches.delete(k);
+        keys.filter((key) => key !== CACHE_NAME).map((key) => {
+          console.log('[SW] Purging outdated cache:', key);
+          return caches.delete(key);
         })
       );
     }).then(() => self.clients.claim())
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  const req = event.request;
-  if (req.method !== "GET") return;
+// Fetch Event: Network-First for HTML, Cache-First with Network Fallback for Assets
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
 
-  const url = new URL(req.url);
+  const url = new URL(request.url);
 
-  // For Gist API sync, never cache, always fetch network directly
-  if (url.hostname.includes("api.github.com")) {
-    return;
-  }
-
-  // For Google Fonts or static external assets: Cache first, fallback to network
-  if (url.hostname.includes("fonts.googleapis.com") || url.hostname.includes("fonts.gstatic.com")) {
+  // For HTML navigation: Network-First to ensure instant updates, fallback to cache
+  if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
-      caches.match(req).then((cached) => {
-        if (cached) return cached;
-        return fetch(req).then((res) => {
-          if (res && res.status === 200) {
-            const clone = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+      fetch(request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           }
-          return res;
-        }).catch(() => cached);
-      })
+          return networkResponse;
+        })
+        .catch(() => caches.match('./index.html') || caches.match(request))
     );
     return;
   }
 
-  // Network-First for core app files (HTML, CSS, JS) so mobile devices get live updates instantly
+  // For static scripts, icons, fonts: Cache-First with background update
   event.respondWith(
-    fetch(req)
-      .then((networkRes) => {
-        if (networkRes && networkRes.status === 200) {
-          const clone = networkRes.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+    caches.match(request).then((cachedResponse) => {
+      if (cachedResponse) {
+        // Background revalidation
+        fetch(request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, networkResponse));
+            }
+          })
+          .catch(() => {});
+        return cachedResponse;
+      }
+
+      return fetch(request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && url.protocol.startsWith('http')) {
+          const copy = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
         }
-        return networkRes;
-      })
-      .catch(() => caches.match(req))
+        return networkResponse;
+      });
+    })
   );
 });
