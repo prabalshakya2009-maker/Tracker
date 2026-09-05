@@ -773,7 +773,7 @@
     if (titleEl) titleEl.textContent = s.arcName || "WINTER ARC";
     if (dTitleEl) dTitleEl.textContent = s.arcName || "WINTER ARC";
 
-    const badge = document.getElementById("topbarDayBadge");
+    const dayTextEl = document.getElementById("topbarDayText") || document.getElementById("topbarDayBadge");
     const spanEl = document.getElementById("arcDateSpan");
     const daysLeftEl = document.getElementById("arcDaysLeft");
     const linearBar = document.getElementById("arcLinearBar");
@@ -783,22 +783,58 @@
     const totalArcDays = Math.max(1, daysBetween(s.startDate, s.endDate) + 1);
 
     if (today < s.startDate) {
-      if (badge) badge.textContent = "Not Started";
+      if (dayTextEl) dayTextEl.textContent = "Not Started";
       const beforeDays = daysBetween(today, s.startDate);
       if (daysLeftEl) daysLeftEl.textContent = `Starts in ${beforeDays} day${beforeDays === 1 ? "" : "s"}`;
       if (linearBar) linearBar.style.width = "0%";
     } else if (today > s.endDate) {
-      if (badge) badge.textContent = "Arc Complete";
+      if (dayTextEl) dayTextEl.textContent = "Arc Complete";
       if (daysLeftEl) daysLeftEl.textContent = "Challenge Completed";
       if (linearBar) linearBar.style.width = "100%";
     } else {
       const currentDayNum = Math.min(totalArcDays, daysBetween(s.startDate, today) + 1);
       const remainingDays = daysBetween(today, s.endDate);
-      if (badge) badge.textContent = `Day ${currentDayNum} / ${totalArcDays}`;
+      if (dayTextEl) dayTextEl.textContent = `Day ${currentDayNum} / ${totalArcDays}`;
       if (daysLeftEl) daysLeftEl.textContent = `${remainingDays} day${remainingDays === 1 ? "" : "s"} remaining`;
       const elapsedPct = Math.round((currentDayNum / totalArcDays) * 100);
       if (linearBar) linearBar.style.width = `${elapsedPct}%`;
     }
+
+    // Dynamic HUD momentum badges
+    const streaks = computeStreaks();
+    const compToday = getDayCompletion(today);
+
+    const streakEl = document.getElementById("topbarStreakText");
+    if (streakEl) streakEl.textContent = `${streaks.current}d streak`;
+
+    const todayDoneEl = document.getElementById("topbarTodayDoneText");
+    const todayDoneBadge = document.getElementById("topbarTodayDoneBadge");
+    if (todayDoneEl) {
+      todayDoneEl.textContent = compToday.total > 0 && compToday.all ? "100% Done" : `${compToday.done} / ${compToday.total} done`;
+    }
+    if (todayDoneBadge) {
+      todayDoneBadge.classList.toggle("completed", compToday.all && compToday.total > 0);
+    }
+
+    const freezeEl = document.getElementById("topbarFreezeText");
+    if (freezeEl) {
+      const count = s.freezesBanked !== undefined ? s.freezesBanked : 2;
+      freezeEl.textContent = `${count} freeze${count === 1 ? "" : "s"}`;
+    }
+
+    // Sidebar live mini stats
+    const sideStreak = document.getElementById("sideMiniStreak");
+    const sideToday = document.getElementById("sideMiniToday");
+    const sideFocus = document.getElementById("sideMiniFocus");
+
+    if (sideStreak) sideStreak.textContent = `${streaks.current}d`;
+    if (sideToday) sideToday.textContent = `${compToday.pct}%`;
+
+    let todayFocusMins = 0;
+    (state.focusSessions || []).forEach((fs) => {
+      if (fs.date === today) todayFocusMins += (fs.minutes || 0);
+    });
+    if (sideFocus) sideFocus.textContent = `${todayFocusMins}m`;
 
     const soundIcon = document.getElementById("topbarSoundIcon");
     const sideSoundIcon = document.getElementById("sidebarSoundIcon");
@@ -2281,11 +2317,8 @@
     document.querySelectorAll(".view-panel").forEach((v) => v.classList.remove("active"));
     target.classList.add("active");
 
-    // Synchronize active states across Desktop Sidebar, Desktop Topbar, and Mobile Bottom Nav
+    // Synchronize active states across Desktop Sidebar and Mobile Bottom Nav
     document.querySelectorAll(".sidebar-btn").forEach((b) => {
-      b.classList.toggle("active", b.dataset.tab === activeTab);
-    });
-    document.querySelectorAll(".topbar-tab-btn").forEach((b) => {
       b.classList.toggle("active", b.dataset.tab === activeTab);
     });
     document.querySelectorAll(".nav-tab-btn").forEach((b) => {
@@ -2345,13 +2378,16 @@
      ========================================================================== */
 
   function initEvents() {
-    // Navigation (Sidebar, Topbar & Mobile Bottom Nav)
-    document.querySelectorAll(".sidebar-btn[data-tab], .topbar-tab-btn[data-tab], .nav-tab-btn[data-tab]").forEach((btn) => {
+    // Navigation (Desktop Sidebar & Mobile Bottom Nav)
+    document.querySelectorAll(".sidebar-btn[data-tab], .nav-tab-btn[data-tab]").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         if (e) e.preventDefault();
         switchTab(btn.dataset.tab);
       });
     });
+
+    // Quick Add Habit in Topbar Command HUD
+    document.getElementById("btnTopbarAddHabit")?.addEventListener("click", () => openHabitModal());
 
     // Time of day filters
     document.querySelectorAll("#timeFilterRow .chip").forEach((chip) => {
